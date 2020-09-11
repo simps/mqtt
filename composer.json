@@ -1,0 +1,21 @@
+{
+  "name": "simps/mqtt",
+  "description": "MQTT protocol versions 3.1.1 library for PHP",
+  "keywords": [
+    "php",
+    "simps",
+    "mqtt",
+    "swoole"
+  ],
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Luffy",
+      "email": "lufei@simps.io"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "ext-mbstring": "*"
+  }
+}
