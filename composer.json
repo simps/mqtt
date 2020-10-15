@@ -17,5 +17,17 @@
   "require": {
     "php": ">=7.0",
     "ext-mbstring": "*"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.16"
+  },
+  "autoload": {
+    "psr-4": {
+      "Simps\\MQTT\\": "src/"
+    }
+  },
+  "scripts": {
+    "cs-check": "/usr/bin/env php ./vendor/bin/php-cs-fixer fix --dry-run",
+    "cs-fix": "/usr/bin/env php ./vendor/bin/php-cs-fixer fix"
   }
 }
