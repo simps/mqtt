@@ -1,31 +1,45 @@
 <?php
+/**
+ * This file is part of Simps
+ *
+ * @link     https://github.com/simps/mqtt
+ * @contact  luffy <lufei@simps.io>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code
+ */
 
-namespace Simps\MQTT\Types;
+declare(strict_types=1);
 
-const CONNECT = 1; // Client request to connect to Server
+namespace Simps\MQTT;
 
-const CONNACK = 2; // Connect acknowledgment
+class Types
+{
+    const CONNECT = 1; // Client request to connect to Server
 
-const PUBLISH = 3; // Publish message
+    const CONNACK = 2; // Connect acknowledgment
 
-const PUBACK = 4; // Publish acknowledgment
+    const PUBLISH = 3; // Publish message
 
-const PUBREC = 5; // Publish received (assured delivery part 1)
+    const PUBACK = 4; // Publish acknowledgment
 
-const PUBREL = 6; // Publish release (assured delivery part 2)
+    const PUBREC = 5; // Publish received (assured delivery part 1)
 
-const PUBCOMP = 7; // Publish complete (assured delivery part 3)
+    const PUBREL = 6; // Publish release (assured delivery part 2)
 
-const SUBSCRIBE = 8; // Client subscribe request
+    const PUBCOMP = 7; // Publish complete (assured delivery part 3)
 
-const SUBACK = 9; // Subscribe acknowledgment
+    const SUBSCRIBE = 8; // Client subscribe request
 
-const UNSUBSCRIBE = 10; // Unsubscribe request
+    const SUBACK = 9; // Subscribe acknowledgment
 
-const UNSUBACK = 11; // Unsubscribe acknowledgment
+    const UNSUBSCRIBE = 10; // Unsubscribe request
 
-const PINGREQ = 12; // PING request
+    const UNSUBACK = 11; // Unsubscribe acknowledgment
 
-const PINGRESP = 13; // PING response
+    const PINGREQ = 12; // PING request
 
-const DISCONNECT = 14; // Client is disconnecting
+    const PINGRESP = 13; // PING response
+
+    const DISCONNECT = 14; // Client is disconnecting
+}
