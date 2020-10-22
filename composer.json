@@ -1,11 +1,15 @@
 {
   "name": "simps/mqtt",
-  "description": "MQTT protocol versions 3.1.1 library for PHP",
+  "description": "MQTT Coroutine Client for PHP",
   "keywords": [
     "php",
     "simps",
     "mqtt",
-    "swoole"
+    "swoole",
+    "client",
+    "coroutine",
+    "mqtt_client",
+    "mqtt_protocol"
   ],
   "license": "Apache-2.0",
   "authors": [
