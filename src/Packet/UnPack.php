@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Packet;
 
-use Simps\MQTT\Exception\MQTTLengthException;
+use Simps\MQTT\Exception\LengthException;
 use Simps\MQTT\Types;
 
 class UnPack
@@ -132,7 +132,7 @@ class UnPack
     {
         $length = unpack('n', $remaining)[1];
         if ($length + 2 > strlen($remaining)) {
-            throw new MQTTLengthException("length:{$length} not enough for unpack string");
+            throw new LengthException("length:{$length} not enough for unpack string");
         }
         $string = substr($remaining, 2, $length);
         $remaining = substr($remaining, $length + 2);

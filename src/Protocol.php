@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace Simps\MQTT;
 
-use Simps\MQTT\Exception\MQTTException;
-use Simps\MQTT\Exception\MQTTLengthException;
+use Simps\MQTT\Exception\InvalidArgumentException;
+use Simps\MQTT\Exception\LengthException;
+use Simps\MQTT\Exception\RuntimeException;
+use Simps\MQTT\Packet\Pack;
 use Simps\MQTT\Packet\UnPack;
 use Throwable;
 use TypeError;
@@ -23,6 +25,55 @@ class Protocol
 {
     public static function pack(array $array)
     {
+        try {
+            $type = $array['type'];
+            switch ($type) {
+                case Types::CONNECT:
+                    $package = Pack::connect($array);
+                    break;
+                case Types::CONNACK:
+                    $package = Pack::connAck($array);
+                    break;
+                case Types::PUBLISH:
+                    $package = Pack::publish($array);
+                    break;
+                case Types::PUBACK:
+                case Types::PUBREC:
+                case Types::PUBREL:
+                case Types::PUBCOMP:
+                case Types::UNSUBACK:
+                    $body = pack('n', $array['message_id']);
+                    if ($type === Types::PUBREL) {
+                        $head = Pack::packHeader($type, strlen($body), 0, 1);
+                    } else {
+                        $head = Pack::packHeader($type, strlen($body));
+                    }
+                    $package = $head . $body;
+                    break;
+                case Types::SUBSCRIBE:
+                    $package = Pack::subscribe($array);
+                    break;
+                case Types::SUBACK:
+                    $package = Pack::subAck($array);
+                    break;
+                case Types::UNSUBSCRIBE:
+                    $package = Pack::unSubscribe($array);
+                    break;
+                case Types::PINGREQ:
+                case Types::PINGRESP:
+                case Types::DISCONNECT:
+                    $package = Pack::packHeader($type, 0);
+                    break;
+                default:
+                    throw new InvalidArgumentException('MQTT Type not exist');
+            }
+        } catch (TypeError $e) {
+            throw new RuntimeException($e->getMessage(), $e->getCode());
+        } catch (Throwable $e) {
+            throw new RuntimeException($e->getMessage(), $e->getCode());
+        }
+
+        return $package;
     }
 
     public static function unpack(string $data)
@@ -68,9 +119,9 @@ class Protocol
                     $package = [];
             }
         } catch (TypeError $e) {
-            throw new MQTTException($e->getMessage(), $e->getCode());
+            throw new RuntimeException($e->getMessage(), $e->getCode());
         } catch (Throwable $e) {
-            throw new MQTTException($e->getMessage(), $e->getCode());
+            throw new RuntimeException($e->getMessage(), $e->getCode());
         }
 
         return $package;
@@ -87,7 +138,7 @@ class Protocol
         $value = 0;
         do {
             if (!isset($data[$headBytes])) {
-                throw new MQTTLengthException('Malformed Remaining Length');
+                throw new LengthException('Malformed Remaining Length');
             }
             $digit = ord($data[$headBytes]);
             $value += ($digit & 127) * $multiplier;
