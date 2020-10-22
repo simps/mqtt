@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Exception;
 
-class MQTTLengthException extends \LengthException
+class LengthException extends \LengthException
 {
 }

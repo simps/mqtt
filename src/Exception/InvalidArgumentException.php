@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Exception;
 
-class MQTTException extends \RuntimeException
+class InvalidArgumentException extends \InvalidArgumentException
 {
 }
