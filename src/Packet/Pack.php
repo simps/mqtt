@@ -147,12 +147,12 @@ class Pack
         $string = '';
         do {
             $digit = $bodyLength % 128;
-            $length = $bodyLength >> 7;
-            if ($length > 0) {
+            $bodyLength = $bodyLength >> 7;
+            if ($bodyLength > 0) {
                 $digit = ($digit | 0x80);
             }
             $string .= chr($digit);
-        } while ($length > 0);
+        } while ($bodyLength > 0);
 
         return $string;
     }
