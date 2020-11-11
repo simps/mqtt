@@ -144,10 +144,11 @@ class Pack
 
     private static function packRemainingLength(int $bodyLength)
     {
+        $length=$bodyLength;
         $string = '';
         do {
-            $digit = $bodyLength % 128;
-            $length = $bodyLength >> 7;
+            $digit = $length % 128;
+            $length = $length >> 7;
             if ($length > 0) {
                 $digit = ($digit | 0x80);
             }
