@@ -47,10 +47,10 @@ class Pack
             $body .= static::string($array['will']['topic']);
             $body .= static::string($array['will']['message']);
         }
-        if (isset($array['user_name'])) {
+        if (!empty($array['user_name'])) {
             $body .= static::string($array['user_name']);
         }
-        if (isset($array['password'])) {
+        if (!empty($array['password'])) {
             $body .= static::string($array['password']);
         }
         $head = static::packHeader(Types::CONNECT, strlen($body));
