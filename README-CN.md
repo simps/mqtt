@@ -26,7 +26,7 @@ composer require simps/mqtt
 创建一个MQTT客户端实例
 
 ```php
-Simps\MQTT\Client::__construct(array $config, array $swConfig = [])
+Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP)
 ```
 
 * 参数 `array $config`

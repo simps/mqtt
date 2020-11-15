@@ -35,10 +35,10 @@ class Client
 
     private $messageId = 0;
 
-    public function __construct(array $config, array $swConfig = [])
+    public function __construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP)
     {
         $this->config = array_replace_recursive($this->config, $config);
-        $this->client = new Coroutine\Client(SWOOLE_SOCK_TCP);
+        $this->client = new Coroutine\Client($type);
         if (!empty($swConfig)) {
             $this->client->set($swConfig);
         }
