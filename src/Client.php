@@ -59,11 +59,11 @@ class Client
         ];
 
         if (!empty($this->config['user_name'])) {
-            $this->config['user_name'];
+            $data['user_name'] = $this->config['user_name'];
         }
 
         if (!empty($this->config['password'])) {
-            $this->config['password'];
+            $data['password'] = $this->config['password'];
         }
 
         if (!empty($will)) {
