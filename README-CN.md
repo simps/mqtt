@@ -29,7 +29,7 @@ composer require simps/mqtt
 Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP)
 ```
 
-* 参数 `array $config`
+* 参数`array $config`
 
 客户端选项数组，可以设置以下选项：
 
@@ -49,7 +49,7 @@ $config = [
 
 * 参数`array $swConfig`
 
-用于设置`Swoole\Coroutine\Client`参数，请参考Swoole文档[set()](https://wiki.swoole.com/#/coroutine_client/client?id=set)
+用于设置`Swoole\Coroutine\Client`的配置，请参考Swoole文档：[set()](https://wiki.swoole.com/#/coroutine_client/client?id=set)
 
 ### connect()
 
@@ -141,16 +141,14 @@ Simps\MQTT\Client->close()
 接收消息
 
 ```php
-Simps\MQTT\Client->recv()
+Simps\MQTT\Client->recv(): bool|arary|string
 ```
-
-返回值可能为`bool`、`array`、`string`
 
 ### send()
 
 发送消息
 
-```
+```php
 Simps\MQTT\Client->send(array $data, $response = true)
 ```
 
@@ -160,7 +158,7 @@ Simps\MQTT\Client->send(array $data, $response = true)
 
 * 参数`bool $response`
 
-是否需要回执，如果为`true`，会调用一次`recv()`
+是否需要回执。如果为`true`，会调用一次`recv()`
 
 ### ping()
 
