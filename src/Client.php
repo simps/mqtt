@@ -56,9 +56,16 @@ class Client
             'clean_session' => $clean ? 0 : 1,
             'client_id' => $this->config['client_id'],
             'keep_alive' => $this->config['keep_alive'],
-            'user_name' => $this->config['user_name'],
-            'password' => $this->config['password'],
         ];
+
+        if (!empty($this->config['user_name'])) {
+            $this->config['user_name'];
+        }
+
+        if (!empty($this->config['password'])) {
+            $this->config['password'];
+        }
+
         if (!empty($will)) {
             $data['will'] = $will;
         }
