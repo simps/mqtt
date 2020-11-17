@@ -3,7 +3,7 @@
  * This file is part of Simps
  *
  * @link     https://github.com/simps/mqtt
- * @contact  lufei <lufei@simps.io>
+ * @contact  Lu Fei <lufei@simps.io>
  *
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code
@@ -35,12 +35,13 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
         if (is_array($data) && isset($data['type'])) {
             switch ($data['type']) {
                 case Types::CONNECT:
+                    // Check protocol_name
                     if ($data['protocol_name'] != 'MQTT') {
                         $server->close($fd);
                         return false;
                     }
 
-                    // ...
+                    // Check connection information, etc.
 
                     $server->send(
                         $fd,
@@ -62,7 +63,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     }
                     break;
                 case Types::PUBLISH:
-                    // send subscribe
+                    // Send to subscribers
                     $server->send(
                         1,
                         Protocol::pack(
@@ -91,7 +92,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     }
 
                     break;
-                case Types::SUBSCRIBE: // 订阅
+                case Types::SUBSCRIBE:
                     $payload = [];
                     foreach ($data['topics'] as $k => $qos) {
                         if (is_numeric($qos) && $qos < 3) {
