@@ -19,7 +19,7 @@ composer require simps/mqtt
 
 see [examples](./examples)
 
-## Methods
+## Client API
 
 ### __construct()
 
@@ -162,4 +162,12 @@ Generate MessageId
 
 ```php
 Simps\MQTT\Client->buildMessageId()
+```
+
+### genClientId()
+
+Generate ClientId
+
+```php
+Simps\MQTT\Client->genClientID()
 ```

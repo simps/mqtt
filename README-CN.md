@@ -19,7 +19,7 @@ composer require simps/mqtt
 
 参考 [examples](./examples) 目录
 
-## 方法
+## Client API
 
 ### __construct()
 
@@ -174,4 +174,12 @@ Simps\MQTT\Client->ping()
 
 ```php
 Simps\MQTT\Client->buildMessageId()
+```
+
+### genClientId()
+
+生成ClientId
+
+```php
+Simps\MQTT\Client->genClientID()
 ```
