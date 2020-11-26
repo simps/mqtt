@@ -164,8 +164,8 @@ class Client
         return ++$this->messageId;
     }
 
-    public static function buildClientID(): string
+    public static function genClientID(): string
     {
-        return md5(uniqid(mt_rand(), true));
+        return md5(uniqid((string) mt_rand(), true));
     }
 }

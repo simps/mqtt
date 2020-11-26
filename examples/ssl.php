@@ -20,7 +20,7 @@ $config = [
     'time_out' => 5,
     'user_name' => '',
     'password' => '',
-    'client_id' => Client::buildClientID(),
+    'client_id' => Client::genClientID(),
     'keep_alive' => 20,
 ];
 
