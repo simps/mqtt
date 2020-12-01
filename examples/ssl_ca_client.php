@@ -16,7 +16,7 @@ use Simps\MQTT\Client;
 
 $config = [
     'host' => 'test.mosquitto.org',
-    'port' => 8883,
+    'port' => 8884,
     'time_out' => 5,
     'user_name' => '',
     'password' => '',
@@ -30,9 +30,11 @@ Coroutine\run(
             $config, [
             'open_mqtt_protocol' => true,
             'package_max_length' => 2 * 1024 * 1024,
-            'ssl_cafile' => __DIR__ . '/mosquitto.org.crt',
             'ssl_allow_self_signed' => true,
             'ssl_verify_peer' => true,
+            'ssl_cafile' => __DIR__ . '/mosquitto.org.crt', // https://test.mosquitto.org/ssl/mosquitto.org.crt
+            'ssl_key_file' => __DIR__ . '/client.key', // Please go to https://test.mosquitto.org/ssl to generate.
+            'ssl_cert_file' => __DIR__ . '/client.crt', // Please go to https://test.mosquitto.org/ssl to generate.
         ], SWOOLE_SOCK_TCP | SWOOLE_SSL
         );
         $will = [
