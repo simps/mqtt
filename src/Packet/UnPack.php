@@ -29,8 +29,7 @@ class UnPack
         $passwordFlag = ord($remaining[1]) >> 6 & 0x1;
         $userNameFlag = ord($remaining[1]) >> 7 & 0x1;
         $remaining = substr($remaining, 2);
-        $keepAlive = unpack('n', $remaining)[1];
-        $remaining = substr($remaining, 2);
+        $keepAlive = static::shortInt($remaining);
         $clientId = static::string($remaining);
         if ($willFlag) {
             $willTopic = static::string($remaining);
@@ -132,7 +131,7 @@ class UnPack
     {
         $length = unpack('n', $remaining)[1];
         if ($length + 2 > strlen($remaining)) {
-            throw new LengthException("length:{$length} not enough for unpack string");
+            throw new LengthException("unpack remaining length error, get {$length}");
         }
         $string = substr($remaining, 2, $length);
         $remaining = substr($remaining, $length + 2);
