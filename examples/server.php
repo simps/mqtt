@@ -30,6 +30,7 @@ $server->on('connect', function ($server, $fd) {
 
 $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
     try {
+        Protocol::printf($data);
         $data = Protocol::unpack($data);
         var_dump($data);
         if (is_array($data) && isset($data['type'])) {
@@ -128,6 +129,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
             $server->close($fd);
         }
     } catch (\Throwable $e) {
+        echo "\033[0;31mError: {$e->getMessage()}\033[0m\r\n";
         $server->close($fd);
     }
 });
