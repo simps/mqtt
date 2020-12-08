@@ -43,8 +43,8 @@ class UnPackV5
                 $remaining = substr($remaining, 1);
                 $receiveMaximum = static::shortInt($remaining);
             }
-            $receiveMaximumFlag = ord($remaining[0]) & ~0x22;
-            if ($receiveMaximumFlag === 0) {
+            $topicAliasMaximumFlag = ord($remaining[0]) & ~0x22;
+            if ($topicAliasMaximumFlag === 0) {
                 $remaining = substr($remaining, 1);
                 $topicAliasMaximum = static::shortInt($remaining);
             }
