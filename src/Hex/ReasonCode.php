@@ -16,7 +16,7 @@ namespace Simps\MQTT\Hex;
 /**
  * @see https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901031
  */
-class ReasonCode
+abstract class ReasonCode
 {
     const SUCCESS = 0x00;
 
@@ -107,4 +107,42 @@ class ReasonCode
     const SUBSCRIPTION_IDENTIFIERS_NOT_SUPPORTED = 0xA1;
 
     const WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED = 0xA2;
+
+    /**
+     * @see https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901079
+     */
+    protected static $reasonPhrases = [
+        self::SUCCESS => 'Success',
+        self::UNSPECIFIED_ERROR => 'Unspecified error',
+        self::MALFORMED_PACKET => 'Malformed Packet',
+        self::PROTOCOL_ERROR => 'Protocol Error',
+        self::IMPLEMENTATION_SPECIFIC_ERROR => 'Implementation specific error',
+        self::UNSUPPORTED_PROTOCOL_VERSION => 'Unsupported Protocol Version',
+        self::CLIENT_IDENTIFIER_NOT_VALID => 'Client Identifier not valid',
+        self::BAD_USER_NAME_OR_PASSWORD => 'Bad User Name or Password',
+        self::NOT_AUTHORIZED => 'Not authorized',
+        self::SERVER_UNAVAILABLE => 'Server unavailable',
+        self::SERVER_BUSY => 'Server busy',
+        self::BANNED => 'Banned',
+        self::BAD_AUTHENTICATION_METHOD => 'Bad authentication method',
+        self::TOPIC_NAME_INVALID => 'Topic Name invalid',
+        self::PACKET_TOO_LARGE => 'Packet too large',
+        self::QUOTA_EXCEEDED => 'Quota exceeded',
+        self::PAYLOAD_FORMAT_INVALID => 'Payload format invalid',
+        self::RETAIN_NOT_SUPPORTED => 'Retain not supported',
+        self::QOS_NOT_SUPPORTED => 'QoS not supported',
+        self::USE_ANOTHER_SERVER => 'Use another server',
+        self::SERVER_MOVED => 'Server moved',
+        self::CONNECTION_RATE_EXCEEDED => 'Connection rate exceeded',
+    ];
+
+    public static function getReasonPhrases(): array
+    {
+        return static::$reasonPhrases;
+    }
+
+    public static function getReasonPhrase(int $value): string
+    {
+        return static::$reasonPhrases[$value] ?? 'Unknown';
+    }
 }
