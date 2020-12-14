@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Simps\MQTT\Packet;
 
 use Simps\MQTT\Hex\Property;
+use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Types;
 
 class PackV5
@@ -189,7 +190,47 @@ class PackV5
         return $head . $body;
     }
 
-    private static function string(string $str)
+    public static function subscribe(array $array): string
+    {
+        $body = pack('n', $array['message_id']);
+
+        $propertiesTotalLength = 0;
+        $body .= chr($propertiesTotalLength);
+
+        foreach ($array['topics'] as $topic => $options) {
+            $body .= static::string($topic);
+
+            $subscribeOptions = 0;
+            if (isset($options['qos'])) {
+                $subscribeOptions |= (int) $options['qos'];
+            }
+            if (isset($options['no_local'])) {
+                $subscribeOptions |= (int) $options['no_local'] << 2;
+            }
+            if (isset($options['retain_as_published'])) {
+                $subscribeOptions |= (int) $options['retain_as_published'] << 3;
+            }
+            if (isset($options['retain_handling'])) {
+                $subscribeOptions |= (int) $options['retain_handling'] << 4;
+            }
+            $body .= chr($subscribeOptions);
+        }
+
+        $head = static::packHeader(Types::SUBSCRIBE, strlen($body), 0, 1);
+
+        return $head . $body;
+    }
+
+    public static function disconnect(array $array): string
+    {
+        $code = !empty($array['code']) ? $array['code'] : ReasonCode::NORMAL_DISCONNECTION;
+        $body = chr($code);
+        $head = static::packHeader(Types::DISCONNECT, strlen($body));
+
+        return $head . $body;
+    }
+
+    private static function string(string $str): string
     {
         $len = strlen($str);
 

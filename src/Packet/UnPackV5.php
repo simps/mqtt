@@ -15,6 +15,7 @@ namespace Simps\MQTT\Packet;
 
 use Simps\MQTT\Exception\LengthException;
 use Simps\MQTT\Hex\Property;
+use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Types;
 
 class UnPackV5
@@ -212,6 +213,50 @@ class UnPackV5
         }
 
         return $package;
+    }
+
+    public static function subscribe(string $remaining): array
+    {
+        $messageId = static::shortInt($remaining);
+        $propertiesTotalLength = ord($remaining[0]);
+        $remaining = substr($remaining, 1);
+        if ($propertiesTotalLength) {
+            // TODO SUBSCRIBE Properties
+        }
+        $topics = [];
+        while ($remaining) {
+            $topic = static::string($remaining);
+            $topics[$topic] = [
+                'qos' => ord($remaining[0]) & 0x3,
+                'no_local' => (bool) (ord($remaining[0]) >> 2 & 0x1),
+                'retain_as_published' => (bool) (ord($remaining[0]) >> 3 & 0x1),
+                'retain_handling' => ord($remaining[0]) >> 4,
+            ];
+            $remaining = substr($remaining, 1);
+        }
+
+        return [
+            'type' => Types::SUBSCRIBE,
+            'message_id' => $messageId,
+            'topics' => $topics,
+        ];
+    }
+
+    public static function disconnect(string $remaining): array
+    {
+        if ($remaining[0]) {
+            $code = ord($remaining[0]);
+            $msg = ReasonCode::getReasonPhrase($code);
+        } else {
+            $code = ReasonCode::NORMAL_DISCONNECTION;
+            $msg = 'Normal disconnection';
+        }
+
+        return [
+            'type' => Types::DISCONNECT,
+            'code' => $code,
+            'message' => $msg,
+        ];
     }
 
     private static function string(&$remaining)
