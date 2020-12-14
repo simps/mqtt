@@ -42,7 +42,7 @@ class PackV5
         $body .= chr($connectFlags);
 
         $keepAlive = !empty($array['keep_alive']) && (int) $array['keep_alive'] >= 0 ? (int) $array['keep_alive'] : 0;
-        $body .= pack('n', $keepAlive);
+        $body .= static::shortInt($keepAlive);
 
         $propertiesTotalLength = 0;
         if (!empty($array['properties']['session_expiry_interval'])) {
@@ -147,7 +147,7 @@ class PackV5
 
         if (!empty($array['properties']['maximum_packet_size'])) {
             $body .= chr(Property::MAXIMUM_PACKET_SIZE);
-            $body .= pack('N', $array['properties']['maximum_packet_size']);
+            $body .= static::longInt($array['properties']['maximum_packet_size']);
         }
 
         $retainAvailable = 0;
@@ -176,7 +176,7 @@ class PackV5
             $topicAliasMaximum = $array['properties']['topic_alias_maximum'];
         }
         $body .= chr(Property::TOPIC_ALIAS_MAXIMUM);
-        $body .= pack('n', $topicAliasMaximum);
+        $body .= static::shortInt($topicAliasMaximum);
 
         $wildcardSubscriptionAvailable = 0;
         if (!isset($array['properties']['wildcard_subscription_available']) || !empty($array['properties']['wildcard_subscription_available'])) {
@@ -190,9 +190,36 @@ class PackV5
         return $head . $body;
     }
 
+    public static function publish(array $array): string
+    {
+        $body = static::string($array['topic']);
+        $qos = $array['qos'] ?? 0;
+        if ($qos) {
+            $body .= static::shortInt($array['message_id']);
+        }
+
+        $propertiesTotalLength = 0;
+        if (!empty($array['properties']['topic_alias'])) {
+            $propertiesTotalLength += 3;
+        }
+        $body .= chr($propertiesTotalLength);
+
+        if (!empty($array['properties']['topic_alias'])) {
+            $body .= chr(Property::TOPIC_ALIAS);
+            $body .= static::shortInt($array['properties']['topic_alias']);
+        }
+
+        $body .= $array['message'];
+        $dup = $array['dup'] ?? 0;
+        $retain = $array['retain'] ?? 0;
+        $head = static::packHeader(Types::PUBLISH, strlen($body), $dup, $qos, $retain);
+
+        return $head . $body;
+    }
+
     public static function subscribe(array $array): string
     {
-        $body = pack('n', $array['message_id']);
+        $body = static::shortInt($array['message_id']);
 
         $propertiesTotalLength = 0;
         $body .= chr($propertiesTotalLength);
@@ -223,7 +250,7 @@ class PackV5
 
     public static function subAck(array $array): string
     {
-        $body = pack('n', $array['message_id']);
+        $body = static::shortInt($array['message_id']);
         $propertiesTotalLength = 0;
         $body .= chr($propertiesTotalLength);
 
@@ -238,7 +265,7 @@ class PackV5
 
     public static function unSubscribe(array $array): string
     {
-        $body = pack('n', $array['message_id']);
+        $body = static::shortInt($array['message_id']);
         $propertiesTotalLength = 0;
         $body .= chr($propertiesTotalLength);
 
@@ -252,7 +279,7 @@ class PackV5
 
     public static function unSubAck(array $array): string
     {
-        $body = pack('n', $array['message_id']);
+        $body = static::shortInt($array['message_id']);
         $propertiesTotalLength = 0;
         $body .= chr($propertiesTotalLength);
 
@@ -268,6 +295,24 @@ class PackV5
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::NORMAL_DISCONNECTION;
         $body = chr($code);
         $head = static::packHeader(Types::DISCONNECT, strlen($body));
+
+        return $head . $body;
+    }
+
+    public static function genReasonPhrase(array $array): string
+    {
+        $body = static::shortInt($array['message_id']);
+        $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
+        $body .= chr($code);
+
+        $propertiesTotalLength = 0;
+        $body .= chr($propertiesTotalLength);
+
+        if ($array['type'] === Types::PUBREL) {
+            $head = PackV5::packHeader($array['type'], strlen($body), 0, 1);
+        } else {
+            $head = PackV5::packHeader($array['type'], strlen($body));
+        }
 
         return $head . $body;
     }

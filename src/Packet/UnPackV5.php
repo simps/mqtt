@@ -215,6 +215,46 @@ class UnPackV5
         return $package;
     }
 
+    public static function publish(int $dup, int $qos, int $retain, string $remaining): array
+    {
+        $topic = static::string($remaining);
+        if ($qos) {
+            $messageId = static::shortInt($remaining);
+        }
+
+        $propertiesTotalLength = ord($remaining[0]);
+        $remaining = substr($remaining, 1);
+        if ($propertiesTotalLength) {
+            // TODO PUBLISH Properties
+            $topicAliasFlag = ord($remaining[0]) & ~Property::TOPIC_ALIAS;
+            if ($topicAliasFlag === 0) {
+                $remaining = substr($remaining, 1);
+                $topicAlias = static::shortInt($remaining);
+            }
+        }
+
+        $package = [
+            'type' => Types::PUBLISH,
+            'topic' => $topic,
+            'message' => $remaining,
+            'dup' => $dup,
+            'qos' => $qos,
+            'retain' => $retain,
+        ];
+
+        if ($qos) {
+            $package['message_id'] = $messageId;
+        }
+
+        if ($propertiesTotalLength) {
+            if ($topicAliasFlag === 0) {
+                $package['properties']['topic_alias'] = $topicAlias;
+            }
+        }
+
+        return $package;
+    }
+
     public static function subscribe(string $remaining): array
     {
         $messageId = static::shortInt($remaining);
@@ -282,7 +322,11 @@ class UnPackV5
             // TODO UNSUBACK Properties
         }
 
-        $code = ord($remaining[0]);
+        if ($remaining[0]) {
+            $code = ord($remaining[0]);
+        } else {
+            $code = ReasonCode::SUCCESS;
+        }
         $msg = ReasonCode::getReasonPhrase($code);
 
         return [
@@ -305,6 +349,32 @@ class UnPackV5
 
         return [
             'type' => Types::DISCONNECT,
+            'code' => $code,
+            'message' => $msg,
+        ];
+    }
+
+    public static function getReasonCode(int $type, string $remaining): array
+    {
+        $messageId = static::shortInt($remaining);
+
+        if ($remaining[0]) {
+            $code = ord($remaining[0]);
+        } else {
+            $code = ReasonCode::SUCCESS;
+        }
+        $msg = ReasonCode::getReasonPhrase($code);
+        $remaining = substr($remaining, 1);
+
+        $propertiesTotalLength = ord($remaining[0]);
+        $remaining = substr($remaining, 1);
+        if ($propertiesTotalLength) {
+            // TODO Properties
+        }
+
+        return [
+            'type' => $type,
+            'message_id' => $messageId,
             'code' => $code,
             'message' => $msg,
         ];
