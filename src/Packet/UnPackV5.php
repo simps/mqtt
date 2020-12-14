@@ -242,6 +242,20 @@ class UnPackV5
         ];
     }
 
+    public static function subAck(string $remaining): array
+    {
+        $messageId = static::shortInt($remaining);
+        $propertiesTotalLength = ord($remaining[0]);
+        $remaining = substr($remaining, 1);
+        if ($propertiesTotalLength) {
+            // TODO SUBACK Properties
+        }
+
+        $tmp = unpack('C*', $remaining);
+
+        return ['type' => Types::SUBACK, 'message_id' => $messageId, 'codes' => array_values($tmp)];
+    }
+
     public static function disconnect(string $remaining): array
     {
         if ($remaining[0]) {

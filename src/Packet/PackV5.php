@@ -221,6 +221,21 @@ class PackV5
         return $head . $body;
     }
 
+    public static function subAck(array $array): string
+    {
+        $body = pack('n', $array['message_id']);
+        $propertiesTotalLength = 0;
+        $body .= chr($propertiesTotalLength);
+
+        $body .= call_user_func_array(
+            'pack',
+            array_merge(['C*'], $array['payload'])
+        );
+        $head = static::packHeader(Types::SUBACK, strlen($body));
+
+        return $head . $body;
+    }
+
     public static function disconnect(array $array): string
     {
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::NORMAL_DISCONNECTION;
