@@ -88,10 +88,10 @@ class Pack
         $id = $array['message_id'];
         $body = pack('n', $id);
         foreach ($array['topics'] as $topic => $qos) {
-            $body .= Pack::string($topic);
+            $body .= static::string($topic);
             $body .= chr($qos);
         }
-        $head = Pack::packHeader(Types::SUBSCRIBE, strlen($body), 0, 1);
+        $head = static::packHeader(Types::SUBSCRIBE, strlen($body), 0, 1);
 
         return $head . $body;
     }
