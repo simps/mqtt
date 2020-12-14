@@ -256,6 +256,43 @@ class UnPackV5
         return ['type' => Types::SUBACK, 'message_id' => $messageId, 'codes' => array_values($tmp)];
     }
 
+    public static function unSubscribe(string $remaining): array
+    {
+        $messageId = static::shortInt($remaining);
+        $propertiesTotalLength = ord($remaining[0]);
+        $remaining = substr($remaining, 1);
+        if ($propertiesTotalLength) {
+            // TODO UNSUBSCRIBE Properties
+        }
+        $topics = [];
+        while ($remaining) {
+            $topic = static::string($remaining);
+            $topics[] = $topic;
+        }
+
+        return ['type' => Types::UNSUBSCRIBE, 'message_id' => $messageId, 'topics' => $topics];
+    }
+
+    public static function unSubAck(string $remaining): array
+    {
+        $messageId = static::shortInt($remaining);
+        $propertiesTotalLength = ord($remaining[0]);
+        $remaining = substr($remaining, 1);
+        if ($propertiesTotalLength) {
+            // TODO UNSUBACK Properties
+        }
+
+        $code = ord($remaining[0]);
+        $msg = ReasonCode::getReasonPhrase($code);
+
+        return [
+            'type' => Types::UNSUBACK,
+            'message_id' => $messageId,
+            'code' => $code,
+            'message' => $msg,
+        ];
+    }
+
     public static function disconnect(string $remaining): array
     {
         if ($remaining[0]) {

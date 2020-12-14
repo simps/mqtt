@@ -236,6 +236,33 @@ class PackV5
         return $head . $body;
     }
 
+    public static function unSubscribe(array $array): string
+    {
+        $body = pack('n', $array['message_id']);
+        $propertiesTotalLength = 0;
+        $body .= chr($propertiesTotalLength);
+
+        foreach ($array['topics'] as $topic) {
+            $body .= static::string($topic);
+        }
+        $head = static::packHeader(Types::UNSUBSCRIBE, strlen($body), 0, 1);
+
+        return $head . $body;
+    }
+
+    public static function unSubAck(array $array): string
+    {
+        $body = pack('n', $array['message_id']);
+        $propertiesTotalLength = 0;
+        $body .= chr($propertiesTotalLength);
+
+        $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
+        $body .= chr($code);
+        $head = PackV5::packHeader(Types::UNSUBACK, strlen($body));
+
+        return $head . $body;
+    }
+
     public static function disconnect(array $array): string
     {
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::NORMAL_DISCONNECTION;
