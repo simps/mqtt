@@ -2,10 +2,13 @@
 
 适用于 PHP 的 MQTT 协议解析和协程客户端。
 
-[![Latest Stable Version](https://poser.pugx.org/simps/mqtt/v)](//packagist.org/packages/simps/mqtt)
-[![Total Downloads](https://poser.pugx.org/simps/mqtt/downloads)](//packagist.org/packages/simps/mqtt)
-[![Latest Unstable Version](https://poser.pugx.org/simps/mqtt/v/unstable)](//packagist.org/packages/simps/mqtt)
-[![License](https://poser.pugx.org/simps/mqtt/license)](https://github.com/simps/mqtt/blob/master/LICENSE)
+支持 MQTT 协议 `3.1`、`3.1.1` 和 `5.0` 版本，支持`QoS 0`、`QoS 1`、`QoS 2`。
+
+## 依赖要求
+
+* PHP >= `7.0`
+* Swoole >= `4.4.19`
+* mbstring PHP 扩展
 
 ## 安装
 
@@ -15,7 +18,7 @@ composer require simps/mqtt
 
 ## 示例
 
-参考 [examples](./examples) 目录
+参考 [examples](https://github.com/simps/mqtt/tree/master/examples) 目录
 
 ## Client API
 
@@ -41,9 +44,16 @@ $config = [
     'client_id' => '', // 客户端id
     'keep_alive' => 10, // 默认0秒，设置成0代表禁用
     'protocol_name' => 'MQTT', // 协议名，默认为MQTT(3.1.1版本)，也可为MQIsdp(3.1版本)
-    'protocol_level' => 4, // 协议等级，MQTT为4，MQIsdp为3
+    'protocol_level' => 4, // 协议等级，MQTT3.1.1版本为4，5.0版本为5，MQIsdp为3
+    'properties' => [ // MQTT5 需要
+        'session_expiry_interval' => 0,
+        'receive_maximum' => 0,
+        'topic_alias_maximum' => 0,
+    ],
 ];
 ```
+
+!> Client 会根据设置的`protocol_level`来使用对应的协议解析
 
 * 参数`array $swConfig`
 
@@ -61,7 +71,7 @@ Simps\MQTT\Client->connect(bool $clean = true, array $will = [])
 
 清理会话，默认为`true`
 
-具体描述请参考[清理会话 Clean Session](https://mcxiaoke.gitbook.io/mqtt/03-controlpackets/0301-connect#qing-li-hui-hua-clean-session)
+具体描述请查看对应协议文档：`清理会话 Clean Session`
 
 * 参数`array $will`
 
@@ -83,7 +93,7 @@ $will = [
 向某个主题发布一条消息
 
 ```php
-Simps\MQTT\Client->publish($topic, $content, $qos = 0, $dup = 0, $retain = 0)
+Simps\MQTT\Client->publish($topic, $content, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
 ```
 
 * 参数`$topic` 主题
@@ -91,6 +101,7 @@ Simps\MQTT\Client->publish($topic, $content, $qos = 0, $dup = 0, $retain = 0)
 * 参数`$qos` QoS等级，默认0
 * 参数`$dup` 重发标志，默认0
 * 参数`$retain` retain标记，默认0
+* 参数`$properties` 属性，MQTT5需要
 
 ### subscribe()
 
@@ -105,10 +116,28 @@ Simps\MQTT\Client->subscribe(array $topics)
 `$topics`的`key`是主题，值为`QoS`的数组，例如
 
 ```php
+// MQTT 3.x
 $topics = [
     // 主题 => Qos
     'topic1' => 0, 
     'topic2' => 1,
+];
+
+// MQTT 5.0
+$topics = [
+    // 主题 => 选项
+    'topic1' => [
+        'qos' => 1,
+        'no_local' => true,
+        'retain_as_published' => true,
+        'retain_handling' => 2,
+    ], 
+    'topic2' => [
+        'qos' => 2,
+        'no_local' => false,
+        'retain_as_published' => true,
+        'retain_handling' => 1,
+    ], 
 ];
 ```
 
@@ -131,8 +160,10 @@ $topics = ['topic1', 'topic2'];
 正常断开与Broker的连接，`DISCONNECT(14)`报文会被发送到Broker
 
 ```php
-Simps\MQTT\Client->close()
+Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION)
 ```
+
+* 参数`$code` 响应码，MQTT5中需要，MQTT3直接调用即可
 
 ### recv()
 
