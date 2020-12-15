@@ -97,9 +97,9 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     $payload = [];
                     foreach ($data['topics'] as $k => $qos) {
                         if (is_numeric($qos) && $qos < 3) {
-                            $payload[] = chr($qos);
+                            $payload[] = $qos;
                         } else {
-                            $payload[] = chr(0x80);
+                            $payload[] = 0x80;
                         }
                     }
                     $server->send(
