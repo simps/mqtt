@@ -42,4 +42,6 @@ class Types
     const PINGRESP = 13; // PING response
 
     const DISCONNECT = 14; // Client is disconnecting
+
+    const AUTH = 15; // Authentication exchange
 }
