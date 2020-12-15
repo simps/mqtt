@@ -4,10 +4,14 @@ English | [中文](./README-CN.md)
 
 MQTT Protocol Analysis and Coroutine Client for PHP.
 
+Support for MQTT protocol versions `3.1`, `3.1.1` and `5.0` and support for `QoS 0`, `QoS 1`, `QoS 2`.
+
 [![Latest Stable Version](https://poser.pugx.org/simps/mqtt/v)](//packagist.org/packages/simps/mqtt)
 [![Total Downloads](https://poser.pugx.org/simps/mqtt/downloads)](//packagist.org/packages/simps/mqtt)
 [![Latest Unstable Version](https://poser.pugx.org/simps/mqtt/v/unstable)](//packagist.org/packages/simps/mqtt)
 [![License](https://poser.pugx.org/simps/mqtt/license)](LICENSE)
+[![PHP Version](https://img.shields.io/badge/php-%3E=7.2-blue.svg)](https://www.php.net)
+[![Swoole Version](https://img.shields.io/badge/swoole-%3E=4.4.19-blue.svg)](https://www.php.net)
 
 ## Install
 
@@ -15,159 +19,44 @@ MQTT Protocol Analysis and Coroutine Client for PHP.
 composer require simps/mqtt
 ```
 
+## Documentation
+
+https://mqtt.simps.io
+
 ## Examples
 
 see [examples](./examples)
 
-## Client API
+## Supports
 
-### __construct()
+### Version
 
-Create a MQTT client instance
+- [x] `3.1`
+- [x] `3.1.1`
+- [x] `5.0`
 
-```php
-Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP)
-```
+> Perhaps the first PHP library to support the MQTT `v5.0` protocol.
 
-* `array $config`
+### QoS
 
-An array of client options, you can set the following options:
+- [x] `QoS 0`
+- [x] `QoS 1`
+- [x] `QoS 2`
 
-```php
-$config = [
-    'host' => '127.0.0.1',
-    'port' => 1883,
-    'time_out' => 5,
-    'user_name' => '',
-    'password' => '',
-    'client_id' => '',
-    'keep_alive' => 10,
-    'protocol_name' => 'MQTT', // or MQIsdp
-    'protocol_level' => 4, // or 3
-];
-```
+### Type
 
-* `array $swConfig`
-
-To set the configuration of `Swoole\Coroutine\Client`, please see Swoole document: [set()](https://www.swoole.co.uk/docs/modules/swoole-coroutine-client-set)
-
-### connect()
-
-Connect Broker
-
-```php
-Simps\MQTT\Client->connect(bool $clean = true, array $will = [])
-```
-
-* `bool $clean`
-
-Clean session. default is `true`. see [Clean Session](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843)
-
-* `array $will`
-
-When a client is disconnected, Broker will automatically send a will message to other clients
-
-```php
-$will = [
-    'topic' => '',
-    'qos' => 1,
-    'retain' => 0,
-    'content' => '',
-];
-```
-
-### publish()
-
-push a message to a topic
-
-```php
-Simps\MQTT\Client->publish($topic, $content, $qos = 0, $dup = 0, $retain = 0)
-```
-
-### subscribe()
-
-Subscribe to one topic or multiple topics
-
-```php
-Simps\MQTT\Client->subscribe(array $topics)
-```
-
-* `array $topics`
-
-```php
-$topics = [
-    // topic => Qos
-    'topic1' => 0, 
-    'topic2' => 1,
-];
-```
-
-### unSubscribe()
-
-Unsubscribe from a topic or multiple topics
-
-```php
-Simps\MQTT\Client->unSubscribe(array $topics)
-```
-
-* `array $topics`
-
-```php
-$topics = ['topic1', 'topic2'];
-```
-
-### close()
-
-Disconnect from Broker connect. The `DISCONNECT(14)` message is send to Broker
-
-```php
-Simps\MQTT\Client->close()
-```
-
-### recv()
-
-Receive messages
-
-```php
-Simps\MQTT\Client->recv(): bool|arary|string
-```
-
-### send()
-
-Send messages
-
-```php
-Simps\MQTT\Client->send(array $data, $response = true)
-```
-
-* `array $data`
-
-`$data` is the data to be sent and must contain information such as `type`
-
-* `bool $response`
-
-Are acknowledgements required. If `true`, `recv()` is called once
-
-### ping()
-
-Send a heartbeat
-
-```php
-Simps\MQTT\Client->ping()
-```
-
-### buildMessageId()
-
-Generate MessageId
-
-```php
-Simps\MQTT\Client->buildMessageId()
-```
-
-### genClientId()
-
-Generate ClientId
-
-```php
-Simps\MQTT\Client->genClientID()
-```
+- [x] CONNECT
+- [x] CONNACK
+- [x] PUBLISH
+- [x] PUBACK
+- [x] PUBREC
+- [x] PUBREL
+- [x] PUBCOMP
+- [x] SUBSCRIBE
+- [x] SUBACK
+- [x] UNSUBSCRIBE
+- [x] UNSUBACK
+- [x] PINGREQ
+- [x] PINGRESP
+- [x] DISCONNECT
+- [ ] AUTH
