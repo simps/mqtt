@@ -41,14 +41,7 @@ class ProtocolV5
                 case Types::PUBREC:
                 case Types::PUBREL:
                 case Types::PUBCOMP:
-                case Types::UNSUBACK:
-                    $body = pack('n', $array['message_id']);
-                    if ($type === Types::PUBREL) {
-                        $head = PackV5::packHeader($type, strlen($body), 0, 1);
-                    } else {
-                        $head = PackV5::packHeader($type, strlen($body));
-                    }
-                    $package = $head . $body;
+                    $package = PackV5::genReasonPhrase($array);
                     break;
                 case Types::SUBSCRIBE:
                     $package = PackV5::subscribe($array);
@@ -59,10 +52,15 @@ class ProtocolV5
                 case Types::UNSUBSCRIBE:
                     $package = PackV5::unSubscribe($array);
                     break;
+                case Types::UNSUBACK:
+                    $package = PackV5::unSubAck($array);
+                    break;
                 case Types::PINGREQ:
                 case Types::PINGRESP:
-                case Types::DISCONNECT:
                     $package = PackV5::packHeader($type, 0);
+                    break;
+                case Types::DISCONNECT:
+                    $package = PackV5::disconnect($array);
                     break;
                 default:
                     throw new InvalidArgumentException('MQTT Type not exist');
@@ -98,13 +96,14 @@ class ProtocolV5
                 case Types::PUBREC:
                 case Types::PUBREL:
                 case Types::PUBCOMP:
-                case Types::UNSUBACK:
-                    $package = ['type' => $type, 'message_id' => unpack('n', $remaining)[1]];
+                    $package = UnPackV5::getReasonCode($type, $remaining);
                     break;
                 case Types::PINGREQ:
                 case Types::PINGRESP:
-                case Types::DISCONNECT:
                     $package = ['type' => $type];
+                    break;
+                case Types::DISCONNECT:
+                    $package = UnPackV5::disconnect($remaining);
                     break;
                 case Types::SUBSCRIBE:
                     $package = UnPackV5::subscribe($remaining);
@@ -114,6 +113,9 @@ class ProtocolV5
                     break;
                 case Types::UNSUBSCRIBE:
                     $package = UnPackV5::unSubscribe($remaining);
+                    break;
+                case Types::UNSUBACK:
+                    $package = UnPackV5::unSubAck($remaining);
                     break;
                 default:
                     $package = [];

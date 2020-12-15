@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Simps\MQTT;
 
 use Simps\MQTT\Exception\RuntimeException;
+use Simps\MQTT\Hex\ReasonCode;
 use Swoole\Coroutine;
 
 class Client
@@ -31,6 +32,11 @@ class Client
         'keep_alive' => 0,
         'protocol_name' => 'MQTT',
         'protocol_level' => 4,
+        'properties' => [
+            'session_expiry_interval' => 0,
+            'receive_maximum' => 0,
+            'topic_alias_maximum' => 0,
+        ],
     ];
 
     private $messageId = 0;
@@ -52,10 +58,15 @@ class Client
         $data = [
             'type' => Types::CONNECT,
             'protocol_name' => $this->config['protocol_name'],
-            'protocol_level' => $this->config['protocol_level'],
+            'protocol_level' => (int) $this->config['protocol_level'],
             'clean_session' => $clean ? 0 : 1,
             'client_id' => $this->config['client_id'],
             'keep_alive' => $this->config['keep_alive'],
+            'properties' => [
+                'session_expiry_interval' => $this->config['properties']['session_expiry_interval'],
+                'receive_maximum' => $this->config['properties']['receive_maximum'],
+                'topic_alias_maximum' => $this->config['properties']['topic_alias_maximum'],
+            ],
             'user_name' => $this->config['user_name'],
             'password' => $this->config['password'],
         ];
@@ -88,7 +99,7 @@ class Client
         return $this->send($data);
     }
 
-    public function publish($topic, $content, $qos = 0, $dup = 0, $retain = 0)
+    public function publish($topic, $content, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
     {
         $response = ($qos > 0) ? true : false;
 
@@ -101,6 +112,7 @@ class Client
                 'qos' => $qos,
                 'dup' => $dup,
                 'retain' => $retain,
+                'properties' => $properties,
             ],
             $response
         );
@@ -111,9 +123,9 @@ class Client
         return $this->send(['type' => Types::PINGREQ]);
     }
 
-    public function close()
+    public function close(int $code = ReasonCode::NORMAL_DISCONNECTION)
     {
-        $this->send(['type' => Types::DISCONNECT], false);
+        $this->send(['type' => Types::DISCONNECT, 'code' => $code], false);
 
         return $this->client->close();
     }
@@ -133,7 +145,11 @@ class Client
 
     public function send(array $data, $response = true)
     {
-        $package = Protocol::pack($data);
+        if ($this->config['protocol_level'] === 5) {
+            $package = ProtocolV5::pack($data);
+        } else {
+            $package = Protocol::pack($data);
+        }
         $this->client->send($package);
         if ($response) {
             return $this->recv();
@@ -153,6 +169,10 @@ class Client
                 throw new RuntimeException($this->client->errMsg, $this->client->errCode);
             }
         } elseif (strlen($response) > 0) {
+            if ($this->config['protocol_level'] === 5) {
+                return ProtocolV5::unpack($response);
+            }
+
             return Protocol::unpack($response);
         }
 
