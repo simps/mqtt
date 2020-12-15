@@ -1,6 +1,6 @@
 {
   "name": "simps/mqtt",
-  "description": "MQTT Coroutine Client for PHP",
+  "description": "MQTT Protocol Analysis and Coroutine Client for PHP",
   "keywords": [
     "php",
     "simps",
@@ -9,7 +9,9 @@
     "client",
     "coroutine",
     "mqtt_client",
-    "mqtt_protocol"
+    "mqtt_protocol",
+    "mqtt3.1",
+    "mqtt5.0"
   ],
   "license": "Apache-2.0",
   "authors": [
@@ -21,7 +23,7 @@
   "require": {
     "php": ">=7.0",
     "ext-mbstring": "*",
-    "ext-swoole": ">=4.0"
+    "ext-swoole": ">=4.4.19"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.16"
