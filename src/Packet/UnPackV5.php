@@ -226,6 +226,11 @@ class UnPackV5
         $remaining = substr($remaining, 1);
         if ($propertiesTotalLength) {
             // TODO PUBLISH Properties
+            $messageExpiryIntervalFlag = ord($remaining[0]) & ~Property::MESSAGE_EXPIRY_INTERVAL;
+            if ($messageExpiryIntervalFlag === 0) {
+                $remaining = substr($remaining, 1);
+                $messageExpiryInterval = static::longInt($remaining);
+            }
             $topicAliasFlag = ord($remaining[0]) & ~Property::TOPIC_ALIAS;
             if ($topicAliasFlag === 0) {
                 $remaining = substr($remaining, 1);
@@ -247,6 +252,9 @@ class UnPackV5
         }
 
         if ($propertiesTotalLength) {
+            if ($messageExpiryIntervalFlag === 0) {
+                $package['properties']['message_expiry_interval'] = $messageExpiryInterval;
+            }
             if ($topicAliasFlag === 0) {
                 $package['properties']['topic_alias'] = $topicAlias;
             }

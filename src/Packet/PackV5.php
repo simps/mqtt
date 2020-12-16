@@ -199,11 +199,18 @@ class PackV5
         }
 
         $propertiesTotalLength = 0;
+        if (!empty($array['properties']['message_expiry_interval'])) {
+            $propertiesTotalLength += 5;
+        }
         if (!empty($array['properties']['topic_alias'])) {
             $propertiesTotalLength += 3;
         }
         $body .= chr($propertiesTotalLength);
 
+        if (!empty($array['properties']['message_expiry_interval'])) {
+            $body .= chr(Property::MESSAGE_EXPIRY_INTERVAL);
+            $body .= static::longInt($array['properties']['message_expiry_interval']);
+        }
         if (!empty($array['properties']['topic_alias'])) {
             $body .= chr(Property::TOPIC_ALIAS);
             $body .= static::shortInt($array['properties']['topic_alias']);

@@ -45,7 +45,10 @@ Coroutine\run(
                 1,
                 0,
                 0,
-                ['topic_alias' => 1]
+                [
+                    'topic_alias' => 1,
+                    'message_expiry_interval' => 12
+                ]
             );
             var_dump($response);
             Coroutine::sleep(3);
