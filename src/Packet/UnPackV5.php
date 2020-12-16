@@ -366,8 +366,12 @@ class UnPackV5
         $msg = ReasonCode::getReasonPhrase($code);
         $remaining = substr($remaining, 1);
 
-        $propertiesTotalLength = ord($remaining[0]);
-        $remaining = substr($remaining, 1);
+        $propertiesTotalLength = 0;
+        if ($remaining[0]) {
+            $propertiesTotalLength = ord($remaining[0]);
+            $remaining = substr($remaining, 1);
+        }
+
         if ($propertiesTotalLength) {
             // TODO Properties
         }

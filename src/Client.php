@@ -165,9 +165,9 @@ class Client
         if ($response === '' || !$this->client->isConnected()) {
             $this->reConnect();
         } elseif ($response === false) {
-            if($this->client->errCode === SOCKET_ECONNRESET) {
+            if ($this->client->errCode === SOCKET_ECONNRESET) {
                 $this->client->close();
-            } else if ($this->client->errCode !== SOCKET_ETIMEDOUT) {
+            } elseif ($this->client->errCode !== SOCKET_ETIMEDOUT) {
                 throw new RuntimeException($this->client->errMsg, $this->client->errCode);
             }
         } elseif (strlen($response) > 0) {
