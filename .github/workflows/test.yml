@@ -3,6 +3,7 @@ name: test
 on: [push, pull_request]
 
 jobs:
+  ci:
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.os }}
     runs-on: "${{ matrix.os }}"
     strategy:
