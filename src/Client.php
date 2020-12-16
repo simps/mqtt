@@ -162,10 +162,12 @@ class Client
     {
         $response = $this->client->recv();
 
-        if ($response === '') {
+        if ($response === '' || !$this->client->isConnected()) {
             $this->reConnect();
         } elseif ($response === false) {
-            if ($this->client->errCode !== SOCKET_ETIMEDOUT) {
+            if($this->client->errCode === SOCKET_ECONNRESET) {
+                $this->client->close();
+            } else if ($this->client->errCode !== SOCKET_ETIMEDOUT) {
                 throw new RuntimeException($this->client->errMsg, $this->client->errCode);
             }
         } elseif (strlen($response) > 0) {
