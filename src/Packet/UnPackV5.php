@@ -322,7 +322,7 @@ class UnPackV5
             // TODO UNSUBACK Properties
         }
 
-        if ($remaining[0]) {
+        if (isset($remaining[0])) {
             $code = ord($remaining[0]);
         } else {
             $code = ReasonCode::SUCCESS;
@@ -339,7 +339,7 @@ class UnPackV5
 
     public static function disconnect(string $remaining): array
     {
-        if ($remaining[0]) {
+        if (isset($remaining[0])) {
             $code = ord($remaining[0]);
             $msg = ReasonCode::getReasonPhrase($code);
         } else {
@@ -358,7 +358,7 @@ class UnPackV5
     {
         $messageId = static::shortInt($remaining);
 
-        if ($remaining[0]) {
+        if (isset($remaining[0])) {
             $code = ord($remaining[0]);
         } else {
             $code = ReasonCode::SUCCESS;
@@ -367,7 +367,7 @@ class UnPackV5
         $remaining = substr($remaining, 1);
 
         $propertiesTotalLength = 0;
-        if ($remaining[0]) {
+        if (isset($remaining[0])) {
             $propertiesTotalLength = ord($remaining[0]);
             $remaining = substr($remaining, 1);
         }
