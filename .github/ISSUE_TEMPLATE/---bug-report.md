@@ -24,5 +24,5 @@ Command: `php -v && php --ri swoole`
 # Paste your code here.
 ```
 
-> You can also provide tcpdump's packet capture logs, use a command like this: `tcpdump -i en0 port 1883 -w mqtt.pcap`, give me the `mqtt.pcap` file.
-> Note the modification of your network card and port.
+> You can also provide tcpdump's packet capture logs, Use a command like this: `tcpdump -i en0 port 1883 -w mqtt.pcap`, Please give me the `mqtt.pcap` file.
+> Also remember to change to your network card and port.
