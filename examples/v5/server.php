@@ -33,6 +33,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
     try {
         Common::printf($data);
         $data = ProtocolV5::unpack($data);
+        var_dump($data);
         if (is_array($data) && isset($data['type'])) {
             switch ($data['type']) {
                 case Types::CONNECT:

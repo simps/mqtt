@@ -41,7 +41,7 @@ class Pack
         $body .= chr($connect_flags);
 
         $keepAlive = !empty($array['keep_alive']) && (int) $array['keep_alive'] >= 0 ? (int) $array['keep_alive'] : 0;
-        $body .= pack('n', $keepAlive);
+        $body .= PackTool::shortInt($keepAlive);
 
         $body .= PackTool::string($array['client_id']);
         if (!empty($array['will'])) {
@@ -74,7 +74,7 @@ class Pack
         $body = PackTool::string($array['topic']);
         $qos = $array['qos'] ?? 0;
         if ($qos) {
-            $body .= pack('n', $array['message_id']);
+            $body .= PackTool::shortInt($array['message_id']);
         }
         $body .= $array['message'];
         $dup = $array['dup'] ?? 0;
@@ -87,7 +87,7 @@ class Pack
     public static function subscribe(array $array): string
     {
         $id = $array['message_id'];
-        $body = pack('n', $id);
+        $body = PackTool::shortInt($id);
         foreach ($array['topics'] as $topic => $qos) {
             $body .= PackTool::string($topic);
             $body .= chr($qos);
@@ -100,7 +100,7 @@ class Pack
     public static function subAck(array $array): string
     {
         $payload = $array['payload'];
-        $body = pack('n', $array['message_id']) . call_user_func_array(
+        $body = PackTool::shortInt($array['message_id']) . call_user_func_array(
             'pack',
             array_merge(['C*'], $payload)
         );
@@ -111,7 +111,7 @@ class Pack
 
     public static function unSubscribe(array $array): string
     {
-        $body = pack('n', $array['message_id']);
+        $body = PackTool::shortInt($array['message_id']);
         foreach ($array['topics'] as $topic) {
             $body .= PackTool::string($topic);
         }
