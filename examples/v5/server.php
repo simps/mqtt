@@ -13,6 +13,7 @@ include __DIR__ . '/../../vendor/autoload.php';
 
 use Simps\MQTT\ProtocolV5;
 use Simps\MQTT\Types;
+use Simps\MQTT\Tools\Common;
 
 $server = new Swoole\Server('127.0.0.1', 1883, SWOOLE_BASE);
 
@@ -30,7 +31,7 @@ $server->on('connect', function ($server, $fd) {
 
 $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
     try {
-        ProtocolV5::printf($data);
+        Common::printf($data);
         $data = ProtocolV5::unpack($data);
         if (is_array($data) && isset($data['type'])) {
             switch ($data['type']) {
