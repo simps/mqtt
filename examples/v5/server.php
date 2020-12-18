@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code
  */
 
-include __DIR__ . '/../../vendor/autoload.php';
+include __DIR__ . '/../bootstrap.php';
 
 use Simps\MQTT\ProtocolV5;
 use Simps\MQTT\Tools\Common;

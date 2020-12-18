@@ -9,13 +9,13 @@
  * please view the LICENSE file that was distributed with this source code
  */
 
-include __DIR__ . '/../../vendor/autoload.php';
+include __DIR__ . '/../bootstrap.php';
 
 use Simps\MQTT\Client;
 use Swoole\Coroutine;
 
 Coroutine\run(function () {
-    $client = new Client(getTestMQTT5ConnectConfig(), SWOOLE_MQTT_CONFIG);
+    $client = new Client(getTestMQTT5ConnectConfig('broker.emqx.io'), SWOOLE_MQTT_CONFIG);
     $will = [
         'topic' => 'simps-mqtt/user001/update',
         'qos' => 1,
