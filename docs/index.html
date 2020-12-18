@@ -29,9 +29,17 @@
       alias: {
         '/.*/_navbar.md': '/_navbar.md',
       },
+      plugins: [
+        function (hook) {
+          hook.doneEach(function () {
+            pangu.spacingElementByClassName('content')
+          })
+        }
+      ],
     }
   </script>
   <script src="//cdn.jsdelivr.net/gh/sy-records/staticfile/js/docsify/docsify.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-php.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js"></script>
 </body>
 </html>

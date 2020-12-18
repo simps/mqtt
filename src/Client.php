@@ -240,8 +240,8 @@ class Client
         return ++$this->messageId;
     }
 
-    public static function genClientID(): string
+    public static function genClientID(string $prefix = 'Simps_'): string
     {
-        return md5(uniqid((string) mt_rand(), true));
+        return uniqid($prefix);
     }
 }

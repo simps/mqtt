@@ -27,12 +27,7 @@ composer require simps/mqtt
 创建一个MQTT客户端实例
 
 ```php
-Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP)
-```
-
-创建一个适用于Fpm|Apache环境的MQTT客户端实例，主要用于publish消息，设置第四个参数clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE
-```php
-Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE)
+Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int $clientType = Client::COROUTINE_CLIENT_TYPE)
 ```
 
 * 参数`array $config`
@@ -62,7 +57,17 @@ $config = [
 
 * 参数`array $swConfig`
 
-用于设置`Swoole\Coroutine\Client`的配置，请参考Swoole文档：[set()](https://wiki.swoole.com/#/coroutine_client/client?id=set)
+设置`Swoole\Coroutine\Client | Swoole\Client`的配置，请参考Swoole文档：[set()](https://wiki.swoole.com/#/coroutine_client/client?id=set)
+
+* 参数`int $type`
+
+设置`sockType`，如：`SWOOLE_TCP`、`SWOOLE_TCP | SWOOLE_SSL`
+
+* 参数`int $clientType`
+
+设置客户端类型，使用协程 Client 还是同步阻塞 Client。默认为协程 Client。
+
+同步阻塞 Client 适用于 Fpm|Apache 环境，主要用于`publish`消息，设置为`Client::SYNC_CLIENT_TYPE`。
 
 ### connect()
 
@@ -215,5 +220,5 @@ Simps\MQTT\Client->buildMessageId()
 生成ClientId
 
 ```php
-Simps\MQTT\Client->genClientID()
+Simps\MQTT\Client->genClientID(string $prefix = 'Simps_')
 ```
