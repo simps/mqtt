@@ -69,7 +69,7 @@ class ProtocolV5
         } catch (TypeError $e) {
             throw new RuntimeException($e->getMessage(), $e->getCode());
         } catch (Throwable $e) {
-            throw new RuntimeException($e->getMessage(), $e->getCode());
+            throw $e;
         }
 
         return $package;
@@ -124,7 +124,7 @@ class ProtocolV5
         } catch (TypeError $e) {
             throw new RuntimeException($e->getMessage(), $e->getCode());
         } catch (Throwable $e) {
-            throw new RuntimeException($e->getMessage(), $e->getCode());
+            throw $e;
         }
 
         return $package;
