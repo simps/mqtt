@@ -27,13 +27,7 @@ see [examples](https://github.com/simps/mqtt/tree/master/examples)
 Create a MQTT client instance
 
 ```php
-Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP)
-```
-
-Create a MQTT client instance of Fpm|Apache, mainly used for publish messages, the fourth parameter of clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE   
-
-```php
-Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE)
+Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int $clientType = Client::COROUTINE_CLIENT_TYPE)
 ```
 
 * `array $config`
@@ -64,6 +58,16 @@ $config = [
 * `array $swConfig`
 
 To set the configuration of `Swoole\Coroutine\Client`, please see Swoole document: [set()](https://www.swoole.co.uk/docs/modules/swoole-coroutine-client-set)
+
+* `int $type`
+
+Set `sockType`, such as: `SWOOLE_TCP`, `SWOOLE_TCP | SWOOLE_SSL`
+
+* `int $clientType`
+
+Set the client type, use a Coroutine Client or a Sync Client, the default is Coroutine Client.
+
+Sync Client for Fpm|Apache environments, mainly for `publish` messages, set to `Client::SYNC_CLIENT_TYPE`.
 
 ### connect()
 
@@ -203,5 +207,5 @@ Simps\MQTT\Client->buildMessageId()
 Generate ClientId
 
 ```php
-Simps\MQTT\Client->genClientID()
+Simps\MQTT\Client->genClientID(string $prefix = 'Simps_')
 ```
