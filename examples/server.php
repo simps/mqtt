@@ -9,11 +9,11 @@
  * please view the LICENSE file that was distributed with this source code
  */
 
-include __DIR__ . '/../vendor/autoload.php';
+include __DIR__ . '/bootstrap.php';
 
 use Simps\MQTT\Protocol;
-use Simps\MQTT\Types;
 use Simps\MQTT\Tools\Common;
+use Simps\MQTT\Types;
 
 $server = new Swoole\Server('127.0.0.1', 1883, SWOOLE_BASE);
 
@@ -21,7 +21,7 @@ $server->set(
     [
         'open_mqtt_protocol' => true,
         'worker_num' => 2,
-        'package_max_length' => 2 * 1024 * 1024
+        'package_max_length' => 2 * 1024 * 1024,
     ]
 );
 
@@ -31,7 +31,8 @@ $server->on('connect', function ($server, $fd) {
 
 $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
     try {
-        Common::printf($data);
+        // debug
+//        Common::printf($data);
         $data = Protocol::unpack($data);
         if (is_array($data) && isset($data['type'])) {
             switch ($data['type']) {
@@ -39,6 +40,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     // Check protocol_name
                     if ($data['protocol_name'] != 'MQTT') {
                         $server->close($fd);
+
                         return false;
                     }
 
@@ -66,7 +68,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                 case Types::PUBLISH:
                     // Send to subscribers
                     foreach ($server->connections as $sub_fd) {
-                        if($sub_fd != $fd) {
+                        if ($sub_fd != $fd) {
                             $server->send(
                                 $sub_fd,
                                 Protocol::pack(
@@ -77,13 +79,12 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                                         'dup' => $data['dup'],
                                         'qos' => $data['qos'],
                                         'retain' => $data['retain'],
-                                        'message_id' => $data['message_id'] ?? ''
+                                        'message_id' => $data['message_id'] ?? '',
                                     ]
                                 )
                             );
                         }
                     }
-
 
                     if ($data['qos'] === 1) {
                         $server->send(
@@ -113,7 +114,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                             [
                                 'type' => Types::SUBACK,
                                 'message_id' => $data['message_id'] ?? '',
-                                'payload' => $payload
+                                'payload' => $payload,
                             ]
                         )
                     );

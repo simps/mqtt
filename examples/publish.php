@@ -9,29 +9,19 @@
  * please view the LICENSE file that was distributed with this source code
  */
 
-include __DIR__ . '/../vendor/autoload.php';
+include __DIR__ . '/bootstrap.php';
 
-use Swoole\Coroutine;
 use Simps\MQTT\Client;
+use Swoole\Coroutine;
 
-$config = [
-    'host' => '127.0.0.1',
-    'port' => 1883,
-    'time_out' => 5,
-    'user_name' => 'user001',
-    'password' => 'hLXQ9ubnZGzkzf',
-    'client_id' => Client::genClientID(),
-    'keep_alive' => 20,
-];
-
-Coroutine\run(function () use ($config) {
-    $client = new Client($config, ['open_mqtt_protocol' => true, 'package_max_length' => 2 * 1024 * 1024]);
-    while (! $client->connect()) {
+Coroutine\run(function () {
+    $client = new Client(getTestConnectConfig(), SWOOLE_MQTT_CONFIG);
+    while (!$client->connect()) {
         Coroutine::sleep(3);
         $client->connect();
     }
     while (true) {
-        $response = $client->publish('simps-mqtt/user001/update', '{"time":'. time() .'}', 1);
+        $response = $client->publish('simps-mqtt/user001/update', '{"time":' . time() . '}', 1);
         var_dump($response);
         Coroutine::sleep(3);
     }
