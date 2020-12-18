@@ -30,6 +30,11 @@ composer require simps/mqtt
 Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP)
 ```
 
+创建一个适用于Fpm|Apache环境的MQTT客户端实例，主要用于publish消息，设置第四个参数clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE
+```php
+Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE)
+```
+
 * 参数`array $config`
 
 客户端选项数组，可以设置以下选项：

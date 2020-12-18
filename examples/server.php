@@ -33,7 +33,6 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
     try {
         Common::printf($data);
         $data = Protocol::unpack($data);
-        var_dump($data);
         if (is_array($data) && isset($data['type'])) {
             switch ($data['type']) {
                 case Types::CONNECT:
@@ -66,20 +65,25 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     break;
                 case Types::PUBLISH:
                     // Send to subscribers
-                    $server->send(
-                        1,
-                        Protocol::pack(
-                            [
-                                'type' => $data['type'],
-                                'topic' => $data['topic'],
-                                'message' => $data['message'],
-                                'dup' => $data['dup'],
-                                'qos' => $data['qos'],
-                                'retain' => $data['retain'],
-                                'message_id' => $data['message_id'] ?? ''
-                            ]
-                        )
-                    );
+                    foreach ($server->connections as $sub_fd) {
+                        if($sub_fd != $fd) {
+                            $server->send(
+                                $sub_fd,
+                                Protocol::pack(
+                                    [
+                                        'type' => $data['type'],
+                                        'topic' => $data['topic'],
+                                        'message' => $data['message'],
+                                        'dup' => $data['dup'],
+                                        'qos' => $data['qos'],
+                                        'retain' => $data['retain'],
+                                        'message_id' => $data['message_id'] ?? ''
+                                    ]
+                                )
+                            );
+                        }
+                    }
+
 
                     if ($data['qos'] === 1) {
                         $server->send(
