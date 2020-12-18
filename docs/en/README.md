@@ -33,7 +33,7 @@ Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = 
 Create a MQTT client instance of Fpm|Apache, mainly used for publish messages, the fourth parameter of clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE   
 
 ```php
-Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE)
+Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE)
 ```
 
 * `array $config`

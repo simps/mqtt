@@ -32,7 +32,7 @@ Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = 
 
 创建一个适用于Fpm|Apache环境的MQTT客户端实例，主要用于publish消息，设置第四个参数clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE
 ```php
-Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, \Simps\MQTT\Client::SYNC_CLIENT_TYPE)
+Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE)
 ```
 
 * 参数`array $config`
