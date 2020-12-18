@@ -14,6 +14,10 @@ include __DIR__ . '/../../vendor/autoload.php';
 use Swoole\Coroutine;
 use Simps\MQTT\Client;
 
+/**
+ * 此进程适用于fpm环境下发布信息，指定第四个参数Client::SYNC_CLIENT_TYPE
+ */
+
 $config = [
     'host' => '127.0.0.1',
 //    'host' => 'broker.emqx.io',
@@ -31,27 +35,28 @@ $config = [
     'protocol_level' => 5,
 ];
 
-Coroutine\run(
-    function () use ($config) {
-        $client = new Client($config, ['open_mqtt_protocol' => true, 'package_max_length' => 2 * 1024 * 1024]);
-        while (!$client->connect()) {
-            Coroutine::sleep(3);
-            $client->connect();
-        }
-        while (true) {
-            $response = $client->publish(
-                'simps-mqtt/user001/update',
-                '{"time":' . time() . '}',
-                1,
-                0,
-                0,
-                [
-                    'topic_alias' => 1,
-                    'message_expiry_interval' => 12
-                ]
-            );
-            var_dump($response);
-            Coroutine::sleep(3);
-        }
-    }
+$client = new Client(
+    $config,
+    ['open_mqtt_protocol' => true, 'package_max_length' => 2 * 1024 * 1024],
+    SWOOLE_SOCK_TCP,
+    Client::SYNC_CLIENT_TYPE
 );
+while (!$client->connect()) {
+    sleep(3);
+    $client->connect();
+}
+while (true) {
+    $response = $client->publish(
+        'simps-mqtt/user001/update',
+        '{"time":' . time() . '}',
+        1,
+        0,
+        0,
+        [
+            'topic_alias' => 1,
+            'message_expiry_interval' => 12
+        ]
+    );
+    var_dump($response);
+    sleep(3);
+}

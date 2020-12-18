@@ -15,13 +15,14 @@ namespace Simps\MQTT\Packet;
 
 use Simps\MQTT\Hex\Property;
 use Simps\MQTT\Hex\ReasonCode;
+use Simps\MQTT\Tools\PackTool;
 use Simps\MQTT\Types;
 
 class PackV5
 {
     public static function connect(array $array): string
     {
-        $body = static::string($array['protocol_name']) . chr($array['protocol_level']);
+        $body = PackTool::string($array['protocol_name']) . chr($array['protocol_level']);
         $connectFlags = 0;
         if (!empty($array['clean_session'])) {
             $connectFlags |= 1 << 1;
@@ -42,7 +43,7 @@ class PackV5
         $body .= chr($connectFlags);
 
         $keepAlive = !empty($array['keep_alive']) && (int) $array['keep_alive'] >= 0 ? (int) $array['keep_alive'] : 0;
-        $body .= static::shortInt($keepAlive);
+        $body .= PackTool::shortInt($keepAlive);
 
         $propertiesTotalLength = 0;
         if (!empty($array['properties']['session_expiry_interval'])) {
@@ -58,18 +59,18 @@ class PackV5
 
         if (!empty($array['properties']['session_expiry_interval'])) {
             $body .= chr(Property::SESSION_EXPIRY_INTERVAL);
-            $body .= static::longInt($array['properties']['session_expiry_interval']);
+            $body .= PackTool::longInt($array['properties']['session_expiry_interval']);
         }
         if (!empty($array['properties']['receive_maximum'])) {
             $body .= chr(Property::RECEIVE_MAXIMUM);
-            $body .= static::shortInt($array['properties']['receive_maximum']);
+            $body .= PackTool::shortInt($array['properties']['receive_maximum']);
         }
         if (!empty($array['properties']['topic_alias_maximum'])) {
             $body .= chr(Property::TOPIC_ALIAS_MAXIMUM);
-            $body .= static::shortInt($array['properties']['topic_alias_maximum']);
+            $body .= PackTool::shortInt($array['properties']['topic_alias_maximum']);
         }
 
-        $body .= static::string($array['client_id']);
+        $body .= PackTool::string($array['client_id']);
         if (!empty($array['will'])) {
             $willPropertiesTotalLength = 0;
             if (!empty($array['will']['properties']['will_delay_interval'])) {
@@ -89,31 +90,31 @@ class PackV5
 
             if (!empty($array['will']['properties']['will_delay_interval'])) {
                 $body .= chr(Property::WILL_DELAY_INTERVAL);
-                $body .= static::longInt($array['will']['properties']['will_delay_interval']);
+                $body .= PackTool::longInt($array['will']['properties']['will_delay_interval']);
             }
             if (!empty($array['will']['properties']['message_expiry_interval'])) {
                 $body .= chr(Property::MESSAGE_EXPIRY_INTERVAL);
-                $body .= static::longInt($array['will']['properties']['message_expiry_interval']);
+                $body .= PackTool::longInt($array['will']['properties']['message_expiry_interval']);
             }
             if (!empty($array['will']['properties']['content_type'])) {
                 $body .= chr(Property::CONTENT_TYPE);
-                $body .= static::string($array['will']['properties']['content_type']);
+                $body .= PackTool::string($array['will']['properties']['content_type']);
             }
             if (isset($array['will']['properties']['payload_format_indicator'])) {
                 $body .= chr(Property::PAYLOAD_FORMAT_INDICATOR);
                 $body .= chr((int) $array['will']['properties']['payload_format_indicator']);
             }
 
-            $body .= static::string($array['will']['topic']);
-            $body .= static::string($array['will']['message']);
+            $body .= PackTool::string($array['will']['topic']);
+            $body .= PackTool::string($array['will']['message']);
         }
         if (!empty($array['user_name'])) {
-            $body .= static::string($array['user_name']);
+            $body .= PackTool::string($array['user_name']);
         }
         if (!empty($array['password'])) {
-            $body .= static::string($array['password']);
+            $body .= PackTool::string($array['password']);
         }
-        $head = static::packHeader(Types::CONNECT, strlen($body));
+        $head = PackTool::packHeader(Types::CONNECT, strlen($body));
 
         return $head . $body;
     }
@@ -147,7 +148,7 @@ class PackV5
 
         if (!empty($array['properties']['maximum_packet_size'])) {
             $body .= chr(Property::MAXIMUM_PACKET_SIZE);
-            $body .= static::longInt($array['properties']['maximum_packet_size']);
+            $body .= PackTool::longInt($array['properties']['maximum_packet_size']);
         }
 
         $retainAvailable = 0;
@@ -176,7 +177,7 @@ class PackV5
             $topicAliasMaximum = $array['properties']['topic_alias_maximum'];
         }
         $body .= chr(Property::TOPIC_ALIAS_MAXIMUM);
-        $body .= static::shortInt($topicAliasMaximum);
+        $body .= PackTool::shortInt($topicAliasMaximum);
 
         $wildcardSubscriptionAvailable = 0;
         if (!isset($array['properties']['wildcard_subscription_available']) || !empty($array['properties']['wildcard_subscription_available'])) {
@@ -185,47 +186,54 @@ class PackV5
         $body .= chr(Property::WILDCARD_SUBSCRIPTION_AVAILABLE);
         $body .= chr($wildcardSubscriptionAvailable);
 
-        $head = static::packHeader(Types::CONNACK, strlen($body));
+        $head = PackTool::packHeader(Types::CONNACK, strlen($body));
 
         return $head . $body;
     }
 
     public static function publish(array $array): string
     {
-        $body = static::string($array['topic']);
+        $body = PackTool::string($array['topic']);
         $qos = $array['qos'] ?? 0;
         if ($qos) {
-            $body .= static::shortInt($array['message_id']);
+            $body .= PackTool::shortInt($array['message_id']);
         }
 
         $propertiesTotalLength = 0;
+        if (!empty($array['properties']['message_expiry_interval'])) {
+            $propertiesTotalLength += 5;
+        }
         if (!empty($array['properties']['topic_alias'])) {
             $propertiesTotalLength += 3;
         }
         $body .= chr($propertiesTotalLength);
 
+        if (!empty($array['properties']['message_expiry_interval'])) {
+            $body .= chr(Property::MESSAGE_EXPIRY_INTERVAL);
+            $body .= PackTool::longInt($array['properties']['message_expiry_interval']);
+        }
         if (!empty($array['properties']['topic_alias'])) {
             $body .= chr(Property::TOPIC_ALIAS);
-            $body .= static::shortInt($array['properties']['topic_alias']);
+            $body .= PackTool::shortInt($array['properties']['topic_alias']);
         }
 
         $body .= $array['message'];
         $dup = $array['dup'] ?? 0;
         $retain = $array['retain'] ?? 0;
-        $head = static::packHeader(Types::PUBLISH, strlen($body), $dup, $qos, $retain);
+        $head = PackTool::packHeader(Types::PUBLISH, strlen($body), $dup, $qos, $retain);
 
         return $head . $body;
     }
 
     public static function subscribe(array $array): string
     {
-        $body = static::shortInt($array['message_id']);
+        $body = PackTool::shortInt($array['message_id']);
 
         $propertiesTotalLength = 0;
         $body .= chr($propertiesTotalLength);
 
         foreach ($array['topics'] as $topic => $options) {
-            $body .= static::string($topic);
+            $body .= PackTool::string($topic);
 
             $subscribeOptions = 0;
             if (isset($options['qos'])) {
@@ -243,14 +251,14 @@ class PackV5
             $body .= chr($subscribeOptions);
         }
 
-        $head = static::packHeader(Types::SUBSCRIBE, strlen($body), 0, 1);
+        $head = PackTool::packHeader(Types::SUBSCRIBE, strlen($body), 0, 1);
 
         return $head . $body;
     }
 
     public static function subAck(array $array): string
     {
-        $body = static::shortInt($array['message_id']);
+        $body = PackTool::shortInt($array['message_id']);
         $propertiesTotalLength = 0;
         $body .= chr($propertiesTotalLength);
 
@@ -258,34 +266,34 @@ class PackV5
             'pack',
             array_merge(['C*'], $array['payload'])
         );
-        $head = static::packHeader(Types::SUBACK, strlen($body));
+        $head = PackTool::packHeader(Types::SUBACK, strlen($body));
 
         return $head . $body;
     }
 
     public static function unSubscribe(array $array): string
     {
-        $body = static::shortInt($array['message_id']);
+        $body = PackTool::shortInt($array['message_id']);
         $propertiesTotalLength = 0;
         $body .= chr($propertiesTotalLength);
 
         foreach ($array['topics'] as $topic) {
-            $body .= static::string($topic);
+            $body .= PackTool::string($topic);
         }
-        $head = static::packHeader(Types::UNSUBSCRIBE, strlen($body), 0, 1);
+        $head = PackTool::packHeader(Types::UNSUBSCRIBE, strlen($body), 0, 1);
 
         return $head . $body;
     }
 
     public static function unSubAck(array $array): string
     {
-        $body = static::shortInt($array['message_id']);
+        $body = PackTool::shortInt($array['message_id']);
         $propertiesTotalLength = 0;
         $body .= chr($propertiesTotalLength);
 
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
         $body .= chr($code);
-        $head = PackV5::packHeader(Types::UNSUBACK, strlen($body));
+        $head = PackTool::packHeader(Types::UNSUBACK, strlen($body));
 
         return $head . $body;
     }
@@ -294,14 +302,14 @@ class PackV5
     {
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::NORMAL_DISCONNECTION;
         $body = chr($code);
-        $head = static::packHeader(Types::DISCONNECT, strlen($body));
+        $head = PackTool::packHeader(Types::DISCONNECT, strlen($body));
 
         return $head . $body;
     }
 
     public static function genReasonPhrase(array $array): string
     {
-        $body = static::shortInt($array['message_id']);
+        $body = PackTool::shortInt($array['message_id']);
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
         $body .= chr($code);
 
@@ -309,59 +317,11 @@ class PackV5
         $body .= chr($propertiesTotalLength);
 
         if ($array['type'] === Types::PUBREL) {
-            $head = PackV5::packHeader($array['type'], strlen($body), 0, 1);
+            $head = PackTool::packHeader($array['type'], strlen($body), 0, 1);
         } else {
-            $head = PackV5::packHeader($array['type'], strlen($body));
+            $head = PackTool::packHeader($array['type'], strlen($body));
         }
 
         return $head . $body;
-    }
-
-    private static function string(string $str): string
-    {
-        $len = strlen($str);
-
-        return pack('n', $len) . $str;
-    }
-
-    private static function longInt($int)
-    {
-        return pack('N', $int);
-    }
-
-    private static function shortInt($int)
-    {
-        return pack('n', $int);
-    }
-
-    public static function packHeader(int $type, int $bodyLength, int $dup = 0, int $qos = 0, int $retain = 0): string
-    {
-        $type = $type << 4;
-        if ($dup) {
-            $type |= 1 << 3;
-        }
-        if ($qos) {
-            $type |= $qos << 1;
-        }
-        if ($retain) {
-            $type |= 1;
-        }
-
-        return chr($type) . static::packRemainingLength($bodyLength);
-    }
-
-    private static function packRemainingLength(int $bodyLength)
-    {
-        $string = '';
-        do {
-            $digit = $bodyLength % 128;
-            $bodyLength = $bodyLength >> 7;
-            if ($bodyLength > 0) {
-                $digit = ($digit | 0x80);
-            }
-            $string .= chr($digit);
-        } while ($bodyLength > 0);
-
-        return $string;
     }
 }

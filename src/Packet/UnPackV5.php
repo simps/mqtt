@@ -13,16 +13,16 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Packet;
 
-use Simps\MQTT\Exception\LengthException;
 use Simps\MQTT\Hex\Property;
 use Simps\MQTT\Hex\ReasonCode;
+use Simps\MQTT\Tools\UnPackTool;
 use Simps\MQTT\Types;
 
 class UnPackV5
 {
     public static function connect(string $remaining): array
     {
-        $protocolName = static::string($remaining);
+        $protocolName = UnPackTool::string($remaining);
         $protocolLevel = ord($remaining[0]);
         $cleanSession = ord($remaining[1]) >> 1 & 0x1;
         $willFlag = ord($remaining[1]) >> 2 & 0x1;
@@ -31,27 +31,27 @@ class UnPackV5
         $passwordFlag = ord($remaining[1]) >> 6 & 0x1;
         $userNameFlag = ord($remaining[1]) >> 7 & 0x1;
         $remaining = substr($remaining, 2);
-        $keepAlive = static::shortInt($remaining);
+        $keepAlive = UnPackTool::shortInt($remaining);
         $propertiesTotalLength = ord($remaining[0]);
         $remaining = substr($remaining, 1);
         if ($propertiesTotalLength) {
             $sessionExpiryIntervalFlag = ord($remaining[0]) & ~Property::SESSION_EXPIRY_INTERVAL;
             if ($sessionExpiryIntervalFlag === 0) {
                 $remaining = substr($remaining, 1);
-                $sessionExpiryInterval = static::longInt($remaining);
+                $sessionExpiryInterval = UnPackTool::longInt($remaining);
             }
             $receiveMaximumFlag = ord($remaining[0]) & ~Property::RECEIVE_MAXIMUM;
             if ($receiveMaximumFlag === 0) {
                 $remaining = substr($remaining, 1);
-                $receiveMaximum = static::shortInt($remaining);
+                $receiveMaximum = UnPackTool::shortInt($remaining);
             }
             $topicAliasMaximumFlag = ord($remaining[0]) & ~Property::TOPIC_ALIAS_MAXIMUM;
             if ($topicAliasMaximumFlag === 0) {
                 $remaining = substr($remaining, 1);
-                $topicAliasMaximum = static::shortInt($remaining);
+                $topicAliasMaximum = UnPackTool::shortInt($remaining);
             }
         }
-        $clientId = static::string($remaining);
+        $clientId = UnPackTool::string($remaining);
         if ($willFlag) {
             $willPropertiesTotalLength = ord($remaining[0]);
             $remaining = substr($remaining, 1);
@@ -59,17 +59,17 @@ class UnPackV5
                 $willDelayIntervalFlag = ord($remaining[0]) & ~Property::WILL_DELAY_INTERVAL;
                 if ($willDelayIntervalFlag === 0) {
                     $remaining = substr($remaining, 1);
-                    $willDelayInterval = static::longInt($remaining);
+                    $willDelayInterval = UnPackTool::longInt($remaining);
                 }
                 $messageExpiryIntervalFlag = ord($remaining[0]) & ~Property::MESSAGE_EXPIRY_INTERVAL;
                 if ($messageExpiryIntervalFlag === 0) {
                     $remaining = substr($remaining, 1);
-                    $messageExpiryInterval = static::longInt($remaining);
+                    $messageExpiryInterval = UnPackTool::longInt($remaining);
                 }
                 $contentTypeFlag = ord($remaining[0]) & ~Property::CONTENT_TYPE;
                 if ($contentTypeFlag === 0) {
                     $remaining = substr($remaining, 1);
-                    $contentType = static::string($remaining);
+                    $contentType = UnPackTool::string($remaining);
                 }
                 $payloadFormatIndicatorFlag = ord($remaining[0]) & ~Property::PAYLOAD_FORMAT_INDICATOR;
                 if ($payloadFormatIndicatorFlag === 0) {
@@ -77,15 +77,15 @@ class UnPackV5
                     $remaining = substr($remaining, 2);
                 }
             }
-            $willTopic = static::string($remaining);
-            $willMessage = static::string($remaining);
+            $willTopic = UnPackTool::string($remaining);
+            $willMessage = UnPackTool::string($remaining);
         }
         $userName = $password = '';
         if ($userNameFlag) {
-            $userName = static::string($remaining);
+            $userName = UnPackTool::string($remaining);
         }
         if ($passwordFlag) {
-            $password = static::string($remaining);
+            $password = UnPackTool::string($remaining);
         }
         $package = [
             'type' => Types::CONNECT,
@@ -154,7 +154,7 @@ class UnPackV5
             $maximumPacketSizeFlag = ord($remaining[0]) & ~Property::MAXIMUM_PACKET_SIZE;
             if ($maximumPacketSizeFlag === 0) {
                 $remaining = substr($remaining, 1);
-                $maximumPacketSize = static::longInt($remaining);
+                $maximumPacketSize = UnPackTool::longInt($remaining);
             }
             $retainAvailableFlag = ord($remaining[0]) & ~Property::RETAIN_AVAILABLE;
             if ($retainAvailableFlag === 0) {
@@ -174,7 +174,7 @@ class UnPackV5
             $topicAliasMaximumFlag = ord($remaining[0]) & ~Property::TOPIC_ALIAS_MAXIMUM;
             if ($topicAliasMaximumFlag === 0) {
                 $remaining = substr($remaining, 1);
-                $topicAliasMaximum = static::shortInt($remaining);
+                $topicAliasMaximum = UnPackTool::shortInt($remaining);
             }
             $wildcardSubscriptionAvailableFlag = ord($remaining[0]) & ~Property::WILDCARD_SUBSCRIPTION_AVAILABLE;
             if ($wildcardSubscriptionAvailableFlag === 0) {
@@ -217,19 +217,24 @@ class UnPackV5
 
     public static function publish(int $dup, int $qos, int $retain, string $remaining): array
     {
-        $topic = static::string($remaining);
+        $topic = UnPackTool::string($remaining);
         if ($qos) {
-            $messageId = static::shortInt($remaining);
+            $messageId = UnPackTool::shortInt($remaining);
         }
 
         $propertiesTotalLength = ord($remaining[0]);
         $remaining = substr($remaining, 1);
         if ($propertiesTotalLength) {
             // TODO PUBLISH Properties
+            $messageExpiryIntervalFlag = ord($remaining[0]) & ~Property::MESSAGE_EXPIRY_INTERVAL;
+            if ($messageExpiryIntervalFlag === 0) {
+                $remaining = substr($remaining, 1);
+                $messageExpiryInterval = UnPackTool::longInt($remaining);
+            }
             $topicAliasFlag = ord($remaining[0]) & ~Property::TOPIC_ALIAS;
             if ($topicAliasFlag === 0) {
                 $remaining = substr($remaining, 1);
-                $topicAlias = static::shortInt($remaining);
+                $topicAlias = UnPackTool::shortInt($remaining);
             }
         }
 
@@ -247,6 +252,9 @@ class UnPackV5
         }
 
         if ($propertiesTotalLength) {
+            if ($messageExpiryIntervalFlag === 0) {
+                $package['properties']['message_expiry_interval'] = $messageExpiryInterval;
+            }
             if ($topicAliasFlag === 0) {
                 $package['properties']['topic_alias'] = $topicAlias;
             }
@@ -257,7 +265,7 @@ class UnPackV5
 
     public static function subscribe(string $remaining): array
     {
-        $messageId = static::shortInt($remaining);
+        $messageId = UnPackTool::shortInt($remaining);
         $propertiesTotalLength = ord($remaining[0]);
         $remaining = substr($remaining, 1);
         if ($propertiesTotalLength) {
@@ -265,7 +273,7 @@ class UnPackV5
         }
         $topics = [];
         while ($remaining) {
-            $topic = static::string($remaining);
+            $topic = UnPackTool::string($remaining);
             $topics[$topic] = [
                 'qos' => ord($remaining[0]) & 0x3,
                 'no_local' => (bool) (ord($remaining[0]) >> 2 & 0x1),
@@ -284,7 +292,7 @@ class UnPackV5
 
     public static function subAck(string $remaining): array
     {
-        $messageId = static::shortInt($remaining);
+        $messageId = UnPackTool::shortInt($remaining);
         $propertiesTotalLength = ord($remaining[0]);
         $remaining = substr($remaining, 1);
         if ($propertiesTotalLength) {
@@ -298,7 +306,7 @@ class UnPackV5
 
     public static function unSubscribe(string $remaining): array
     {
-        $messageId = static::shortInt($remaining);
+        $messageId = UnPackTool::shortInt($remaining);
         $propertiesTotalLength = ord($remaining[0]);
         $remaining = substr($remaining, 1);
         if ($propertiesTotalLength) {
@@ -306,7 +314,7 @@ class UnPackV5
         }
         $topics = [];
         while ($remaining) {
-            $topic = static::string($remaining);
+            $topic = UnPackTool::string($remaining);
             $topics[] = $topic;
         }
 
@@ -315,14 +323,14 @@ class UnPackV5
 
     public static function unSubAck(string $remaining): array
     {
-        $messageId = static::shortInt($remaining);
+        $messageId = UnPackTool::shortInt($remaining);
         $propertiesTotalLength = ord($remaining[0]);
         $remaining = substr($remaining, 1);
         if ($propertiesTotalLength) {
             // TODO UNSUBACK Properties
         }
 
-        if ($remaining[0]) {
+        if (isset($remaining[0])) {
             $code = ord($remaining[0]);
         } else {
             $code = ReasonCode::SUCCESS;
@@ -339,7 +347,7 @@ class UnPackV5
 
     public static function disconnect(string $remaining): array
     {
-        if ($remaining[0]) {
+        if (isset($remaining[0])) {
             $code = ord($remaining[0]);
             $msg = ReasonCode::getReasonPhrase($code);
         } else {
@@ -356,9 +364,9 @@ class UnPackV5
 
     public static function getReasonCode(int $type, string $remaining): array
     {
-        $messageId = static::shortInt($remaining);
+        $messageId = UnPackTool::shortInt($remaining);
 
-        if ($remaining[0]) {
+        if (isset($remaining[0])) {
             $code = ord($remaining[0]);
         } else {
             $code = ReasonCode::SUCCESS;
@@ -366,8 +374,12 @@ class UnPackV5
         $msg = ReasonCode::getReasonPhrase($code);
         $remaining = substr($remaining, 1);
 
-        $propertiesTotalLength = ord($remaining[0]);
-        $remaining = substr($remaining, 1);
+        $propertiesTotalLength = 0;
+        if (isset($remaining[0])) {
+            $propertiesTotalLength = ord($remaining[0]);
+            $remaining = substr($remaining, 1);
+        }
+
         if ($propertiesTotalLength) {
             // TODO Properties
         }
@@ -378,33 +390,5 @@ class UnPackV5
             'code' => $code,
             'message' => $msg,
         ];
-    }
-
-    private static function string(&$remaining)
-    {
-        $length = unpack('n', $remaining)[1];
-        if ($length + 2 > strlen($remaining)) {
-            throw new LengthException("unpack remaining length error, get {$length}");
-        }
-        $string = substr($remaining, 2, $length);
-        $remaining = substr($remaining, $length + 2);
-
-        return $string;
-    }
-
-    private static function shortInt(&$remaining)
-    {
-        $tmp = unpack('n', $remaining);
-        $remaining = substr($remaining, 2);
-
-        return $tmp[1];
-    }
-
-    private static function longInt(&$remaining)
-    {
-        $tmp = unpack('N', $remaining);
-        $remaining = substr($remaining, 4);
-
-        return $tmp[1];
     }
 }

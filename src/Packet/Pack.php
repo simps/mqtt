@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Packet;
 
+use Simps\MQTT\Tools\PackTool;
 use Simps\MQTT\Types;
 
 class Pack
 {
     public static function connect(array $array): string
     {
-        $body = static::string($array['protocol_name']) . chr($array['protocol_level']);
+        $body = PackTool::string($array['protocol_name']) . chr($array['protocol_level']);
         $connect_flags = 0;
         if (!empty($array['clean_session'])) {
             $connect_flags |= 1 << 1;
@@ -40,20 +41,20 @@ class Pack
         $body .= chr($connect_flags);
 
         $keepAlive = !empty($array['keep_alive']) && (int) $array['keep_alive'] >= 0 ? (int) $array['keep_alive'] : 0;
-        $body .= pack('n', $keepAlive);
+        $body .= PackTool::shortInt($keepAlive);
 
-        $body .= static::string($array['client_id']);
+        $body .= PackTool::string($array['client_id']);
         if (!empty($array['will'])) {
-            $body .= static::string($array['will']['topic']);
-            $body .= static::string($array['will']['message']);
+            $body .= PackTool::string($array['will']['topic']);
+            $body .= PackTool::string($array['will']['message']);
         }
         if (!empty($array['user_name'])) {
-            $body .= static::string($array['user_name']);
+            $body .= PackTool::string($array['user_name']);
         }
         if (!empty($array['password'])) {
-            $body .= static::string($array['password']);
+            $body .= PackTool::string($array['password']);
         }
-        $head = static::packHeader(Types::CONNECT, strlen($body));
+        $head = PackTool::packHeader(Types::CONNECT, strlen($body));
 
         return $head . $body;
     }
@@ -63,22 +64,22 @@ class Pack
         $body = !empty($array['session_present']) ? chr(1) : chr(0);
         $code = !empty($array['code']) ? $array['code'] : 0;
         $body .= chr($code);
-        $head = static::packHeader(Types::CONNACK, strlen($body));
+        $head = PackTool::packHeader(Types::CONNACK, strlen($body));
 
         return $head . $body;
     }
 
     public static function publish(array $array): string
     {
-        $body = static::string($array['topic']);
+        $body = PackTool::string($array['topic']);
         $qos = $array['qos'] ?? 0;
         if ($qos) {
-            $body .= pack('n', $array['message_id']);
+            $body .= PackTool::shortInt($array['message_id']);
         }
         $body .= $array['message'];
         $dup = $array['dup'] ?? 0;
         $retain = $array['retain'] ?? 0;
-        $head = static::packHeader(Types::PUBLISH, strlen($body), $dup, $qos, $retain);
+        $head = PackTool::packHeader(Types::PUBLISH, strlen($body), $dup, $qos, $retain);
 
         return $head . $body;
     }
@@ -86,12 +87,12 @@ class Pack
     public static function subscribe(array $array): string
     {
         $id = $array['message_id'];
-        $body = pack('n', $id);
+        $body = PackTool::shortInt($id);
         foreach ($array['topics'] as $topic => $qos) {
-            $body .= static::string($topic);
+            $body .= PackTool::string($topic);
             $body .= chr($qos);
         }
-        $head = static::packHeader(Types::SUBSCRIBE, strlen($body), 0, 1);
+        $head = PackTool::packHeader(Types::SUBSCRIBE, strlen($body), 0, 1);
 
         return $head . $body;
     }
@@ -99,61 +100,23 @@ class Pack
     public static function subAck(array $array): string
     {
         $payload = $array['payload'];
-        $body = pack('n', $array['message_id']) . call_user_func_array(
+        $body = PackTool::shortInt($array['message_id']) . call_user_func_array(
             'pack',
             array_merge(['C*'], $payload)
         );
-        $head = static::packHeader(Types::SUBACK, strlen($body));
+        $head = PackTool::packHeader(Types::SUBACK, strlen($body));
 
         return $head . $body;
     }
 
     public static function unSubscribe(array $array): string
     {
-        $body = pack('n', $array['message_id']);
+        $body = PackTool::shortInt($array['message_id']);
         foreach ($array['topics'] as $topic) {
-            $body .= static::string($topic);
+            $body .= PackTool::string($topic);
         }
-        $head = static::packHeader(Types::UNSUBSCRIBE, strlen($body), 0, 1);
+        $head = PackTool::packHeader(Types::UNSUBSCRIBE, strlen($body), 0, 1);
 
         return $head . $body;
-    }
-
-    private static function string(string $str)
-    {
-        $len = strlen($str);
-
-        return pack('n', $len) . $str;
-    }
-
-    public static function packHeader(int $type, int $bodyLength, int $dup = 0, int $qos = 0, int $retain = 0): string
-    {
-        $type = $type << 4;
-        if ($dup) {
-            $type |= 1 << 3;
-        }
-        if ($qos) {
-            $type |= $qos << 1;
-        }
-        if ($retain) {
-            $type |= 1;
-        }
-
-        return chr($type) . static::packRemainingLength($bodyLength);
-    }
-
-    private static function packRemainingLength(int $bodyLength)
-    {
-        $string = '';
-        do {
-            $digit = $bodyLength % 128;
-            $bodyLength = $bodyLength >> 7;
-            if ($bodyLength > 0) {
-                $digit = ($digit | 0x80);
-            }
-            $string .= chr($digit);
-        } while ($bodyLength > 0);
-
-        return $string;
     }
 }

@@ -14,10 +14,11 @@ declare(strict_types=1);
 namespace Simps\MQTT;
 
 use Simps\MQTT\Exception\InvalidArgumentException;
-use Simps\MQTT\Exception\LengthException;
 use Simps\MQTT\Exception\RuntimeException;
 use Simps\MQTT\Packet\Pack;
 use Simps\MQTT\Packet\UnPack;
+use Simps\MQTT\Tools\PackTool;
+use Simps\MQTT\Tools\UnPackTool;
 use Throwable;
 use TypeError;
 
@@ -44,9 +45,9 @@ class Protocol
                 case Types::UNSUBACK:
                     $body = pack('n', $array['message_id']);
                     if ($type === Types::PUBREL) {
-                        $head = Pack::packHeader($type, strlen($body), 0, 1);
+                        $head = PackTool::packHeader($type, strlen($body), 0, 1);
                     } else {
-                        $head = Pack::packHeader($type, strlen($body));
+                        $head = PackTool::packHeader($type, strlen($body));
                     }
                     $package = $head . $body;
                     break;
@@ -62,7 +63,7 @@ class Protocol
                 case Types::PINGREQ:
                 case Types::PINGRESP:
                 case Types::DISCONNECT:
-                    $package = Pack::packHeader($type, 0);
+                    $package = PackTool::packHeader($type, 0);
                     break;
                 default:
                     throw new InvalidArgumentException('MQTT Type not exist');
@@ -79,8 +80,8 @@ class Protocol
     public static function unpack(string $data)
     {
         try {
-            $type = static::getType($data);
-            $remaining = static::getRemaining($data);
+            $type = UnPackTool::getType($data);
+            $remaining = UnPackTool::getRemaining($data);
             switch ($type) {
                 case Types::CONNECT:
                     $package = UnPack::connect($remaining);
@@ -125,49 +126,5 @@ class Protocol
         }
 
         return $package;
-    }
-
-    public static function getType(string $data)
-    {
-        return ord($data[0]) >> 4;
-    }
-
-    public static function getRemainingLength(string $data, &$headBytes)
-    {
-        $headBytes = $multiplier = 1;
-        $value = 0;
-        do {
-            if (!isset($data[$headBytes])) {
-                throw new LengthException('Malformed Remaining Length');
-            }
-            $digit = ord($data[$headBytes]);
-            $value += ($digit & 127) * $multiplier;
-            $multiplier *= 128;
-            ++$headBytes;
-        } while (($digit & 128) != 0);
-
-        return $value;
-    }
-
-    public static function getRemaining(string $data)
-    {
-        $remainingLength = static::getRemainingLength($data, $headBytes);
-
-        return substr($data, $headBytes, $remainingLength);
-    }
-
-    public static function printf(string $data)
-    {
-        echo "\033[36m";
-        for ($i = 0; $i < strlen($data); $i++) {
-            $ascii = ord($data[$i]);
-            if ($ascii > 31) {
-                $chr = $data[$i];
-            } else {
-                $chr = ' ';
-            }
-            printf("%4d: %08b : 0x%02x : %d : %s\n", $i, $ascii, $ascii, $ascii, $chr);
-        }
-        echo "\033[0m";
     }
 }

@@ -41,10 +41,22 @@ class Client
 
     private $messageId = 0;
 
-    public function __construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP)
+    private $connectData = [];
+
+    private $clientType;
+
+    const COROUTINE_CLIENT_TYPE = 1;
+    const SYNC_CLIENT_TYPE = 2;
+
+    public function __construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int $clientType = self::COROUTINE_CLIENT_TYPE)
     {
         $this->config = array_replace_recursive($this->config, $config);
-        $this->client = new Coroutine\Client($type);
+        $this->clientType = $clientType;
+        if($this->isCoroutineClientType()) {
+            $this->client = new Coroutine\Client($type);
+        }else {
+            $this->client = new \Swoole\Client($type);
+        }
         if (!empty($swConfig)) {
             $this->client->set($swConfig);
         }
@@ -73,6 +85,8 @@ class Client
         if (!empty($will)) {
             $data['will'] = $will;
         }
+
+        $this->connectData = $data;
 
         return $this->send($data);
     }
@@ -135,12 +149,16 @@ class Client
         $reConnectTime = 1;
         $result = false;
         while (!$result) {
-            Coroutine::sleep(3);
+            if($this->isCoroutineClientType()) {
+                Coroutine::sleep(3);
+            }else {
+                sleep(3);
+            }
             $this->client->close();
             $result = $this->client->connect($this->config['host'], $this->config['port'], $this->config['time_out']);
             ++$reConnectTime;
         }
-        $this->connect();
+        $this->connect((bool)$this->connectData['clean_session'] ?? true, $this->connectData['will'] ?? []);
     }
 
     public function send(array $data, $response = true)
@@ -160,17 +178,21 @@ class Client
 
     public function recv()
     {
-        $response = $this->client->recv();
-
+        $response = $this->read();
         if ($response === '' || !$this->client->isConnected()) {
             $this->reConnect();
         } elseif ($response === false) {
             if($this->client->errCode === SOCKET_ECONNRESET) {
                 $this->client->close();
             } else if ($this->client->errCode !== SOCKET_ETIMEDOUT) {
-                throw new RuntimeException($this->client->errMsg, $this->client->errCode);
+                if($this->isCoroutineClientType()) {
+                    $errMsg = $this->client->errMsg;
+                }else {
+                    $errMsg = socket_strerror($this->client->errCode);
+                }
+                throw new RuntimeException($errMsg, $this->client->errCode);
             }
-        } elseif (strlen($response) > 0) {
+        } elseif (is_string($response) && strlen($response) > 0) {
             if ($this->config['protocol_level'] === 5) {
                 return ProtocolV5::unpack($response);
             }
@@ -179,6 +201,38 @@ class Client
         }
 
         return true;
+    }
+
+    protected function read()
+    {
+        if($this->isCoroutineClientType())
+        {
+            $response = $this->client->recv();
+        }else {
+            while (true)
+            {
+                $write = $error = [];
+                $read = [$this->client];
+                $n = swoole_client_select($read, $write, $error, 0.5);
+                if($n > 0)
+                {
+                    $response = $this->client->recv();
+                }else {
+                    $response = true;
+                }
+                break;
+            }
+        }
+
+        return $response;
+    }
+
+    protected function isCoroutineClientType()
+    {
+        if($this->clientType == self::COROUTINE_CLIENT_TYPE) {
+            return true;
+        }
+        return false;
     }
 
     public function buildMessageId()

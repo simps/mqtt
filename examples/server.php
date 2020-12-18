@@ -13,6 +13,7 @@ include __DIR__ . '/../vendor/autoload.php';
 
 use Simps\MQTT\Protocol;
 use Simps\MQTT\Types;
+use Simps\MQTT\Tools\Common;
 
 $server = new Swoole\Server('127.0.0.1', 1883, SWOOLE_BASE);
 
@@ -30,9 +31,8 @@ $server->on('connect', function ($server, $fd) {
 
 $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
     try {
-        Protocol::printf($data);
+        Common::printf($data);
         $data = Protocol::unpack($data);
-        var_dump($data);
         if (is_array($data) && isset($data['type'])) {
             switch ($data['type']) {
                 case Types::CONNECT:
@@ -65,20 +65,25 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     break;
                 case Types::PUBLISH:
                     // Send to subscribers
-                    $server->send(
-                        1,
-                        Protocol::pack(
-                            [
-                                'type' => $data['type'],
-                                'topic' => $data['topic'],
-                                'message' => $data['message'],
-                                'dup' => $data['dup'],
-                                'qos' => $data['qos'],
-                                'retain' => $data['retain'],
-                                'message_id' => $data['message_id'] ?? ''
-                            ]
-                        )
-                    );
+                    foreach ($server->connections as $sub_fd) {
+                        if($sub_fd != $fd) {
+                            $server->send(
+                                $sub_fd,
+                                Protocol::pack(
+                                    [
+                                        'type' => $data['type'],
+                                        'topic' => $data['topic'],
+                                        'message' => $data['message'],
+                                        'dup' => $data['dup'],
+                                        'qos' => $data['qos'],
+                                        'retain' => $data['retain'],
+                                        'message_id' => $data['message_id'] ?? ''
+                                    ]
+                                )
+                            );
+                        }
+                    }
+
 
                     if ($data['qos'] === 1) {
                         $server->send(

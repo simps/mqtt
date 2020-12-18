@@ -2,10 +2,13 @@
 
 MQTT Protocol Analysis and Coroutine Client for PHP.
 
-[![Latest Stable Version](https://poser.pugx.org/simps/mqtt/v)](//packagist.org/packages/simps/mqtt)
-[![Total Downloads](https://poser.pugx.org/simps/mqtt/downloads)](//packagist.org/packages/simps/mqtt)
-[![Latest Unstable Version](https://poser.pugx.org/simps/mqtt/v/unstable)](//packagist.org/packages/simps/mqtt)
-[![License](https://poser.pugx.org/simps/mqtt/license)](https://github.com/simps/mqtt/blob/master/LICENSE)
+Support for MQTT protocol versions `3.1`, `3.1.1` and `5.0` and support for `QoS 0`, `QoS 1`, `QoS 2`.
+
+## Requirements
+
+* PHP >= `7.0`
+* ext-swoole >= `4.4.19`
+* ext-mbstring
 
 ## Install
 
@@ -27,6 +30,12 @@ Create a MQTT client instance
 Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP)
 ```
 
+Create a MQTT client instance of Fpm|Apache, mainly used for publish messages, the fourth parameter of clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE   
+
+```php
+Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, clientType = \Simps\MQTT\Client::SYNC_CLIENT_TYPE)
+```
+
 * `array $config`
 
 An array of client options, you can set the following options:
@@ -41,9 +50,16 @@ $config = [
     'client_id' => '',
     'keep_alive' => 10,
     'protocol_name' => 'MQTT', // or MQIsdp
-    'protocol_level' => 4, // or 3
+    'protocol_level' => 4, // or 3, 5
+    'properties' => [ // MQTT5 need
+        'session_expiry_interval' => 0,
+        'receive_maximum' => 0,
+        'topic_alias_maximum' => 0,
+    ],
 ];
 ```
+
+!> The Client will use the corresponding protocol resolution according to the `protocol_level` set.
 
 * `array $swConfig`
 
@@ -59,7 +75,9 @@ Simps\MQTT\Client->connect(bool $clean = true, array $will = [])
 
 * `bool $clean`
 
-Clean session. default is `true`. see [Clean Session](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/errata01/os/mqtt-v3.1.1-errata01-os-complete.html#_Toc442180843)
+Clean session. default is `true`. 
+
+For a detailed description, please see the corresponding protocol document: `Clean Session`.
 
 * `array $will`
 
@@ -79,7 +97,7 @@ $will = [
 push a message to a topic
 
 ```php
-Simps\MQTT\Client->publish($topic, $content, $qos = 0, $dup = 0, $retain = 0)
+Simps\MQTT\Client->publish($topic, $content, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
 ```
 
 ### subscribe()
@@ -93,10 +111,28 @@ Simps\MQTT\Client->subscribe(array $topics)
 * `array $topics`
 
 ```php
+// MQTT 3.x
 $topics = [
     // topic => Qos
     'topic1' => 0, 
     'topic2' => 1,
+];
+
+// MQTT 5.0
+$topics = [
+    // topic => options
+    'topic1' => [
+        'qos' => 1,
+        'no_local' => true,
+        'retain_as_published' => true,
+        'retain_handling' => 2,
+    ], 
+    'topic2' => [
+        'qos' => 2,
+        'no_local' => false,
+        'retain_as_published' => true,
+        'retain_handling' => 1,
+    ], 
 ];
 ```
 
@@ -119,7 +155,7 @@ $topics = ['topic1', 'topic2'];
 Disconnect from Broker connect. The `DISCONNECT(14)` message is send to Broker
 
 ```php
-Simps\MQTT\Client->close()
+Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION)
 ```
 
 ### recv()
