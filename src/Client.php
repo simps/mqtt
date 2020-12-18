@@ -26,6 +26,7 @@ class Client
         'host' => '127.0.0.1',
         'port' => 1883,
         'time_out' => 0.5,
+        'select_time_out' => 0.5,
         'user_name' => '',
         'password' => '',
         'client_id' => '',
@@ -46,15 +47,16 @@ class Client
     private $clientType;
 
     const COROUTINE_CLIENT_TYPE = 1;
+
     const SYNC_CLIENT_TYPE = 2;
 
     public function __construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int $clientType = self::COROUTINE_CLIENT_TYPE)
     {
         $this->config = array_replace_recursive($this->config, $config);
         $this->clientType = $clientType;
-        if($this->isCoroutineClientType()) {
+        if ($this->isCoroutineClientType()) {
             $this->client = new Coroutine\Client($type);
-        }else {
+        } else {
             $this->client = new \Swoole\Client($type);
         }
         if (!empty($swConfig)) {
@@ -149,16 +151,16 @@ class Client
         $reConnectTime = 1;
         $result = false;
         while (!$result) {
-            if($this->isCoroutineClientType()) {
+            if ($this->isCoroutineClientType()) {
                 Coroutine::sleep(3);
-            }else {
+            } else {
                 sleep(3);
             }
             $this->client->close();
             $result = $this->client->connect($this->config['host'], $this->config['port'], $this->config['time_out']);
             ++$reConnectTime;
         }
-        $this->connect((bool)$this->connectData['clean_session'] ?? true, $this->connectData['will'] ?? []);
+        $this->connect((bool) $this->connectData['clean_session'] ?? true, $this->connectData['will'] ?? []);
     }
 
     public function send(array $data, $response = true)
@@ -178,16 +180,16 @@ class Client
 
     public function recv()
     {
-        $response = $this->read();
+        $response = $this->getResponse();
         if ($response === '' || !$this->client->isConnected()) {
             $this->reConnect();
         } elseif ($response === false) {
-            if($this->client->errCode === SOCKET_ECONNRESET) {
+            if ($this->client->errCode === SOCKET_ECONNRESET) {
                 $this->client->close();
-            } else if ($this->client->errCode !== SOCKET_ETIMEDOUT) {
-                if($this->isCoroutineClientType()) {
+            } elseif ($this->client->errCode !== SOCKET_ETIMEDOUT) {
+                if ($this->isCoroutineClientType()) {
                     $errMsg = $this->client->errMsg;
-                }else {
+                } else {
                     $errMsg = socket_strerror($this->client->errCode);
                 }
                 throw new RuntimeException($errMsg, $this->client->errCode);
@@ -203,21 +205,18 @@ class Client
         return true;
     }
 
-    protected function read()
+    protected function getResponse()
     {
-        if($this->isCoroutineClientType())
-        {
+        if ($this->isCoroutineClientType()) {
             $response = $this->client->recv();
-        }else {
-            while (true)
-            {
+        } else {
+            while (true) {
                 $write = $error = [];
                 $read = [$this->client];
-                $n = swoole_client_select($read, $write, $error, 0.5);
-                if($n > 0)
-                {
+                $n = swoole_client_select($read, $write, $error, $this->config['select_time_out']);
+                if ($n > 0) {
                     $response = $this->client->recv();
-                }else {
+                } else {
                     $response = true;
                 }
                 break;
@@ -229,9 +228,10 @@ class Client
 
     protected function isCoroutineClientType()
     {
-        if($this->clientType == self::COROUTINE_CLIENT_TYPE) {
+        if ($this->clientType === self::COROUTINE_CLIENT_TYPE) {
             return true;
         }
+
         return false;
     }
 
