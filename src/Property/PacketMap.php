@@ -22,86 +22,86 @@ use Simps\MQTT\Hex\Property;
 class PacketMap
 {
     public static $connect = [
-        Property::SESSION_EXPIRY_INTERVAL,
-        Property::AUTHENTICATION_METHOD,
-        Property::AUTHENTICATION_DATA,
-        Property::REQUEST_PROBLEM_INFORMATION,
-        Property::REQUEST_RESPONSE_INFORMATION,
-        Property::RECEIVE_MAXIMUM,
-        Property::TOPIC_ALIAS_MAXIMUM,
-        Property::USER_PROPERTY,
-        Property::MAXIMUM_PACKET_SIZE,
+        Property::SESSION_EXPIRY_INTERVAL => 'session_expiry_interval',
+        Property::AUTHENTICATION_METHOD => 'authentication_method',
+        Property::AUTHENTICATION_DATA => 'authentication_data',
+        Property::REQUEST_PROBLEM_INFORMATION => 'request_problem_information',
+        Property::REQUEST_RESPONSE_INFORMATION => 'request_response_information',
+        Property::RECEIVE_MAXIMUM => 'receive_maximum',
+        Property::TOPIC_ALIAS_MAXIMUM => 'topic_alias_maximum',
+        Property::USER_PROPERTY => 'user_property',
+        Property::MAXIMUM_PACKET_SIZE => 'maximum_packet_size',
     ];
 
     public static $connAck = [
-        Property::SESSION_EXPIRY_INTERVAL,
-        Property::ASSIGNED_CLIENT_IDENTIFIER,
-        Property::SERVER_KEEP_ALIVE,
-        Property::AUTHENTICATION_METHOD,
-        Property::AUTHENTICATION_DATA,
-        Property::RESPONSE_INFORMATION,
-        Property::SERVER_REFERENCE,
-        Property::REASON_STRING,
-        Property::RECEIVE_MAXIMUM,
-        Property::TOPIC_ALIAS_MAXIMUM,
-        Property::MAXIMUM_QOS,
-        Property::RETAIN_AVAILABLE,
-        Property::USER_PROPERTY,
-        Property::MAXIMUM_PACKET_SIZE,
-        Property::WILDCARD_SUBSCRIPTION_AVAILABLE,
-        Property::SUBSCRIPTION_IDENTIFIER_AVAILABLE,
-        Property::SHARED_SUBSCRIPTION_AVAILABLE,
+        Property::SESSION_EXPIRY_INTERVAL => 'session_expiry_interval',
+        Property::ASSIGNED_CLIENT_IDENTIFIER => 'assigned_client_identifier',
+        Property::SERVER_KEEP_ALIVE => 'server_keep_alive',
+        Property::AUTHENTICATION_METHOD => 'authentication_method',
+        Property::AUTHENTICATION_DATA => 'authentication_data',
+        Property::RESPONSE_INFORMATION => 'response_information',
+        Property::SERVER_REFERENCE => 'server_reference',
+        Property::REASON_STRING => 'reason_string',
+        Property::RECEIVE_MAXIMUM => 'receive_maximum',
+        Property::TOPIC_ALIAS_MAXIMUM => 'topic_alias_maximum',
+        Property::MAXIMUM_QOS => 'maximum_qos',
+        Property::RETAIN_AVAILABLE => 'retain_available',
+        Property::USER_PROPERTY => 'user_property',
+        Property::MAXIMUM_PACKET_SIZE => 'maximum_packet_size',
+        Property::WILDCARD_SUBSCRIPTION_AVAILABLE => 'wildcard_subscription_available',
+        Property::SUBSCRIPTION_IDENTIFIER_AVAILABLE => 'subscription_identifier_available',
+        Property::SHARED_SUBSCRIPTION_AVAILABLE => 'shared_subscription_available',
     ];
 
     public static $publish = [
-        Property::PAYLOAD_FORMAT_INDICATOR,
-        Property::MESSAGE_EXPIRY_INTERVAL,
-        Property::CONTENT_TYPE,
-        Property::RESPONSE_TOPIC,
-        Property::CORRELATION_DATA,
-        Property::SUBSCRIPTION_IDENTIFIER,
-        Property::TOPIC_ALIAS,
-        Property::USER_PROPERTY,
+        Property::PAYLOAD_FORMAT_INDICATOR => 'payload_format_indicator',
+        Property::MESSAGE_EXPIRY_INTERVAL => 'message_expiry_interval',
+        Property::CONTENT_TYPE => 'content_type',
+        Property::RESPONSE_TOPIC => 'response_topic',
+        Property::CORRELATION_DATA => 'correlation_data',
+        Property::SUBSCRIPTION_IDENTIFIER => 'subscription_identifier',
+        Property::TOPIC_ALIAS => 'topic_alias',
+        Property::USER_PROPERTY => 'user_property',
     ];
 
     /**
      * pubAck, pubRec, pubRel, pubComp, subAck, unSubAck
      */
     public static $pubAndSub = [
-        Property::REASON_STRING,
-        Property::USER_PROPERTY,
+        Property::REASON_STRING => 'reason_string',
+        Property::USER_PROPERTY => 'user_property',
     ];
 
     public static $subscribe = [
-        Property::SUBSCRIPTION_IDENTIFIER,
-        Property::USER_PROPERTY,
+        Property::SUBSCRIPTION_IDENTIFIER => 'subscription_identifier',
+        Property::USER_PROPERTY => 'user_property',
     ];
 
     public static $unSubscribe = [
-        Property::USER_PROPERTY,
+        Property::USER_PROPERTY => 'user_property',
     ];
 
     public static $disConnect = [
-        Property::SESSION_EXPIRY_INTERVAL,
-        Property::SERVER_REFERENCE,
-        Property::REASON_STRING,
-        Property::USER_PROPERTY,
+        Property::SESSION_EXPIRY_INTERVAL => 'session_expiry_interval',
+        Property::SERVER_REFERENCE => 'server_reference',
+        Property::REASON_STRING => 'reason_string',
+        Property::USER_PROPERTY => 'user_property',
     ];
 
     public static $auth = [
-        Property::AUTHENTICATION_METHOD,
-        Property::AUTHENTICATION_DATA,
-        Property::REASON_STRING,
-        Property::USER_PROPERTY,
+        Property::AUTHENTICATION_METHOD => 'authentication_method',
+        Property::AUTHENTICATION_DATA => 'authentication_data',
+        Property::REASON_STRING => 'reason_string',
+        Property::USER_PROPERTY => 'user_property',
     ];
 
     public static $willProperties = [
-        Property::PAYLOAD_FORMAT_INDICATOR,
-        Property::MESSAGE_EXPIRY_INTERVAL,
-        Property::CONTENT_TYPE,
-        Property::RESPONSE_TOPIC,
-        Property::CORRELATION_DATA,
-        Property::WILL_DELAY_INTERVAL,
-        Property::USER_PROPERTY,
+        Property::PAYLOAD_FORMAT_INDICATOR => 'payload_format_indicator',
+        Property::MESSAGE_EXPIRY_INTERVAL => 'message_expiry_interval',
+        Property::CONTENT_TYPE => 'content_type',
+        Property::RESPONSE_TOPIC => 'response_topic',
+        Property::CORRELATION_DATA => 'correlation_data',
+        Property::WILL_DELAY_INTERVAL => 'will_delay_interval',
+        Property::USER_PROPERTY => 'user_property',
     ];
 }
