@@ -15,7 +15,8 @@ use Simps\MQTT\Client;
 use Swoole\Coroutine;
 
 Coroutine\run(function () {
-    $client = new Client(getTestConnectConfig(), SWOOLE_MQTT_CONFIG);
+    $config = getTestConnectConfig();
+    $client = new Client($config, SWOOLE_MQTT_CONFIG);
     $will = [
         'topic' => 'simps-mqtt/user001/update',
         'qos' => 1,
