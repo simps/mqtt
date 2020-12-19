@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Packet;
 
-use Simps\MQTT\Hex\Property;
 use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Property\UnPackProperty;
 use Simps\MQTT\Tools\UnPackTool;
@@ -33,15 +32,13 @@ class UnPackV5
         $userNameFlag = ord($remaining[1]) >> 7 & 0x1;
         $remaining = substr($remaining, 2);
         $keepAlive = UnPackTool::shortInt($remaining);
-        $propertiesTotalLength = ord($remaining[0]);
-        $remaining = substr($remaining, 1);
+        $propertiesTotalLength = UnPackTool::byte($remaining);
         if ($propertiesTotalLength) {
             $properties = UnPackProperty::connect($propertiesTotalLength, $remaining);
         }
         $clientId = UnPackTool::string($remaining);
         if ($willFlag) {
-            $willPropertiesTotalLength = ord($remaining[0]);
-            $remaining = substr($remaining, 1);
+            $willPropertiesTotalLength = UnPackTool::byte($remaining);
             if ($willPropertiesTotalLength) {
                 $willProperties = UnPackProperty::willProperties($willPropertiesTotalLength, $remaining);
             }
@@ -97,11 +94,6 @@ class UnPackV5
         $sessionPresent = ord($remaining[0]) & 0x01;
         $code = ord($remaining[1]);
         $remaining = substr($remaining, 2);
-        $propertiesTotalLength = ord($remaining[0]);
-        $remaining = substr($remaining, 1);
-        if ($propertiesTotalLength) {
-            $properties = UnPackProperty::connAck($propertiesTotalLength, $remaining);
-        }
 
         $package = [
             'type' => Types::CONNACK,
@@ -109,8 +101,9 @@ class UnPackV5
             'code' => $code,
         ];
 
+        $propertiesTotalLength = UnPackTool::byte($remaining);
         if ($propertiesTotalLength) {
-            $package['properties'] = $properties;
+            $package['properties'] = UnPackProperty::connAck($propertiesTotalLength, $remaining);
         }
 
         return $package;
@@ -119,47 +112,25 @@ class UnPackV5
     public static function publish(int $dup, int $qos, int $retain, string $remaining): array
     {
         $topic = UnPackTool::string($remaining);
-        if ($qos) {
-            $messageId = UnPackTool::shortInt($remaining);
-        }
-
-        $propertiesTotalLength = ord($remaining[0]);
-        $remaining = substr($remaining, 1);
-        if ($propertiesTotalLength) {
-            // TODO PUBLISH Properties
-            $messageExpiryIntervalFlag = ord($remaining[0]) & ~Property::MESSAGE_EXPIRY_INTERVAL;
-            if ($messageExpiryIntervalFlag === 0) {
-                $remaining = substr($remaining, 1);
-                $messageExpiryInterval = UnPackTool::longInt($remaining);
-            }
-            $topicAliasFlag = ord($remaining[0]) & ~Property::TOPIC_ALIAS;
-            if ($topicAliasFlag === 0) {
-                $remaining = substr($remaining, 1);
-                $topicAlias = UnPackTool::shortInt($remaining);
-            }
-        }
 
         $package = [
             'type' => Types::PUBLISH,
-            'topic' => $topic,
-            'message' => $remaining,
             'dup' => $dup,
             'qos' => $qos,
             'retain' => $retain,
+            'topic' => $topic,
         ];
 
         if ($qos) {
-            $package['message_id'] = $messageId;
+            $package['message_id'] = UnPackTool::shortInt($remaining);
         }
 
+        $propertiesTotalLength = UnPackTool::byte($remaining);
         if ($propertiesTotalLength) {
-            if ($messageExpiryIntervalFlag === 0) {
-                $package['properties']['message_expiry_interval'] = $messageExpiryInterval;
-            }
-            if ($topicAliasFlag === 0) {
-                $package['properties']['topic_alias'] = $topicAlias;
-            }
+            $package['properties'] = UnPackProperty::publish($propertiesTotalLength, $remaining);
         }
+
+        $package['message'] = $remaining;
 
         return $package;
     }
@@ -167,11 +138,17 @@ class UnPackV5
     public static function subscribe(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
-        $propertiesTotalLength = ord($remaining[0]);
-        $remaining = substr($remaining, 1);
+
+        $package = [
+            'type' => Types::SUBSCRIBE,
+            'message_id' => $messageId,
+        ];
+
+        $propertiesTotalLength = UnPackTool::byte($remaining);
         if ($propertiesTotalLength) {
-            // TODO SUBSCRIBE Properties
+            $package['properties'] = UnPackProperty::subscribe($propertiesTotalLength, $remaining);
         }
+
         $topics = [];
         while ($remaining) {
             $topic = UnPackTool::string($remaining);
@@ -184,34 +161,43 @@ class UnPackV5
             $remaining = substr($remaining, 1);
         }
 
-        return [
-            'type' => Types::SUBSCRIBE,
-            'message_id' => $messageId,
-            'topics' => $topics,
-        ];
+        $package['topics'] = $topics;
+
+        return $package;
     }
 
     public static function subAck(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
-        $propertiesTotalLength = ord($remaining[0]);
-        $remaining = substr($remaining, 1);
+
+        $package = [
+            'type' => Types::UNSUBACK,
+            'message_id' => $messageId,
+        ];
+
+        $propertiesTotalLength = UnPackTool::byte($remaining);
         if ($propertiesTotalLength) {
-            // TODO SUBACK Properties
+            $package['properties'] = UnPackProperty::pubAndSub($propertiesTotalLength, $remaining);
         }
 
-        $tmp = unpack('C*', $remaining);
+        $codes = unpack('C*', $remaining);
+        $package['codes'] = array_values($codes);
 
-        return ['type' => Types::SUBACK, 'message_id' => $messageId, 'codes' => array_values($tmp)];
+        return $package;
     }
 
     public static function unSubscribe(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
-        $propertiesTotalLength = ord($remaining[0]);
-        $remaining = substr($remaining, 1);
+
+        $package = [
+            'type' => Types::UNSUBSCRIBE,
+            'message_id' => $messageId,
+        ];
+
+        $propertiesTotalLength = UnPackTool::byte($remaining);
         if ($propertiesTotalLength) {
-            // TODO UNSUBSCRIBE Properties
+            $package['properties'] = UnPackProperty::unSubscribe($propertiesTotalLength, $remaining);
         }
         $topics = [];
         while ($remaining) {
@@ -219,16 +205,23 @@ class UnPackV5
             $topics[] = $topic;
         }
 
-        return ['type' => Types::UNSUBSCRIBE, 'message_id' => $messageId, 'topics' => $topics];
+        $package['topics'] = $topics;
+
+        return $package;
     }
 
     public static function unSubAck(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
-        $propertiesTotalLength = ord($remaining[0]);
-        $remaining = substr($remaining, 1);
+
+        $package = [
+            'type' => Types::UNSUBACK,
+            'message_id' => $messageId,
+        ];
+
+        $propertiesTotalLength = UnPackTool::byte($remaining);
         if ($propertiesTotalLength) {
-            // TODO UNSUBACK Properties
+            $package['properties'] = UnPackProperty::pubAndSub($propertiesTotalLength, $remaining);
         }
 
         if (isset($remaining[0])) {
@@ -236,31 +229,34 @@ class UnPackV5
         } else {
             $code = ReasonCode::SUCCESS;
         }
-        $msg = ReasonCode::getReasonPhrase($code);
 
-        return [
-            'type' => Types::UNSUBACK,
-            'message_id' => $messageId,
-            'code' => $code,
-            'message' => $msg,
-        ];
+        $package['code'] = $code;
+
+        return $package;
     }
 
     public static function disconnect(string $remaining): array
     {
         if (isset($remaining[0])) {
-            $code = ord($remaining[0]);
-            $msg = ReasonCode::getReasonPhrase($code);
+            $code = UnPackTool::byte($remaining);
         } else {
             $code = ReasonCode::NORMAL_DISCONNECTION;
-            $msg = 'Normal disconnection';
         }
-
-        return [
+        $package = [
             'type' => Types::DISCONNECT,
             'code' => $code,
-            'message' => $msg,
         ];
+
+        $propertiesTotalLength = 0;
+        if (isset($remaining[0])) {
+            $propertiesTotalLength = UnPackTool::byte($remaining);
+        }
+
+        if ($propertiesTotalLength) {
+            $package['properties'] = UnPackProperty::disconnect($propertiesTotalLength, $remaining);
+        }
+
+        return $package;
     }
 
     public static function getReasonCode(int $type, string $remaining): array
@@ -268,28 +264,26 @@ class UnPackV5
         $messageId = UnPackTool::shortInt($remaining);
 
         if (isset($remaining[0])) {
-            $code = ord($remaining[0]);
+            $code = UnPackTool::byte($remaining);
         } else {
             $code = ReasonCode::SUCCESS;
         }
-        $msg = ReasonCode::getReasonPhrase($code);
-        $remaining = substr($remaining, 1);
 
-        $propertiesTotalLength = 0;
-        if (isset($remaining[0])) {
-            $propertiesTotalLength = ord($remaining[0]);
-            $remaining = substr($remaining, 1);
-        }
-
-        if ($propertiesTotalLength) {
-            // TODO Properties
-        }
-
-        return [
+        $package = [
             'type' => $type,
             'message_id' => $messageId,
             'code' => $code,
-            'message' => $msg,
         ];
+
+        $propertiesTotalLength = 0;
+        if (isset($remaining[0])) {
+            $propertiesTotalLength = UnPackTool::byte($remaining);
+        }
+
+        if ($propertiesTotalLength) {
+            $package['properties'] = UnPackProperty::pubAndSub($propertiesTotalLength, $remaining);
+        }
+
+        return $package;
     }
 }

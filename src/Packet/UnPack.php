@@ -80,11 +80,11 @@ class UnPack
         }
         $package = [
             'type' => Types::PUBLISH,
-            'topic' => $topic,
-            'message' => $remaining,
             'dup' => $dup,
             'qos' => $qos,
             'retain' => $retain,
+            'topic' => $topic,
+            'message' => $remaining,
         ];
         if ($qos) {
             $package['message_id'] = $messageId;
@@ -99,9 +99,8 @@ class UnPack
         $topics = [];
         while ($remaining) {
             $topic = UnPackTool::string($remaining);
-            $qos = ord($remaining[0]);
+            $qos = UnPackTool::byte($remaining);
             $topics[$topic] = $qos;
-            $remaining = substr($remaining, 1);
         }
 
         return ['type' => Types::SUBSCRIBE, 'message_id' => $messageId, 'topics' => $topics];
@@ -110,9 +109,9 @@ class UnPack
     public static function subAck(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
-        $tmp = unpack('C*', $remaining);
+        $codes = unpack('C*', $remaining);
 
-        return ['type' => Types::SUBACK, 'message_id' => $messageId, 'codes' => array_values($tmp)];
+        return ['type' => Types::SUBACK, 'message_id' => $messageId, 'codes' => array_values($codes)];
     }
 
     public static function unSubscribe(string $remaining): array
