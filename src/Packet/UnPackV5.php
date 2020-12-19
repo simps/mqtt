@@ -15,6 +15,7 @@ namespace Simps\MQTT\Packet;
 
 use Simps\MQTT\Hex\Property;
 use Simps\MQTT\Hex\ReasonCode;
+use Simps\MQTT\Property\UnPackProperty;
 use Simps\MQTT\Tools\UnPackTool;
 use Simps\MQTT\Types;
 
@@ -35,47 +36,14 @@ class UnPackV5
         $propertiesTotalLength = ord($remaining[0]);
         $remaining = substr($remaining, 1);
         if ($propertiesTotalLength) {
-            $sessionExpiryIntervalFlag = ord($remaining[0]) & ~Property::SESSION_EXPIRY_INTERVAL;
-            if ($sessionExpiryIntervalFlag === 0) {
-                $remaining = substr($remaining, 1);
-                $sessionExpiryInterval = UnPackTool::longInt($remaining);
-            }
-            $receiveMaximumFlag = ord($remaining[0]) & ~Property::RECEIVE_MAXIMUM;
-            if ($receiveMaximumFlag === 0) {
-                $remaining = substr($remaining, 1);
-                $receiveMaximum = UnPackTool::shortInt($remaining);
-            }
-            $topicAliasMaximumFlag = ord($remaining[0]) & ~Property::TOPIC_ALIAS_MAXIMUM;
-            if ($topicAliasMaximumFlag === 0) {
-                $remaining = substr($remaining, 1);
-                $topicAliasMaximum = UnPackTool::shortInt($remaining);
-            }
+            $properties = UnPackProperty::connect($propertiesTotalLength, $remaining);
         }
         $clientId = UnPackTool::string($remaining);
         if ($willFlag) {
             $willPropertiesTotalLength = ord($remaining[0]);
             $remaining = substr($remaining, 1);
             if ($willPropertiesTotalLength) {
-                $willDelayIntervalFlag = ord($remaining[0]) & ~Property::WILL_DELAY_INTERVAL;
-                if ($willDelayIntervalFlag === 0) {
-                    $remaining = substr($remaining, 1);
-                    $willDelayInterval = UnPackTool::longInt($remaining);
-                }
-                $messageExpiryIntervalFlag = ord($remaining[0]) & ~Property::MESSAGE_EXPIRY_INTERVAL;
-                if ($messageExpiryIntervalFlag === 0) {
-                    $remaining = substr($remaining, 1);
-                    $messageExpiryInterval = UnPackTool::longInt($remaining);
-                }
-                $contentTypeFlag = ord($remaining[0]) & ~Property::CONTENT_TYPE;
-                if ($contentTypeFlag === 0) {
-                    $remaining = substr($remaining, 1);
-                    $contentType = UnPackTool::string($remaining);
-                }
-                $payloadFormatIndicatorFlag = ord($remaining[0]) & ~Property::PAYLOAD_FORMAT_INDICATOR;
-                if ($payloadFormatIndicatorFlag === 0) {
-                    $payloadFormatIndicator = ord($remaining[1]);
-                    $remaining = substr($remaining, 2);
-                }
+                $willProperties = UnPackProperty::willProperties($willPropertiesTotalLength, $remaining);
             }
             $willTopic = UnPackTool::string($remaining);
             $willMessage = UnPackTool::string($remaining);
@@ -100,15 +68,7 @@ class UnPackV5
         ];
 
         if ($propertiesTotalLength) {
-            if ($sessionExpiryIntervalFlag === 0) {
-                $package['properties']['session_expiry_interval'] = $sessionExpiryInterval;
-            }
-            if ($receiveMaximumFlag === 0) {
-                $package['properties']['receive_maximum'] = $receiveMaximum;
-            }
-            if ($receiveMaximumFlag === 0) {
-                $package['properties']['topic_alias_aximum'] = $topicAliasMaximum;
-            }
+            $package['properties'] = $properties;
         } else {
             unset($package['properties']);
         }
@@ -117,18 +77,7 @@ class UnPackV5
 
         if ($willFlag) {
             if ($willPropertiesTotalLength) {
-                if ($willDelayIntervalFlag === 0) {
-                    $package['will']['properties']['will_delay_interval'] = $willDelayInterval;
-                }
-                if ($messageExpiryIntervalFlag === 0) {
-                    $package['will']['properties']['message_expiry_interval'] = $messageExpiryInterval;
-                }
-                if ($contentTypeFlag === 0) {
-                    $package['will']['properties']['content_type'] = $contentType;
-                }
-                if ($payloadFormatIndicatorFlag === 0) {
-                    $package['will']['properties']['payload_format_indicator'] = $payloadFormatIndicator;
-                }
+                $package['will']['properties'] = $willProperties;
             }
             $package['will'] += [
                 'qos' => $willQos,
@@ -151,65 +100,17 @@ class UnPackV5
         $propertiesTotalLength = ord($remaining[0]);
         $remaining = substr($remaining, 1);
         if ($propertiesTotalLength) {
-            $maximumPacketSizeFlag = ord($remaining[0]) & ~Property::MAXIMUM_PACKET_SIZE;
-            if ($maximumPacketSizeFlag === 0) {
-                $remaining = substr($remaining, 1);
-                $maximumPacketSize = UnPackTool::longInt($remaining);
-            }
-            $retainAvailableFlag = ord($remaining[0]) & ~Property::RETAIN_AVAILABLE;
-            if ($retainAvailableFlag === 0) {
-                $retainAvailable = ord($remaining[1]);
-                $remaining = substr($remaining, 2);
-            }
-            $sharedSubscriptionAvailableFlag = ord($remaining[0]) & ~Property::SHARED_SUBSCRIPTION_AVAILABLE;
-            if ($sharedSubscriptionAvailableFlag === 0) {
-                $sharedSubscriptionAvailable = ord($remaining[1]);
-                $remaining = substr($remaining, 2);
-            }
-            $subscriptionIdentifierAvailableFlag = ord($remaining[0]) & ~Property::SUBSCRIPTION_IDENTIFIER_AVAILABLE;
-            if ($subscriptionIdentifierAvailableFlag === 0) {
-                $subscriptionIdentifierAvailable = ord($remaining[1]);
-                $remaining = substr($remaining, 2);
-            }
-            $topicAliasMaximumFlag = ord($remaining[0]) & ~Property::TOPIC_ALIAS_MAXIMUM;
-            if ($topicAliasMaximumFlag === 0) {
-                $remaining = substr($remaining, 1);
-                $topicAliasMaximum = UnPackTool::shortInt($remaining);
-            }
-            $wildcardSubscriptionAvailableFlag = ord($remaining[0]) & ~Property::WILDCARD_SUBSCRIPTION_AVAILABLE;
-            if ($wildcardSubscriptionAvailableFlag === 0) {
-                $wildcardSubscriptionAvailable = ord($remaining[1]);
-                $remaining = substr($remaining, 2);
-            }
+            $properties = UnPackProperty::connAck($propertiesTotalLength, $remaining);
         }
 
         $package = [
             'type' => Types::CONNACK,
             'session_present' => $sessionPresent,
             'code' => $code,
-            'properties' => [],
         ];
+
         if ($propertiesTotalLength) {
-            if ($maximumPacketSizeFlag === 0) {
-                $package['properties']['maximum_packet_size'] = $maximumPacketSize;
-            }
-            if ($retainAvailableFlag === 0) {
-                $package['properties']['retain_available'] = $retainAvailable;
-            }
-            if ($sharedSubscriptionAvailableFlag === 0) {
-                $package['properties']['shared_subscription_available'] = $sharedSubscriptionAvailable;
-            }
-            if ($subscriptionIdentifierAvailableFlag === 0) {
-                $package['properties']['subscription_identifier_available'] = $subscriptionIdentifierAvailable;
-            }
-            if ($topicAliasMaximumFlag === 0) {
-                $package['properties']['topic_alias_maximum'] = $topicAliasMaximum;
-            }
-            if ($wildcardSubscriptionAvailableFlag === 0) {
-                $package['properties']['wildcard_subscription_available'] = $wildcardSubscriptionAvailable;
-            }
-        } else {
-            unset($package['properties']);
+            $package['properties'] = $properties;
         }
 
         return $package;
