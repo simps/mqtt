@@ -116,13 +116,13 @@ class Client
         return $this->send(
             [
                 'type' => Types::PUBLISH,
-                'message_id' => $this->buildMessageId(),
-                'topic' => $topic,
-                'message' => $content,
                 'qos' => $qos,
                 'dup' => $dup,
                 'retain' => $retain,
+                'topic' => $topic,
+                'message_id' => $this->buildMessageId(),
                 'properties' => $properties,
+                'message' => $content,
             ],
             $response
         );

@@ -92,7 +92,7 @@ class PackV5
         $retain = $array['retain'] ?? 0;
 
         // PUBLISH Properties
-        $body .= PackProperty::connAck($array['properties'] ?? []);
+        $body .= PackProperty::publish($array['properties'] ?? []);
 
         $body .= $array['message'];
         $head = PackTool::packHeader(Types::PUBLISH, strlen($body), $dup, $qos, $retain);
