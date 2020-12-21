@@ -22,12 +22,29 @@
       name: 'MQTT',
       repo: 'simps/mqtt',
       homepage: 'zh-cn/README.md',
+      loadSidebar: true,
+      subMaxLevel: 3,
       logo: 'https://cdn.jsdelivr.net/gh/sy-records/staticfile@master/images/simps.png',
       themeColor: '#5C9DFF',
       loadNavbar: true,
       auto2top: true,
       alias: {
         '/.*/_navbar.md': '/_navbar.md',
+        '/_sidebar.md': '/zh-cn/_sidebar.md',
+      },
+      search: {
+        depth: 6,
+        noData: {
+          '/en/': 'No results!',
+          '/zh-cn/': '没有找到结果!',
+          '/': '没有找到结果!'
+        },
+        paths: 'auto',
+        placeholder: {
+          '/en/': 'Type to Search',
+          '/zh-cn/': '输入关键词搜索',
+          '/': '输入关键词搜索'
+        }
       },
       plugins: [
         function (hook) {
@@ -39,6 +56,7 @@
     }
   </script>
   <script src="//cdn.jsdelivr.net/gh/sy-records/staticfile/js/docsify/docsify.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/sy-records/staticfile/js/docsify/search.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-php.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js"></script>
 </body>

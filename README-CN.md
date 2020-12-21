@@ -1,6 +1,6 @@
 [English](./README.md) | 中文
 
-# MQTT 协程客户端
+# MQTT 协议解析 & 协程客户端
 
 适用于 PHP 的 MQTT 协议解析和协程客户端。
 
@@ -22,7 +22,7 @@ composer require simps/mqtt
 
 ## 文档
 
-https://mqtt.simps.io
+[mqtt.simps.io](https://mqtt.simps.io) | [MQTT 3.1.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html) | [MQTT 5.0](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html)
 
 ## 示例
 

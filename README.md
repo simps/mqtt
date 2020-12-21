@@ -1,10 +1,12 @@
 English | [中文](./README-CN.md)
 
-# MQTT Coroutine Client
+# MQTT Protocol Analysis & Coroutine Client
 
 MQTT Protocol Analysis and Coroutine Client for PHP.
 
-Support for MQTT protocol versions `3.1`, `3.1.1` and `5.0` and support for `QoS 0`, `QoS 1`, `QoS 2`.
+Support for `3.1`, `3.1.1` and `5.0` versions of the MQTT protocol.
+
+Support for `QoS 0`, `QoS 1`, `QoS 2`.
 
 [![GitHub Actions](https://github.com/simps/mqtt/workflows/test/badge.svg)](https://github.com/simps/mqtt/actions)
 [![Latest Stable Version](https://poser.pugx.org/simps/mqtt/v)](//packagist.org/packages/simps/mqtt)
@@ -22,7 +24,7 @@ composer require simps/mqtt
 
 ## Documentation
 
-https://mqtt.simps.io
+[mqtt.simps.io](https://mqtt.simps.io/#/en/) | [MQTT 3.1.1](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html) | [MQTT 5.0](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html)
 
 ## Examples
 
