@@ -34,7 +34,7 @@ class UnPackProperty
                         break;
                     case Property::AUTHENTICATION_METHOD:
                         $properties[$key] = UnPackTool::string($remaining);
-                        $length -= 1;
+                        $length -= 3;
                         $length -= strlen($properties[$key]);
                         break;
                     case Property::REQUEST_PROBLEM_INFORMATION:
@@ -81,7 +81,7 @@ class UnPackProperty
                     case Property::CONTENT_TYPE:
                     case Property::RESPONSE_TOPIC:
                         $properties[$key] = UnPackTool::string($remaining);
-                        $length -= 1;
+                        $length -= 3;
                         $length -= strlen($properties[$key]);
                         break;
                     case Property::PAYLOAD_FORMAT_INDICATOR:
@@ -130,7 +130,7 @@ class UnPackProperty
                     case Property::SERVER_REFERENCE:
                     case Property::REASON_STRING:
                         $properties[$key] = UnPackTool::string($remaining);
-                        $length -= 1;
+                        $length -= 3;
                         $length -= strlen($properties[$key]);
                         break;
                     case Property::MAXIMUM_QOS:
@@ -177,7 +177,7 @@ class UnPackProperty
                     case Property::CONTENT_TYPE:
                     case Property::RESPONSE_TOPIC:
                         $properties[$key] = UnPackTool::string($remaining);
-                        $length -= 1;
+                        $length -= 3;
                         $length -= strlen($properties[$key]);
                         break;
                     case Property::PAYLOAD_FORMAT_INDICATOR:
@@ -212,7 +212,7 @@ class UnPackProperty
                 switch ($property) {
                     case Property::REASON_STRING:
                         $properties[$key] = UnPackTool::string($remaining);
-                        $length -= 1;
+                        $length -= 3;
                         $length -= strlen($properties[$key]);
                         break;
                     // TODO
@@ -295,7 +295,7 @@ class UnPackProperty
                     case Property::SERVER_REFERENCE:
                     case Property::REASON_STRING:
                         $properties[$key] = UnPackTool::string($remaining);
-                        $length -= 1;
+                        $length -= 3;
                         $length -= strlen($properties[$key]);
                         break;
                     // TODO
@@ -325,7 +325,7 @@ class UnPackProperty
                     case Property::AUTHENTICATION_METHOD:
                     case Property::REASON_STRING:
                         $properties[$key] = UnPackTool::string($remaining);
-                        $length -= 1;
+                        $length -= 3;
                         $length -= strlen($properties[$key]);
                         break;
                     // TODO
