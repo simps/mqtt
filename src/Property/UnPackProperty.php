@@ -48,9 +48,16 @@ class UnPackProperty
                         $properties[$key] = UnPackTool::shortInt($remaining);
                         $length -= 3;
                         break;
-                    // TODO
-                    case Property::AUTHENTICATION_DATA:
                     case Property::USER_PROPERTY:
+                        $userKey = UnPackTool::string($remaining);
+                        $userValue = UnPackTool::string($remaining);
+                        $properties[$userKey] = $userValue;
+                        $length -= 5;
+                        $length -= strlen($userKey);
+                        $length -= strlen($userValue);
+                        break;
+                    case Property::AUTHENTICATION_DATA:
+                        // TODO
                         trigger_error("{$properties[$key]} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
                         $properties[$key] = '';
                         break;
@@ -88,9 +95,16 @@ class UnPackProperty
                         $properties[$key] = UnPackTool::byte($remaining);
                         $length -= 2;
                         break;
-                    // TODO
-                    case Property::CORRELATION_DATA:
                     case Property::USER_PROPERTY:
+                        $userKey = UnPackTool::string($remaining);
+                        $userValue = UnPackTool::string($remaining);
+                        $properties[$userKey] = $userValue;
+                        $length -= 5;
+                        $length -= strlen($userKey);
+                        $length -= strlen($userValue);
+                        break;
+                    case Property::CORRELATION_DATA:
+                        // TODO
                         trigger_error("{$properties[$key]} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
                         $properties[$key] = '';
                         break;
@@ -141,9 +155,16 @@ class UnPackProperty
                         $properties[$key] = UnPackTool::byte($remaining);
                         $length -= 2;
                         break;
-                    // TODO
-                    case Property::AUTHENTICATION_DATA:
                     case Property::USER_PROPERTY:
+                        $userKey = UnPackTool::string($remaining);
+                        $userValue = UnPackTool::string($remaining);
+                        $properties[$userKey] = $userValue;
+                        $length -= 5;
+                        $length -= strlen($userKey);
+                        $length -= strlen($userValue);
+                        break;
+                    case Property::AUTHENTICATION_DATA:
+                        // TODO
                         trigger_error("{$properties[$key]} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
                         $properties[$key] = '';
                         break;
@@ -184,10 +205,17 @@ class UnPackProperty
                         $properties[$key] = UnPackTool::byte($remaining);
                         $length -= 2;
                         break;
-                    // TODO
+                    case Property::USER_PROPERTY:
+                        $userKey = UnPackTool::string($remaining);
+                        $userValue = UnPackTool::string($remaining);
+                        $properties[$userKey] = $userValue;
+                        $length -= 5;
+                        $length -= strlen($userKey);
+                        $length -= strlen($userValue);
+                        break;
                     case Property::SUBSCRIPTION_IDENTIFIER:
                     case Property::CORRELATION_DATA:
-                    case Property::USER_PROPERTY:
+                        // TODO
                         trigger_error("{$properties[$key]} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
                         $properties[$key] = '';
                         break;
@@ -215,10 +243,13 @@ class UnPackProperty
                         $length -= 3;
                         $length -= strlen($properties[$key]);
                         break;
-                    // TODO
                     case Property::USER_PROPERTY:
-                        trigger_error("{$properties[$key]} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
-                        $properties[$key] = '';
+                        $userKey = UnPackTool::string($remaining);
+                        $userValue = UnPackTool::string($remaining);
+                        $properties[$userKey] = $userValue;
+                        $length -= 5;
+                        $length -= strlen($userKey);
+                        $length -= strlen($userValue);
                         break;
                 }
             } else {
@@ -239,9 +270,16 @@ class UnPackProperty
                 $key = PacketMap::$subscribe[$property];
                 $remaining = substr($remaining, 1);
                 switch ($property) {
-                    // TODO
-                    case Property::SUBSCRIPTION_IDENTIFIER:
                     case Property::USER_PROPERTY:
+                        $userKey = UnPackTool::string($remaining);
+                        $userValue = UnPackTool::string($remaining);
+                        $properties[$userKey] = $userValue;
+                        $length -= 5;
+                        $length -= strlen($userKey);
+                        $length -= strlen($userValue);
+                        break;
+                    case Property::SUBSCRIPTION_IDENTIFIER:
+                        // TODO
                         trigger_error("{$properties[$key]} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
                         $properties[$key] = '';
                         break;
@@ -261,13 +299,15 @@ class UnPackProperty
         do {
             $property = ord($remaining[0]);
             if (isset(PacketMap::$unSubscribe[$property])) {
-                $key = PacketMap::$unSubscribe[$property];
                 $remaining = substr($remaining, 1);
                 switch ($property) {
-                    // TODO
                     case Property::USER_PROPERTY:
-                        trigger_error("{$properties[$key]} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
-                        $properties[$key] = '';
+                        $userKey = UnPackTool::string($remaining);
+                        $userValue = UnPackTool::string($remaining);
+                        $properties[$userKey] = $userValue;
+                        $length -= 5;
+                        $length -= strlen($userKey);
+                        $length -= strlen($userValue);
                         break;
                 }
             } else {
@@ -298,10 +338,13 @@ class UnPackProperty
                         $length -= 3;
                         $length -= strlen($properties[$key]);
                         break;
-                    // TODO
                     case Property::USER_PROPERTY:
-                        trigger_error("{$properties[$key]} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
-                        $properties[$key] = '';
+                        $userKey = UnPackTool::string($remaining);
+                        $userValue = UnPackTool::string($remaining);
+                        $properties[$userKey] = $userValue;
+                        $length -= 5;
+                        $length -= strlen($userKey);
+                        $length -= strlen($userValue);
                         break;
                 }
             } else {
@@ -328,9 +371,16 @@ class UnPackProperty
                         $length -= 3;
                         $length -= strlen($properties[$key]);
                         break;
-                    // TODO
-                    case Property::AUTHENTICATION_DATA:
                     case Property::USER_PROPERTY:
+                        $userKey = UnPackTool::string($remaining);
+                        $userValue = UnPackTool::string($remaining);
+                        $properties[$userKey] = $userValue;
+                        $length -= 5;
+                        $length -= strlen($userKey);
+                        $length -= strlen($userValue);
+                        break;
+                    case Property::AUTHENTICATION_DATA:
+                        // TODO
                         trigger_error("{$properties[$key]} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
                         $properties[$key] = '';
                         break;
