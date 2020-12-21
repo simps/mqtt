@@ -19,7 +19,7 @@ use Simps\MQTT\Packet\UnPackV5;
 use Simps\MQTT\Tools\PackTool;
 use Simps\MQTT\Tools\UnPackTool;
 
-class ProtocolV5
+class ProtocolV5 implements ProtocolInterface
 {
     public static function pack(array $array)
     {

@@ -22,7 +22,7 @@ use Simps\MQTT\Tools\UnPackTool;
 use Throwable;
 use TypeError;
 
-class Protocol
+class Protocol implements ProtocolInterface
 {
     public static function pack(array $array)
     {
