@@ -50,6 +50,30 @@ class UnPackTool extends Common
         return $tmp[1];
     }
 
+    public static function byte(&$remaining)
+    {
+        $tmp = ord($remaining[0]);
+        $remaining = substr($remaining, 1);
+
+        return $tmp;
+    }
+
+    public static function varInt(&$remaining, &$len)
+    {
+        $remainingLength = static::getRemainingLength($remaining, $headBytes);
+        $len = $headBytes;
+
+        $result = $shift = 0;
+        for ($i = 0; $i < $len; $i++) {
+            $byte = ord($remaining[$i]);
+            $result |= ($byte & 0x7f) << $shift++ * 7;
+        }
+
+        $remaining = substr($remaining, $headBytes, $remainingLength);
+
+        return $result;
+    }
+
     private static function getRemainingLength(string $data, &$headBytes)
     {
         $headBytes = $multiplier = 1;
