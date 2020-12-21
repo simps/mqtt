@@ -37,6 +37,11 @@ class PackTool extends Common
         return pack('n', $int);
     }
 
+    public static function varInt(int $int)
+    {
+        return static::packRemainingLength($int);
+    }
+
     public static function packHeader(int $type, int $bodyLength, int $dup = 0, int $qos = 0, int $retain = 0): string
     {
         $type = $type << 4;
