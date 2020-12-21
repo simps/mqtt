@@ -22,6 +22,11 @@ class PackTool extends Common
         return pack('n', $len) . $str;
     }
 
+    public static function stringPair(string $key, string $value)
+    {
+        return static::string($key) . static::string($value);
+    }
+
     public static function longInt($int)
     {
         return pack('N', $int);

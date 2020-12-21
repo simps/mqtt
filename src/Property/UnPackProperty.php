@@ -312,4 +312,35 @@ class UnPackProperty
 
         return $properties;
     }
+
+    public static function auth(int $length, &$remaining)
+    {
+        $properties = [];
+        do {
+            $property = ord($remaining[0]);
+            if (isset(PacketMap::$auth[$property])) {
+                $key = PacketMap::$auth[$property];
+                $remaining = substr($remaining, 1);
+                switch ($property) {
+                    case Property::AUTHENTICATION_METHOD:
+                    case Property::REASON_STRING:
+                        $properties[$key] = UnPackTool::string($remaining);
+                        $length -= 1;
+                        $length -= strlen($properties[$key]);
+                        break;
+                    // TODO
+                    case Property::AUTHENTICATION_DATA:
+                    case Property::USER_PROPERTY:
+                        trigger_error("{$properties[$key]} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
+                        $properties[$key] = '';
+                        break;
+                }
+            } else {
+                $errType = dechex($property);
+                throw new InvalidArgumentException("Property [0x{$errType}] not exist");
+            }
+        } while ($length > 0);
+
+        return $properties;
+    }
 }

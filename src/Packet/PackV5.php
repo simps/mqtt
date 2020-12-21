@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Packet;
 
-use Simps\MQTT\Hex\Property;
 use Simps\MQTT\Hex\ReasonCode;
+use Simps\MQTT\Property\PackProperty;
 use Simps\MQTT\Tools\PackTool;
 use Simps\MQTT\Types;
 
@@ -45,66 +45,17 @@ class PackV5
         $keepAlive = !empty($array['keep_alive']) && (int) $array['keep_alive'] >= 0 ? (int) $array['keep_alive'] : 0;
         $body .= PackTool::shortInt($keepAlive);
 
-        $propertiesTotalLength = 0;
-        if (!empty($array['properties']['session_expiry_interval'])) {
-            $propertiesTotalLength += 5;
-        }
-        if (!empty($array['properties']['receive_maximum'])) {
-            $propertiesTotalLength += 3;
-        }
-        if (!empty($array['properties']['topic_alias_maximum'])) {
-            $propertiesTotalLength += 3;
-        }
-        $body .= chr($propertiesTotalLength);
-
-        if (!empty($array['properties']['session_expiry_interval'])) {
-            $body .= chr(Property::SESSION_EXPIRY_INTERVAL);
-            $body .= PackTool::longInt($array['properties']['session_expiry_interval']);
-        }
-        if (!empty($array['properties']['receive_maximum'])) {
-            $body .= chr(Property::RECEIVE_MAXIMUM);
-            $body .= PackTool::shortInt($array['properties']['receive_maximum']);
-        }
-        if (!empty($array['properties']['topic_alias_maximum'])) {
-            $body .= chr(Property::TOPIC_ALIAS_MAXIMUM);
-            $body .= PackTool::shortInt($array['properties']['topic_alias_maximum']);
+        if (isset($array['properties'])) {
+            // CONNECT Properties
+            $body .= PackProperty::connect($array['properties']);
         }
 
         $body .= PackTool::string($array['client_id']);
         if (!empty($array['will'])) {
-            $willPropertiesTotalLength = 0;
-            if (!empty($array['will']['properties']['will_delay_interval'])) {
-                $willPropertiesTotalLength += 5;
+            if (isset($array['will']['properties'])) {
+                // Will Properties
+                $body .= PackProperty::willProperties($array['will']['properties']);
             }
-            if (!empty($array['will']['properties']['message_expiry_interval'])) {
-                $willPropertiesTotalLength += 5;
-            }
-            if (!empty($array['will']['properties']['content_type'])) {
-                $willPropertiesTotalLength += 3;
-                $willPropertiesTotalLength += strlen($array['will']['properties']['content_type']);
-            }
-            if (isset($array['will']['properties']['payload_format_indicator'])) {
-                $willPropertiesTotalLength += 2;
-            }
-            $body .= chr($willPropertiesTotalLength);
-
-            if (!empty($array['will']['properties']['will_delay_interval'])) {
-                $body .= chr(Property::WILL_DELAY_INTERVAL);
-                $body .= PackTool::longInt($array['will']['properties']['will_delay_interval']);
-            }
-            if (!empty($array['will']['properties']['message_expiry_interval'])) {
-                $body .= chr(Property::MESSAGE_EXPIRY_INTERVAL);
-                $body .= PackTool::longInt($array['will']['properties']['message_expiry_interval']);
-            }
-            if (!empty($array['will']['properties']['content_type'])) {
-                $body .= chr(Property::CONTENT_TYPE);
-                $body .= PackTool::string($array['will']['properties']['content_type']);
-            }
-            if (isset($array['will']['properties']['payload_format_indicator'])) {
-                $body .= chr(Property::PAYLOAD_FORMAT_INDICATOR);
-                $body .= chr((int) $array['will']['properties']['payload_format_indicator']);
-            }
-
             $body .= PackTool::string($array['will']['topic']);
             $body .= PackTool::string($array['will']['message']);
         }
@@ -125,66 +76,10 @@ class PackV5
         $code = !empty($array['code']) ? $array['code'] : 0;
         $body .= chr($code);
 
-        $propertiesTotalLength = 0;
-        if (!empty($array['properties']['maximum_packet_size'])) {
-            $propertiesTotalLength += 5;
+        if (isset($array['properties'])) {
+            // CONNACK Properties
+            $body .= PackProperty::connAck($array['properties']);
         }
-        if (!isset($array['properties']['retain_available']) || !empty($array['properties']['retain_available'])) {
-            $propertiesTotalLength += 2;
-        }
-        if (!isset($array['properties']['shared_subscription_available']) || !empty($array['properties']['shared_subscription_available'])) {
-            $propertiesTotalLength += 2;
-        }
-        if (!isset($array['properties']['subscription_identifier_available']) || !empty($array['properties']['subscription_identifier_available'])) {
-            $propertiesTotalLength += 2;
-        }
-        if (isset($array['properties']['topic_alias_maximum'])) {
-            $propertiesTotalLength += 3;
-        }
-        if (!isset($array['properties']['wildcard_subscription_available']) || !empty($array['properties']['wildcard_subscription_available'])) {
-            $propertiesTotalLength += 2;
-        }
-        $body .= chr($propertiesTotalLength);
-
-        if (!empty($array['properties']['maximum_packet_size'])) {
-            $body .= chr(Property::MAXIMUM_PACKET_SIZE);
-            $body .= PackTool::longInt($array['properties']['maximum_packet_size']);
-        }
-
-        $retainAvailable = 0;
-        if (!isset($array['properties']['retain_available']) || !empty($array['properties']['retain_available'])) {
-            $retainAvailable = 1;
-        }
-        $body .= chr(Property::RETAIN_AVAILABLE);
-        $body .= chr($retainAvailable);
-
-        $sharedSubscriptionAvailable = 0;
-        if (!isset($array['properties']['shared_subscription_available']) || !empty($array['properties']['shared_subscription_available'])) {
-            $sharedSubscriptionAvailable = 1;
-        }
-        $body .= chr(Property::SHARED_SUBSCRIPTION_AVAILABLE);
-        $body .= chr($sharedSubscriptionAvailable);
-
-        $subscriptionIdentifierAvailable = 0;
-        if (!isset($array['properties']['subscription_identifier_available']) || !empty($array['properties']['subscription_identifier_available'])) {
-            $subscriptionIdentifierAvailable = 1;
-        }
-        $body .= chr(Property::SUBSCRIPTION_IDENTIFIER_AVAILABLE);
-        $body .= chr($subscriptionIdentifierAvailable);
-
-        $topicAliasMaximum = 0;
-        if (isset($array['properties']['topic_alias_maximum'])) {
-            $topicAliasMaximum = $array['properties']['topic_alias_maximum'];
-        }
-        $body .= chr(Property::TOPIC_ALIAS_MAXIMUM);
-        $body .= PackTool::shortInt($topicAliasMaximum);
-
-        $wildcardSubscriptionAvailable = 0;
-        if (!isset($array['properties']['wildcard_subscription_available']) || !empty($array['properties']['wildcard_subscription_available'])) {
-            $wildcardSubscriptionAvailable = 1;
-        }
-        $body .= chr(Property::WILDCARD_SUBSCRIPTION_AVAILABLE);
-        $body .= chr($wildcardSubscriptionAvailable);
 
         $head = PackTool::packHeader(Types::CONNACK, strlen($body));
 
@@ -198,28 +93,15 @@ class PackV5
         if ($qos) {
             $body .= PackTool::shortInt($array['message_id']);
         }
+        $dup = $array['dup'] ?? 0;
+        $retain = $array['retain'] ?? 0;
 
-        $propertiesTotalLength = 0;
-        if (!empty($array['properties']['message_expiry_interval'])) {
-            $propertiesTotalLength += 5;
-        }
-        if (!empty($array['properties']['topic_alias'])) {
-            $propertiesTotalLength += 3;
-        }
-        $body .= chr($propertiesTotalLength);
-
-        if (!empty($array['properties']['message_expiry_interval'])) {
-            $body .= chr(Property::MESSAGE_EXPIRY_INTERVAL);
-            $body .= PackTool::longInt($array['properties']['message_expiry_interval']);
-        }
-        if (!empty($array['properties']['topic_alias'])) {
-            $body .= chr(Property::TOPIC_ALIAS);
-            $body .= PackTool::shortInt($array['properties']['topic_alias']);
+        if (isset($array['properties'])) {
+            // PUBLISH Properties
+            $body .= PackProperty::connAck($array['properties']);
         }
 
         $body .= $array['message'];
-        $dup = $array['dup'] ?? 0;
-        $retain = $array['retain'] ?? 0;
         $head = PackTool::packHeader(Types::PUBLISH, strlen($body), $dup, $qos, $retain);
 
         return $head . $body;
@@ -229,8 +111,10 @@ class PackV5
     {
         $body = PackTool::shortInt($array['message_id']);
 
-        $propertiesTotalLength = 0;
-        $body .= chr($propertiesTotalLength);
+        if (isset($array['properties'])) {
+            // SUBSCRIBE Properties
+            $body .= PackProperty::subscribe($array['properties']);
+        }
 
         foreach ($array['topics'] as $topic => $options) {
             $body .= PackTool::string($topic);
@@ -259,8 +143,11 @@ class PackV5
     public static function subAck(array $array): string
     {
         $body = PackTool::shortInt($array['message_id']);
-        $propertiesTotalLength = 0;
-        $body .= chr($propertiesTotalLength);
+
+        if (isset($array['properties'])) {
+            // SUBACK Properties
+            $body .= PackProperty::pubAndSub($array['properties']);
+        }
 
         $body .= call_user_func_array(
             'pack',
@@ -274,8 +161,11 @@ class PackV5
     public static function unSubscribe(array $array): string
     {
         $body = PackTool::shortInt($array['message_id']);
-        $propertiesTotalLength = 0;
-        $body .= chr($propertiesTotalLength);
+
+        if (isset($array['properties'])) {
+            // UNSUBSCRIBE Properties
+            $body .= PackProperty::unSubscribe($array['properties']);
+        }
 
         foreach ($array['topics'] as $topic) {
             $body .= PackTool::string($topic);
@@ -288,8 +178,11 @@ class PackV5
     public static function unSubAck(array $array): string
     {
         $body = PackTool::shortInt($array['message_id']);
-        $propertiesTotalLength = 0;
-        $body .= chr($propertiesTotalLength);
+
+        if (isset($array['properties'])) {
+            // UNSUBACK Properties
+            $body .= PackProperty::pubAndSub($array['properties']);
+        }
 
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
         $body .= chr($code);
@@ -302,6 +195,12 @@ class PackV5
     {
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::NORMAL_DISCONNECTION;
         $body = chr($code);
+
+        if (isset($array['properties'])) {
+            // DISCONNECT Properties
+            $body .= PackProperty::disConnect($array['properties']);
+        }
+
         $head = PackTool::packHeader(Types::DISCONNECT, strlen($body));
 
         return $head . $body;
@@ -313,8 +212,10 @@ class PackV5
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
         $body .= chr($code);
 
-        $propertiesTotalLength = 0;
-        $body .= chr($propertiesTotalLength);
+        if (isset($array['properties'])) {
+            // pubAck, pubRec, pubRel, pubComp Properties
+            $body .= PackProperty::pubAndSub($array['properties']);
+        }
 
         if ($array['type'] === Types::PUBREL) {
             $head = PackTool::packHeader($array['type'], strlen($body), 0, 1);
