@@ -45,17 +45,14 @@ class PackV5
         $keepAlive = !empty($array['keep_alive']) && (int) $array['keep_alive'] >= 0 ? (int) $array['keep_alive'] : 0;
         $body .= PackTool::shortInt($keepAlive);
 
-        if (isset($array['properties'])) {
-            // CONNECT Properties
-            $body .= PackProperty::connect($array['properties']);
-        }
+        // CONNECT Properties
+        $body .= PackProperty::connect($array['properties'] ?? []);
 
         $body .= PackTool::string($array['client_id']);
         if (!empty($array['will'])) {
-            if (isset($array['will']['properties'])) {
-                // Will Properties
-                $body .= PackProperty::willProperties($array['will']['properties']);
-            }
+            // Will Properties
+            $body .= PackProperty::willProperties($array['will']['properties'] ?? []);
+
             $body .= PackTool::string($array['will']['topic']);
             $body .= PackTool::string($array['will']['message']);
         }
@@ -76,10 +73,8 @@ class PackV5
         $code = !empty($array['code']) ? $array['code'] : 0;
         $body .= chr($code);
 
-        if (isset($array['properties'])) {
-            // CONNACK Properties
-            $body .= PackProperty::connAck($array['properties']);
-        }
+        // CONNACK Properties
+        $body .= PackProperty::connAck($array['properties'] ?? []);
 
         $head = PackTool::packHeader(Types::CONNACK, strlen($body));
 
@@ -96,10 +91,8 @@ class PackV5
         $dup = $array['dup'] ?? 0;
         $retain = $array['retain'] ?? 0;
 
-        if (isset($array['properties'])) {
-            // PUBLISH Properties
-            $body .= PackProperty::connAck($array['properties']);
-        }
+        // PUBLISH Properties
+        $body .= PackProperty::connAck($array['properties'] ?? []);
 
         $body .= $array['message'];
         $head = PackTool::packHeader(Types::PUBLISH, strlen($body), $dup, $qos, $retain);
@@ -111,10 +104,8 @@ class PackV5
     {
         $body = PackTool::shortInt($array['message_id']);
 
-        if (isset($array['properties'])) {
-            // SUBSCRIBE Properties
-            $body .= PackProperty::subscribe($array['properties']);
-        }
+        // SUBSCRIBE Properties
+        $body .= PackProperty::subscribe($array['properties'] ?? []);
 
         foreach ($array['topics'] as $topic => $options) {
             $body .= PackTool::string($topic);
@@ -144,10 +135,8 @@ class PackV5
     {
         $body = PackTool::shortInt($array['message_id']);
 
-        if (isset($array['properties'])) {
-            // SUBACK Properties
-            $body .= PackProperty::pubAndSub($array['properties']);
-        }
+        // SUBACK Properties
+        $body .= PackProperty::pubAndSub($array['properties'] ?? []);
 
         $body .= call_user_func_array(
             'pack',
@@ -162,10 +151,8 @@ class PackV5
     {
         $body = PackTool::shortInt($array['message_id']);
 
-        if (isset($array['properties'])) {
-            // UNSUBSCRIBE Properties
-            $body .= PackProperty::unSubscribe($array['properties']);
-        }
+        // UNSUBSCRIBE Properties
+        $body .= PackProperty::unSubscribe($array['properties'] ?? []);
 
         foreach ($array['topics'] as $topic) {
             $body .= PackTool::string($topic);
@@ -179,10 +166,8 @@ class PackV5
     {
         $body = PackTool::shortInt($array['message_id']);
 
-        if (isset($array['properties'])) {
-            // UNSUBACK Properties
-            $body .= PackProperty::pubAndSub($array['properties']);
-        }
+        // UNSUBACK Properties
+        $body .= PackProperty::pubAndSub($array['properties'] ?? []);
 
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
         $body .= chr($code);
@@ -196,10 +181,8 @@ class PackV5
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::NORMAL_DISCONNECTION;
         $body = chr($code);
 
-        if (isset($array['properties'])) {
-            // DISCONNECT Properties
-            $body .= PackProperty::disConnect($array['properties']);
-        }
+        // DISCONNECT Properties
+        $body .= PackProperty::disConnect($array['properties'] ?? []);
 
         $head = PackTool::packHeader(Types::DISCONNECT, strlen($body));
 
@@ -212,10 +195,8 @@ class PackV5
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
         $body .= chr($code);
 
-        if (isset($array['properties'])) {
-            // pubAck, pubRec, pubRel, pubComp Properties
-            $body .= PackProperty::pubAndSub($array['properties']);
-        }
+        // pubAck, pubRec, pubRel, pubComp Properties
+        $body .= PackProperty::pubAndSub($array['properties'] ?? []);
 
         if ($array['type'] === Types::PUBREL) {
             $head = PackTool::packHeader($array['type'], strlen($body), 0, 1);
