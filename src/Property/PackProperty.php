@@ -200,6 +200,11 @@ class PackProperty
                         $tmpBody .= chr((int) $item);
                         break;
                     case Property::SUBSCRIPTION_IDENTIFIER:
+                        $length += 1;
+                        $value = PackTool::varInt((int) $item);
+                        $length += strlen($value);
+                        $tmpBody .= $value;
+                        break;
                     case Property::CORRELATION_DATA:
                         // TODO
                         trigger_error("{$property} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
@@ -260,9 +265,10 @@ class PackProperty
                 $tmpBody .= chr($property);
                 switch ($property) {
                     case Property::SUBSCRIPTION_IDENTIFIER:
-                        // TODO
-                        trigger_error("{$property} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
-                        $properties[$key] = '';
+                        $length += 1;
+                        $value = PackTool::varInt((int) $item);
+                        $length += strlen($value);
+                        $tmpBody .= $value;
                         break;
                 }
             } else {
