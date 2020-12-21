@@ -45,11 +45,7 @@ $config = [
     'keep_alive' => 10, // 默认0秒，设置成0代表禁用
     'protocol_name' => 'MQTT', // 协议名，默认为MQTT(3.1.1版本)，也可为MQIsdp(3.1版本)
     'protocol_level' => 4, // 协议等级，MQTT3.1.1版本为4，5.0版本为5，MQIsdp为3
-    'properties' => [ // MQTT5 需要
-        'session_expiry_interval' => 0,
-        'receive_maximum' => 0,
-        'topic_alias_maximum' => 0,
-    ],
+    'properties' => [], // MQTT5 中所需要的属性
 ];
 ```
 
@@ -94,7 +90,8 @@ $will = [
     'topic' => '', // 主题
     'qos' => 1, // QoS等级
     'retain' => 0, // retain标记
-    'content' => '', // content
+    'message' => '', // 遗嘱消息内容
+    'properties' => [], // MQTT5 中需要，可选
 ];
 ```
 
@@ -103,22 +100,22 @@ $will = [
 向某个主题发布一条消息
 
 ```php
-Simps\MQTT\Client->publish($topic, $content, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
+Simps\MQTT\Client->publish($topic, $message, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
 ```
 
 * 参数`$topic` 主题
-* 参数`$content` 内容
+* 参数`$message` 内容
 * 参数`$qos` QoS等级，默认0
 * 参数`$dup` 重发标志，默认0
 * 参数`$retain` retain标记，默认0
-* 参数`$properties` 属性，MQTT5需要
+* 参数`$properties` 属性，MQTT5 中需要，可选
 
 ### subscribe()
 
 订阅一个主题或者多个主题
 
 ```php
-Simps\MQTT\Client->subscribe(array $topics)
+Simps\MQTT\Client->subscribe(array $topics, array $properties = [])
 ```
 
 * 参数`array $topics`
@@ -151,12 +148,16 @@ $topics = [
 ];
 ```
 
+* 参数`array $properties`
+
+属性，MQTT5 中需要，可选
+
 ### unSubscribe()
 
 取消订阅一个主题或者多个主题
 
 ```php
-Simps\MQTT\Client->unSubscribe(array $topics)
+Simps\MQTT\Client->unSubscribe(array $topics, array $properties = [])
 ```
 
 * 参数`array $topics`
@@ -165,15 +166,25 @@ Simps\MQTT\Client->unSubscribe(array $topics)
 $topics = ['topic1', 'topic2'];
 ```
 
+* 参数`array $properties`
+
+属性，MQTT5 中需要，可选
+
 ### close()
 
 正常断开与Broker的连接，`DISCONNECT(14)`报文会被发送到Broker
 
 ```php
-Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION)
+Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = [])
 ```
 
-* 参数`$code` 响应码，MQTT5中需要，MQTT3直接调用即可
+* 参数`int $code`
+
+响应码，MQTT5 中需要，MQTT3直接调用即可
+
+* 参数`array $properties`
+
+属性，MQTT5中需要
 
 ### recv()
 

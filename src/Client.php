@@ -31,8 +31,8 @@ class Client
         'password' => '',
         'client_id' => '',
         'keep_alive' => 0,
-        'protocol_name' => 'MQTT',
-        'protocol_level' => 4,
+        'protocol_name' => ProtocolInterface::MQTT_PROTOCOL_NAME,
+        'protocol_level' => ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1,
         'properties' => [],
     ];
 
@@ -109,7 +109,7 @@ class Client
         return $this->send($data);
     }
 
-    public function publish($topic, $content, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
+    public function publish($topic, $message, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
     {
         $response = ($qos > 0) ? true : false;
 
@@ -122,7 +122,7 @@ class Client
                 'topic' => $topic,
                 'message_id' => $this->buildMessageId(),
                 'properties' => $properties,
-                'message' => $content,
+                'message' => $message,
             ],
             $response
         );

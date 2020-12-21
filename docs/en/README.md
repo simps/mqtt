@@ -2,7 +2,9 @@
 
 MQTT Protocol Analysis and Coroutine Client for PHP.
 
-Support for MQTT protocol versions `3.1`, `3.1.1` and `5.0` and support for `QoS 0`, `QoS 1`, `QoS 2`.
+Support for `3.1`, `3.1.1` and `5.0` versions of the MQTT protocol.
+
+Support for `QoS 0`, `QoS 1`, `QoS 2`.
 
 ## Requirements
 
@@ -45,11 +47,7 @@ $config = [
     'keep_alive' => 10,
     'protocol_name' => 'MQTT', // or MQIsdp
     'protocol_level' => 4, // or 3, 5
-    'properties' => [ // MQTT5 need
-        'session_expiry_interval' => 0,
-        'receive_maximum' => 0,
-        'topic_alias_maximum' => 0,
-    ],
+    'properties' => [], // optional in MQTT5
 ];
 ```
 
@@ -92,7 +90,8 @@ $will = [
     'topic' => '',
     'qos' => 1,
     'retain' => 0,
-    'content' => '',
+    'message' => '', // message content
+    'properties' => [], // optional in MQTT5
 ];
 ```
 
@@ -101,7 +100,7 @@ $will = [
 push a message to a topic
 
 ```php
-Simps\MQTT\Client->publish($topic, $content, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
+Simps\MQTT\Client->publish($topic, $message, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
 ```
 
 ### subscribe()
@@ -109,7 +108,7 @@ Simps\MQTT\Client->publish($topic, $content, $qos = 0, $dup = 0, $retain = 0, ar
 Subscribe to one topic or multiple topics
 
 ```php
-Simps\MQTT\Client->subscribe(array $topics)
+Simps\MQTT\Client->subscribe(array $topics, array $properties = [])
 ```
 
 * `array $topics`
@@ -140,12 +139,16 @@ $topics = [
 ];
 ```
 
+* `array $properties`
+
+Optional in MQTT5
+
 ### unSubscribe()
 
 Unsubscribe from a topic or multiple topics
 
 ```php
-Simps\MQTT\Client->unSubscribe(array $topics)
+Simps\MQTT\Client->unSubscribe(array $topics, array $properties = [])
 ```
 
 * `array $topics`
@@ -154,12 +157,16 @@ Simps\MQTT\Client->unSubscribe(array $topics)
 $topics = ['topic1', 'topic2'];
 ```
 
+* `array $properties`
+
+Optional in MQTT5
+
 ### close()
 
 Disconnect from Broker connect. The `DISCONNECT(14)` message is send to Broker
 
 ```php
-Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION)
+Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = [])
 ```
 
 ### recv()
