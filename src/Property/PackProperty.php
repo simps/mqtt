@@ -33,6 +33,7 @@ class PackProperty
                         $tmpBody .= PackTool::longInt($item);
                         break;
                     case Property::AUTHENTICATION_METHOD:
+                    case Property::AUTHENTICATION_DATA:
                         $length += 3;
                         $length += strlen($item);
                         $tmpBody .= PackTool::string($item);
@@ -47,12 +48,6 @@ class PackProperty
                     case Property::MAXIMUM_PACKET_SIZE:
                         $length += 3;
                         $tmpBody .= PackTool::shortInt($item);
-                        break;
-                    case Property::AUTHENTICATION_DATA:
-                        // TODO
-                        trigger_error("{$property} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
-                        $length += 1;
-                        $tmpBody .= '';
                         break;
                 }
             } else {
@@ -85,6 +80,7 @@ class PackProperty
                         break;
                     case Property::CONTENT_TYPE:
                     case Property::RESPONSE_TOPIC:
+                    case Property::CORRELATION_DATA:
                         $length += 3;
                         $length += strlen($item);
                         $tmpBody .= PackTool::string($item);
@@ -92,12 +88,6 @@ class PackProperty
                     case Property::PAYLOAD_FORMAT_INDICATOR:
                         $length += 2;
                         $tmpBody .= chr((int) $item);
-                        break;
-                    case Property::CORRELATION_DATA:
-                        // TODO
-                        trigger_error("{$property} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
-                        $length += 1;
-                        $tmpBody .= '';
                         break;
                 }
             } else {
@@ -136,6 +126,7 @@ class PackProperty
                         break;
                     case Property::ASSIGNED_CLIENT_IDENTIFIER:
                     case Property::AUTHENTICATION_METHOD:
+                    case Property::AUTHENTICATION_DATA:
                     case Property::RESPONSE_INFORMATION:
                     case Property::SERVER_REFERENCE:
                     case Property::REASON_STRING:
@@ -150,12 +141,6 @@ class PackProperty
                     case Property::SHARED_SUBSCRIPTION_AVAILABLE:
                         $length += 2;
                         $tmpBody .= chr((int) $item);
-                        break;
-                    case Property::AUTHENTICATION_DATA:
-                        // TODO
-                        trigger_error("{$property} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
-                        $length += 1;
-                        $tmpBody .= '';
                         break;
                 }
             } else {
@@ -191,6 +176,7 @@ class PackProperty
                         break;
                     case Property::CONTENT_TYPE:
                     case Property::RESPONSE_TOPIC:
+                    case Property::CORRELATION_DATA:
                         $length += 3;
                         $length += strlen($item);
                         $tmpBody .= PackTool::string($item);
@@ -204,12 +190,6 @@ class PackProperty
                         $value = PackTool::varInt((int) $item);
                         $length += strlen($value);
                         $tmpBody .= $value;
-                        break;
-                    case Property::CORRELATION_DATA:
-                        // TODO
-                        trigger_error("{$property} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
-                        $length += 1;
-                        $tmpBody .= '';
                         break;
                 }
             } else {
@@ -346,16 +326,11 @@ class PackProperty
                 $tmpBody .= chr($property);
                 switch ($property) {
                     case Property::AUTHENTICATION_METHOD:
+                    case Property::AUTHENTICATION_DATA:
                     case Property::REASON_STRING:
                         $length += 3;
                         $length += strlen($item);
                         $tmpBody .= PackTool::string($item);
-                        break;
-                    case Property::AUTHENTICATION_DATA:
-                        // TODO
-                        trigger_error("{$property} is not yet supported, please go to https://github.com/simps/mqtt/issues to submit an issue", E_USER_WARNING);
-                        $length += 1;
-                        $tmpBody .= '';
                         break;
                 }
             } else {
