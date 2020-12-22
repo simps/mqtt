@@ -59,6 +59,9 @@ class ProtocolV5 implements ProtocolInterface
             case Types::DISCONNECT:
                 $package = PackV5::disconnect($array);
                 break;
+            case Types::AUTH:
+                $package = PackV5::auth($array);
+                break;
             default:
                 throw new InvalidArgumentException('MQTT Type not exist');
         }
@@ -107,6 +110,9 @@ class ProtocolV5 implements ProtocolInterface
                 break;
             case Types::UNSUBACK:
                 $package = UnPackV5::unSubAck($remaining);
+                break;
+            case Types::AUTH:
+                $package = UnPackV5::auth($remaining);
                 break;
             default:
                 $package = [];

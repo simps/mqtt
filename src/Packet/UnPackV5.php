@@ -286,4 +286,28 @@ class UnPackV5
 
         return $package;
     }
+
+    public static function auth(string $remaining): array
+    {
+        if (isset($remaining[0])) {
+            $code = UnPackTool::byte($remaining);
+        } else {
+            $code = ReasonCode::SUCCESS;
+        }
+        $package = [
+            'type' => Types::AUTH,
+            'code' => $code,
+        ];
+
+        $propertiesTotalLength = 0;
+        if (isset($remaining[0])) {
+            $propertiesTotalLength = UnPackTool::byte($remaining);
+        }
+
+        if ($propertiesTotalLength) {
+            $package['properties'] = UnPackProperty::auth($propertiesTotalLength, $remaining);
+        }
+
+        return $package;
+    }
 }

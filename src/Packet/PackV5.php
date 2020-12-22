@@ -206,4 +206,17 @@ class PackV5
 
         return $head . $body;
     }
+
+    public static function auth(array $array): string
+    {
+        $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
+        $body = chr($code);
+
+        // AUTH Properties
+        $body .= PackProperty::auth($array['properties'] ?? []);
+
+        $head = PackTool::packHeader(Types::AUTH, strlen($body));
+
+        return $head . $body;
+    }
 }

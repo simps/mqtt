@@ -62,4 +62,4 @@ see [examples](./examples)
 - [x] PINGREQ
 - [x] PINGRESP
 - [x] DISCONNECT
-- [ ] AUTH
+- [X] AUTH

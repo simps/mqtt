@@ -60,4 +60,4 @@ composer require simps/mqtt
 - [x] PINGREQ
 - [x] PINGRESP
 - [x] DISCONNECT
-- [ ] AUTH
+- [x] AUTH
