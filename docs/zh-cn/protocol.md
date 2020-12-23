@@ -30,3 +30,15 @@ Simps\MQTT\ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0; // 5.0
 Simps\MQTT\ProtocolInterface::MQISDP_PROTOCOL_NAME; // MQIsdp
 Simps\MQTT\ProtocolInterface::MQTT_PROTOCOL_NAME; // MQTT
 ```
+
+## ReasonCode
+
+原因码小于`0x80`表示操作成功完成，成功的常规原因码为`0`，原因码值为`0x80`或更大表示失败。
+
+可以使用`ReasonCode::getReasonPhrase()`方法将原因码转为人类可读的名称。
+
+```php
+Simps\MQTT\Hex\ReasonCode::getReasonPhrase(0x86);
+
+Simps\MQTT\Hex\ReasonCode::getReasonPhrase(0x02, true);
+```

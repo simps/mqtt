@@ -30,3 +30,15 @@ Simps\MQTT\ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0; // 5.0
 Simps\MQTT\ProtocolInterface::MQISDP_PROTOCOL_NAME; // MQIsdp
 Simps\MQTT\ProtocolInterface::MQTT_PROTOCOL_NAME; // MQTT
 ```
+
+## ReasonCode
+
+Reason Codes less than 0x80 indicate successful completion of an operation. The normal Reason Code for success is 0. Reason Code values of 0x80 or greater indicate failure.
+
+Reason codes can be converted to human-readable names using the `ReasonCode::getReasonPhrase()` method.
+
+```php
+Simps\MQTT\Hex\ReasonCode::getReasonPhrase(0x86);
+
+Simps\MQTT\Hex\ReasonCode::getReasonPhrase(0x02, true);
+```
