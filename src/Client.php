@@ -140,6 +140,11 @@ class Client
         return $this->client->close();
     }
 
+    public function auth(int $code = ReasonCode::SUCCESS, array $properties = [])
+    {
+        return $this->send(['type' => Types::AUTH, 'code' => $code, 'properties' => $properties]);
+    }
+
     private function reConnect()
     {
         $reConnectTime = 1;

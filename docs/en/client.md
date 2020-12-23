@@ -145,6 +145,14 @@ Disconnect from Broker connect. The `DISCONNECT(14)` message is send to Broker
 Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = [])
 ```
 
+## auth()
+
+New AUTH type added in MQTT5. Authentication exchange.
+
+```php
+Simps\MQTT\Client->auth(int $code = ReasonCode::SUCCESS, array $properties = [])
+```
+
 ## recv()
 
 Receive messages

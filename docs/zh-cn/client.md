@@ -164,6 +164,14 @@ Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $pr
 
 属性，MQTT5中需要
 
+## auth()
+
+MQTT5 中新增的认证交换机制。
+
+```php
+Simps\MQTT\Client->auth(int $code = ReasonCode::SUCCESS, array $properties = [])
+```
+
 ## recv()
 
 接收消息
