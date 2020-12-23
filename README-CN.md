@@ -13,6 +13,8 @@
 [![License](https://poser.pugx.org/simps/mqtt/license)](LICENSE)
 [![PHP Version](https://img.shields.io/badge/php-%3E=7.0-blue.svg)](https://www.php.net)
 [![Swoole Version](https://img.shields.io/badge/swoole-%3E=4.4.19-blue.svg)](https://github.com/swoole/swoole-src)
+[![Join Discord community and chat about Simps](https://img.shields.io/discord/740738911625674872.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&cacheSeconds=60)](https://discord.gg/u4YAqeh)
+[![Simps 交流群](https://img.shields.io/badge/QQ%E7%BE%A4-983679945-orange)](https://shang.qq.com/wpa/qunwpa?idkey=587be6cdd66b437f2306b1a6d7263fd8096b70ef1db716a259485219f28d41a3)
 
 ## 安装
 
