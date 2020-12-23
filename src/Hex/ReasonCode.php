@@ -155,13 +155,27 @@ abstract class ReasonCode
         self::PACKET_IDENTIFIER_NOT_FOUND => 'Packet Identifier not found',
     ];
 
-    public static function getReasonPhrases(): array
+    protected static $qosReasonPhrases = [
+        self::GRANTED_QOS_0 => 'Granted QoS 0',
+        self::GRANTED_QOS_1 => 'Granted QoS 1',
+        self::GRANTED_QOS_2 => 'Granted QoS 2',
+    ];
+
+    public static function getReasonPhrases($isQos = false): array
     {
+        if ($isQos) {
+            return static::$qosReasonPhrases;
+        }
+
         return static::$reasonPhrases;
     }
 
-    public static function getReasonPhrase(int $value): string
+    public static function getReasonPhrase(int $value, $isQos = false): string
     {
+        if ($isQos) {
+            return static::$qosReasonPhrases[$value] ?? 'Wrong QoS';
+        }
+
         return static::$reasonPhrases[$value] ?? 'Unknown';
     }
 }
