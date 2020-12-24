@@ -171,7 +171,7 @@ class UnPackV5
         $messageId = UnPackTool::shortInt($remaining);
 
         $package = [
-            'type' => Types::UNSUBACK,
+            'type' => Types::SUBACK,
             'message_id' => $messageId,
         ];
 
