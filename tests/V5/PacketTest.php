@@ -52,6 +52,9 @@ class PacketTest extends TestCase
             'retain_as_published' => true,
             'retain_handling' => 2,
         ];
+        $topics['testtopic/#'] = [
+            'qos' => 0,
+        ];
         $res = $client->subscribe($topics);
         $this->assertIsArray($res);
         $this->assertSame($res['type'], Types::SUBACK);
@@ -82,7 +85,7 @@ class PacketTest extends TestCase
         $buffer = $client->recv();
         $this->assertIsArray($buffer);
         $this->assertSame($buffer['type'], Types::PUBLISH);
-        $this->assertSame($buffer['topic'], 'simps-mqtt/user001/get');
+        $this->assertIsString($buffer['topic']);
 
         return $client;
     }
