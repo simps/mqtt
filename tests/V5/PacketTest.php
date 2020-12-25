@@ -40,13 +40,13 @@ class PacketTest extends TestCase
      */
     public function testSubscribe(Client $client)
     {
-        $topics['simpsmqtt/user001/get'] = [
+        $topics['simps-mqtt/user001/get'] = [
             'qos' => 1,
             'no_local' => true,
             'retain_as_published' => true,
             'retain_handling' => 2,
         ];
-        $topics['simpsmqtt/user001/update'] = [
+        $topics['simps-mqtt/user001/update'] = [
             'qos' => 2,
             'no_local' => false,
             'retain_as_published' => true,
@@ -70,7 +70,7 @@ class PacketTest extends TestCase
      */
     public function testPublish(Client $client)
     {
-        $buffer = $client->publish('simpsmqtt/user001/get', 'hello,simps', 1);
+        $buffer = $client->publish('simps-mqtt/user001/get', 'hello,simps', 1);
         $this->assertIsArray($buffer);
         $this->assertSame($buffer['type'], Types::PUBACK);
         $this->assertSame(ReasonCode::getReasonPhrase($buffer['code']), 'Success');
@@ -107,7 +107,7 @@ class PacketTest extends TestCase
      */
     public function testUnsubscribe(Client $client)
     {
-        $status = $client->unSubscribe(['simpsmqtt/user001/get']);
+        $status = $client->unSubscribe(['simps-mqtt/user001/get']);
         $this->assertIsArray($status);
         $this->assertSame($status['type'], Types::UNSUBACK);
         $this->assertSame(ReasonCode::getReasonPhrase($status['code']), 'Success');
