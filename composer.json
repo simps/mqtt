@@ -26,15 +26,22 @@
     "ext-swoole": ">=4.4.19"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^2.16"
+    "friendsofphp/php-cs-fixer": "^2.16",
+    "phpunit/phpunit": "^7.0.0"
   },
   "autoload": {
     "psr-4": {
       "Simps\\MQTT\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "SimpsTest\\MQTT\\": "tests/"
+    }
+  },
   "scripts": {
     "cs-check": "/usr/bin/env php ./vendor/bin/php-cs-fixer fix --dry-run",
-    "cs-fix": "/usr/bin/env php ./vendor/bin/php-cs-fixer fix"
+    "cs-fix": "/usr/bin/env php ./vendor/bin/php-cs-fixer fix",
+    "test": "./tests/co-phpunit --colors=always"
   }
 }
