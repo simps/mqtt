@@ -22,22 +22,22 @@ class PackTool extends Common
         return pack('n', $len) . $str;
     }
 
-    public static function stringPair(string $key, string $value)
+    public static function stringPair(string $key, string $value): string
     {
         return static::string($key) . static::string($value);
     }
 
-    public static function longInt($int)
+    public static function longInt(int $int): string
     {
         return pack('N', $int);
     }
 
-    public static function shortInt($int)
+    public static function shortInt(int $int): string
     {
         return pack('n', $int);
     }
 
-    public static function varInt(int $int)
+    public static function varInt(int $int): string
     {
         return static::packRemainingLength($int);
     }
@@ -58,7 +58,7 @@ class PackTool extends Common
         return chr($type) . static::packRemainingLength($bodyLength);
     }
 
-    private static function packRemainingLength(int $bodyLength)
+    private static function packRemainingLength(int $bodyLength): string
     {
         $string = '';
         do {

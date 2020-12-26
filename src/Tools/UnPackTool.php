@@ -17,12 +17,12 @@ use Simps\MQTT\Exception\LengthException;
 
 class UnPackTool extends Common
 {
-    public static function getType(string $data)
+    public static function getType(string $data): int
     {
         return ord($data[0]) >> 4;
     }
 
-    public static function string(&$remaining)
+    public static function string(string &$remaining): string
     {
         $length = unpack('n', $remaining)[1];
         if ($length + 2 > strlen($remaining)) {
@@ -34,7 +34,7 @@ class UnPackTool extends Common
         return $string;
     }
 
-    public static function shortInt(&$remaining)
+    public static function shortInt(string &$remaining): int
     {
         $tmp = unpack('n', $remaining);
         $remaining = substr($remaining, 2);
@@ -42,7 +42,7 @@ class UnPackTool extends Common
         return $tmp[1];
     }
 
-    public static function longInt(&$remaining)
+    public static function longInt(string &$remaining): int
     {
         $tmp = unpack('N', $remaining);
         $remaining = substr($remaining, 4);
@@ -50,7 +50,7 @@ class UnPackTool extends Common
         return $tmp[1];
     }
 
-    public static function byte(&$remaining)
+    public static function byte(string &$remaining): int
     {
         $tmp = ord($remaining[0]);
         $remaining = substr($remaining, 1);
@@ -58,7 +58,7 @@ class UnPackTool extends Common
         return $tmp;
     }
 
-    public static function varInt(&$remaining, &$len)
+    public static function varInt(string &$remaining, ?int &$len): int
     {
         $remainingLength = static::getRemainingLength($remaining, $headBytes);
         $len = $headBytes;
@@ -74,7 +74,7 @@ class UnPackTool extends Common
         return $result;
     }
 
-    private static function getRemainingLength(string $data, &$headBytes)
+    private static function getRemainingLength(string $data, ?int &$headBytes): int
     {
         $headBytes = $multiplier = 1;
         $value = 0;
@@ -91,7 +91,7 @@ class UnPackTool extends Common
         return $value;
     }
 
-    public static function getRemaining(string $data)
+    public static function getRemaining(string $data): string
     {
         $remainingLength = static::getRemainingLength($data, $headBytes);
 

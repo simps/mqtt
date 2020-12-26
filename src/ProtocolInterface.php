@@ -25,7 +25,7 @@ interface ProtocolInterface
 
     const MQTT_PROTOCOL_NAME = 'MQTT';
 
-    public static function pack(array $array);
+    public static function pack(array $array): string;
 
-    public static function unpack(string $data);
+    public static function unpack(string $data): array;
 }

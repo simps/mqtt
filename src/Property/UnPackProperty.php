@@ -19,7 +19,7 @@ use Simps\MQTT\Tools\UnPackTool;
 
 class UnPackProperty
 {
-    public static function connect(int $length, &$remaining)
+    public static function connect(int $length, string &$remaining): array
     {
         $properties = [];
         do {
@@ -67,7 +67,7 @@ class UnPackProperty
         return $properties;
     }
 
-    public static function willProperties(int $length, &$remaining)
+    public static function willProperties(int $length, string &$remaining): array
     {
         $properties = [];
         do {
@@ -110,7 +110,7 @@ class UnPackProperty
         return $properties;
     }
 
-    public static function connAck(int $length, &$remaining)
+    public static function connAck(int $length, string &$remaining): array
     {
         $properties = [];
         do {
@@ -166,7 +166,7 @@ class UnPackProperty
         return $properties;
     }
 
-    public static function publish(int $length, &$remaining)
+    public static function publish(int $length, string &$remaining): array
     {
         $properties = [];
         do {
@@ -217,7 +217,7 @@ class UnPackProperty
         return $properties;
     }
 
-    public static function pubAndSub(int $length, &$remaining)
+    public static function pubAndSub(int $length, string &$remaining): array
     {
         $properties = [];
         do {
@@ -249,7 +249,7 @@ class UnPackProperty
         return $properties;
     }
 
-    public static function subscribe(int $length, &$remaining)
+    public static function subscribe(int $length, string &$remaining): array
     {
         $properties = [];
         do {
@@ -281,7 +281,7 @@ class UnPackProperty
         return $properties;
     }
 
-    public static function unSubscribe(int $length, &$remaining)
+    public static function unSubscribe(int $length, string &$remaining): array
     {
         $properties = [];
         do {
@@ -307,7 +307,7 @@ class UnPackProperty
         return $properties;
     }
 
-    public static function disConnect(int $length, &$remaining)
+    public static function disConnect(int $length, string &$remaining): array
     {
         $properties = [];
         do {
@@ -344,7 +344,7 @@ class UnPackProperty
         return $properties;
     }
 
-    public static function auth(int $length, &$remaining)
+    public static function auth(int $length, string &$remaining): array
     {
         $properties = [];
         do {

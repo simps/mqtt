@@ -18,7 +18,7 @@ use Simps\MQTT\Tools\PackTool;
 
 class PackProperty
 {
-    public static function connect(array $data)
+    public static function connect(array $data): string
     {
         $length = 0;
         $tmpBody = '';
@@ -63,7 +63,7 @@ class PackProperty
         return chr($length) . $tmpBody;
     }
 
-    public static function willProperties(array $data)
+    public static function willProperties(array $data): string
     {
         $length = 0;
         $tmpBody = '';
@@ -103,7 +103,7 @@ class PackProperty
         return chr($length) . $tmpBody;
     }
 
-    public static function connAck(array $data)
+    public static function connAck(array $data): string
     {
         $length = 0;
         $tmpBody = '';
@@ -156,7 +156,7 @@ class PackProperty
         return chr($length) . $tmpBody;
     }
 
-    public static function publish(array $data)
+    public static function publish(array $data): string
     {
         $length = 0;
         $tmpBody = '';
@@ -205,7 +205,7 @@ class PackProperty
         return chr($length) . $tmpBody;
     }
 
-    public static function pubAndSub(array $data)
+    public static function pubAndSub(array $data): string
     {
         $length = 0;
         $tmpBody = '';
@@ -234,7 +234,7 @@ class PackProperty
         return chr($length) . $tmpBody;
     }
 
-    public static function subscribe(array $data)
+    public static function subscribe(array $data): string
     {
         $length = 0;
         $tmpBody = '';
@@ -264,7 +264,7 @@ class PackProperty
         return chr($length) . $tmpBody;
     }
 
-    public static function unSubscribe(array $data)
+    public static function unSubscribe(array $data): string
     {
         $length = 0;
         $tmpBody = '';
@@ -281,7 +281,7 @@ class PackProperty
         return chr($length) . $tmpBody;
     }
 
-    public static function disConnect(array $data)
+    public static function disConnect(array $data): string
     {
         $length = 0;
         $tmpBody = '';
@@ -315,7 +315,7 @@ class PackProperty
         return chr($length) . $tmpBody;
     }
 
-    public static function auth(array $data)
+    public static function auth(array $data): string
     {
         $length = 0;
         $tmpBody = '';

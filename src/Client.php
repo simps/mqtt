@@ -109,7 +109,7 @@ class Client
         return $this->send($data);
     }
 
-    public function publish($topic, $message, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
+    public function publish(string $topic, string $message, int $qos = 0, int $dup = 0, int $retain = 0, array $properties = [])
     {
         $response = ($qos > 0) ? true : false;
 
@@ -133,7 +133,7 @@ class Client
         return $this->send(['type' => Types::PINGREQ]);
     }
 
-    public function close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = [])
+    public function close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = []): bool
     {
         $this->send(['type' => Types::DISCONNECT, 'code' => $code, 'properties' => $properties], false);
 
@@ -162,7 +162,7 @@ class Client
         $this->connect((bool) $this->connectData['clean_session'] ?? true, $this->connectData['will'] ?? []);
     }
 
-    public function send(array $data, $response = true)
+    public function send(array $data, bool $response = true)
     {
         if ($this->config['protocol_level'] === 5) {
             $package = ProtocolV5::pack($data);
@@ -225,7 +225,7 @@ class Client
         return $response;
     }
 
-    protected function isCoroutineClientType()
+    protected function isCoroutineClientType(): bool
     {
         if ($this->clientType === self::COROUTINE_CLIENT_TYPE) {
             return true;
@@ -234,7 +234,7 @@ class Client
         return false;
     }
 
-    public function buildMessageId()
+    public function buildMessageId(): int
     {
         return ++$this->messageId;
     }

@@ -161,7 +161,7 @@ abstract class ReasonCode
         self::GRANTED_QOS_2 => 'Granted QoS 2',
     ];
 
-    public static function getReasonPhrases($isQos = false): array
+    public static function getReasonPhrases(bool $isQos = false): array
     {
         if ($isQos) {
             return static::$qosReasonPhrases;
@@ -170,7 +170,7 @@ abstract class ReasonCode
         return static::$reasonPhrases;
     }
 
-    public static function getReasonPhrase(int $value, $isQos = false): string
+    public static function getReasonPhrase(int $value, bool $isQos = false): string
     {
         if ($isQos) {
             return static::$qosReasonPhrases[$value] ?? 'Wrong QoS';

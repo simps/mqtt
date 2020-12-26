@@ -21,7 +21,7 @@ use Simps\MQTT\Tools\UnPackTool;
 
 class ProtocolV5 implements ProtocolInterface
 {
-    public static function pack(array $array)
+    public static function pack(array $array): string
     {
         $type = $array['type'];
         switch ($type) {
@@ -69,7 +69,7 @@ class ProtocolV5 implements ProtocolInterface
         return $package;
     }
 
-    public static function unpack(string $data)
+    public static function unpack(string $data): array
     {
         $type = UnPackTool::getType($data);
         $remaining = UnPackTool::getRemaining($data);
