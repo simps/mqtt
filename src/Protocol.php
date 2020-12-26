@@ -24,7 +24,7 @@ use TypeError;
 
 class Protocol implements ProtocolInterface
 {
-    public static function pack(array $array)
+    public static function pack(array $array): string
     {
         try {
             $type = $array['type'];
@@ -77,7 +77,7 @@ class Protocol implements ProtocolInterface
         return $package;
     }
 
-    public static function unpack(string $data)
+    public static function unpack(string $data): array
     {
         try {
             $type = UnPackTool::getType($data);
