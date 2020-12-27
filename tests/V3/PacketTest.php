@@ -24,6 +24,18 @@ use Simps\MQTT\Types;
  */
 class PacketTest extends TestCase
 {
+    private static $topic = '';
+
+    public static function setUpBeforeClass()
+    {
+        self::$topic = 'testtopic/simps-' . rand(100, 999);
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::$topic = '';
+    }
+
     public function testConnect()
     {
         $config = getTestConnectConfig('broker.emqx.io');
@@ -40,7 +52,7 @@ class PacketTest extends TestCase
      */
     public function testSubscribe(Client $client)
     {
-        $topics['simpsmqtt/get'] = 1;
+        $topics[self::$topic] = 1;
         $res = $client->subscribe($topics);
         $this->assertIsArray($res);
         $this->assertSame($res['type'], Types::SUBACK);
@@ -54,7 +66,7 @@ class PacketTest extends TestCase
      */
     public function testPublish(Client $client)
     {
-        $buffer = $client->publish('simpsmqtt/get', 'hello,simps', 1);
+        $buffer = $client->publish(self::$topic, 'hello,simps', 1);
         $this->assertIsArray($buffer);
         $this->assertSame($buffer['type'], Types::PUBACK);
 
@@ -69,7 +81,7 @@ class PacketTest extends TestCase
         $buffer = $client->recv();
         $this->assertIsArray($buffer);
         $this->assertSame($buffer['type'], Types::PUBLISH);
-        $this->assertSame($buffer['topic'], 'simpsmqtt/get');
+        $this->assertSame($buffer['topic'], self::$topic);
         $this->assertSame($buffer['message'], 'hello,simps');
 
         return $client;
@@ -88,11 +100,11 @@ class PacketTest extends TestCase
     }
 
     /**
-     * @depends testRecv
+     * @depends testPing
      */
     public function testUnsubscribe(Client $client)
     {
-        $status = $client->unSubscribe(['simpsmqtt/get']);
+        $status = $client->unSubscribe([self::$topic]);
         $this->assertIsArray($status);
         $this->assertSame($status['type'], Types::UNSUBACK);
 

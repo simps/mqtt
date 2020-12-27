@@ -24,6 +24,18 @@ use Simps\MQTT\Types;
  */
 class PacketTest extends TestCase
 {
+    private static $topic = '';
+
+    public static function setUpBeforeClass()
+    {
+        self::$topic = 'testtopic/simps-' . rand(100, 999);
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::$topic = '';
+    }
+
     public function testConnect()
     {
         $config = getTestMQTT5ConnectConfig('broker.emqx.io');
@@ -40,20 +52,19 @@ class PacketTest extends TestCase
      */
     public function testSubscribe(Client $client)
     {
-        $topics['simps-mqtt/user001/get'] = [
-            'qos' => 1,
-            'no_local' => true,
-            'retain_as_published' => true,
-            'retain_handling' => 2,
-        ];
-        $topics['simps-mqtt/user001/update'] = [
-            'qos' => 2,
-            'no_local' => false,
-            'retain_as_published' => true,
-            'retain_handling' => 2,
-        ];
-        $topics['testtopic/#'] = [
-            'qos' => 0,
+        $topics = [
+            self::$topic . '/get' => [
+                'qos' => 1,
+                'no_local' => true,
+                'retain_as_published' => true,
+                'retain_handling' => 2,
+            ],
+            self::$topic . '/update' => [
+                'qos' => 2,
+                'no_local' => false,
+                'retain_as_published' => true,
+                'retain_handling' => 2,
+            ],
         ];
         $res = $client->subscribe($topics);
         $this->assertIsArray($res);
@@ -68,30 +79,36 @@ class PacketTest extends TestCase
     /**
      * @depends testSubscribe
      */
-    public function testPublish(Client $client)
+    public function testPublish()
     {
-        $buffer = $client->publish('simps-mqtt/user001/get', 'hello,simps', 1);
-        $this->assertIsArray($buffer);
-        $this->assertSame($buffer['type'], Types::PUBACK);
-        $this->assertSame(ReasonCode::getReasonPhrase($buffer['code']), 'Success');
-        return $client;
+        go(function () {
+            $config = getTestMQTT5ConnectConfig('broker.emqx.io');
+            $client = new Client($config, SWOOLE_MQTT_CONFIG);
+            $res = $client->connect();
+            $this->assertIsArray($res);
+            $buffer = $client->publish(self::$topic . '/get', 'hello,simps', 1);
+            $this->assertIsArray($buffer);
+            $this->assertSame($buffer['type'], Types::PUBACK);
+            $this->assertSame(ReasonCode::getReasonPhrase($buffer['code']), 'Success');
+        });
     }
 
     /**
-     * @depends testPublish
+     * @depends testSubscribe
      */
     public function testRecv(Client $client)
     {
         $buffer = $client->recv();
         $this->assertIsArray($buffer);
         $this->assertSame($buffer['type'], Types::PUBLISH);
-        $this->assertIsString($buffer['topic']);
+        $this->assertSame($buffer['topic'], self::$topic . '/get');
+        $this->assertSame($buffer['message'], 'hello,simps');
 
         return $client;
     }
 
     /**
-     * @depends testSubscribe
+     * @depends testRecv
      */
     public function testPing(Client $client)
     {
@@ -103,11 +120,11 @@ class PacketTest extends TestCase
     }
 
     /**
-     * @depends testSubscribe
+     * @depends testPing
      */
     public function testUnsubscribe(Client $client)
     {
-        $status = $client->unSubscribe(['simps-mqtt/user001/get']);
+        $status = $client->unSubscribe([self::$topic . '/get']);
         $this->assertIsArray($status);
         $this->assertSame($status['type'], Types::UNSUBACK);
         $this->assertSame(ReasonCode::getReasonPhrase($status['code']), 'Success');
