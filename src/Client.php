@@ -19,7 +19,7 @@ use Swoole\Coroutine;
 
 class Client
 {
-    /** @var \Swoole\Coroutine\Client */
+    /** @var Coroutine\Client|\Swoole\Client */
     private $client;
 
     private $config = [
@@ -46,8 +46,12 @@ class Client
 
     const SYNC_CLIENT_TYPE = 2;
 
-    public function __construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int $clientType = self::COROUTINE_CLIENT_TYPE)
-    {
+    public function __construct(
+        array $config,
+        array $swConfig = [],
+        int $type = SWOOLE_SOCK_TCP,
+        int $clientType = self::COROUTINE_CLIENT_TYPE
+    ) {
         $this->config = array_replace_recursive($this->config, $config);
         $this->clientType = $clientType;
         if ($this->isCoroutineClientType()) {
@@ -109,9 +113,15 @@ class Client
         return $this->send($data);
     }
 
-    public function publish(string $topic, string $message, int $qos = 0, int $dup = 0, int $retain = 0, array $properties = [])
-    {
-        $response = ($qos > 0) ? true : false;
+    public function publish(
+        string $topic,
+        string $message,
+        int $qos = 0,
+        int $dup = 0,
+        int $retain = 0,
+        array $properties = []
+    ) {
+        $response = $qos > 0;
 
         return $this->send(
             [
@@ -209,16 +219,13 @@ class Client
         if ($this->isCoroutineClientType()) {
             $response = $this->client->recv();
         } else {
-            while (true) {
-                $write = $error = [];
-                $read = [$this->client];
-                $n = swoole_client_select($read, $write, $error, $this->config['select_time_out']);
-                if ($n > 0) {
-                    $response = $this->client->recv();
-                } else {
-                    $response = true;
-                }
-                break;
+            $write = $error = [];
+            $read = [$this->client];
+            $n = swoole_client_select($read, $write, $error, $this->config['select_time_out']);
+            if ($n > 0) {
+                $response = $this->client->recv();
+            } else {
+                $response = true;
             }
         }
 
