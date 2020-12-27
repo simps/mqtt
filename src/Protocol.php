@@ -43,7 +43,7 @@ class Protocol implements ProtocolInterface
                 case Types::PUBREL:
                 case Types::PUBCOMP:
                 case Types::UNSUBACK:
-                    $body = pack('n', $array['message_id']);
+                    $body = PackTool::shortInt($array['message_id']);
                     if ($type === Types::PUBREL) {
                         $head = PackTool::packHeader($type, strlen($body), 0, 1);
                     } else {
@@ -100,7 +100,7 @@ class Protocol implements ProtocolInterface
                 case Types::PUBREL:
                 case Types::PUBCOMP:
                 case Types::UNSUBACK:
-                    $package = ['type' => $type, 'message_id' => unpack('n', $remaining)[1]];
+                    $package = ['type' => $type, 'message_id' => UnPackTool::shortInt($remaining)];
                     break;
                 case Types::PINGREQ:
                 case Types::PINGRESP:
