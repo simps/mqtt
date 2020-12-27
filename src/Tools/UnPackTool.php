@@ -58,7 +58,7 @@ class UnPackTool extends Common
         return $tmp;
     }
 
-    public static function varInt(string &$remaining, ?int &$len): int
+    public static function varInt(string &$remaining, &$len): int
     {
         $remainingLength = static::getRemainingLength($remaining, $headBytes);
         $len = $headBytes;
@@ -74,7 +74,7 @@ class UnPackTool extends Common
         return $result;
     }
 
-    private static function getRemainingLength(string $data, ?int &$headBytes): int
+    private static function getRemainingLength(string $data, &$headBytes): int
     {
         $headBytes = $multiplier = 1;
         $value = 0;
