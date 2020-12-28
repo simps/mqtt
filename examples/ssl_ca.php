@@ -18,7 +18,6 @@ Coroutine\run(function () {
     $config = [
         'host' => 'test.mosquitto.org',
         'port' => 8883,
-        'time_out' => 5,
         'user_name' => '',
         'password' => '',
         'client_id' => Client::genClientID(),

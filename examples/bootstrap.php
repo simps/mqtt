@@ -27,6 +27,9 @@ const SSL_CERTS_DIR = __DIR__ . '/ssl_certs';
 const SWOOLE_MQTT_CONFIG = [
     'open_mqtt_protocol' => true,
     'package_max_length' => 2 * 1024 * 1024,
+    'connect_timeout' => 1.0,
+    'write_timeout' => 5.0,
+    'read_timeout' => 0.5,
 ];
 
 function getTestConnectConfig(string $host = '127.0.0.1')
@@ -34,7 +37,6 @@ function getTestConnectConfig(string $host = '127.0.0.1')
     return [
         'host' => $host,
         'port' => 1883,
-        'time_out' => 5,
         'user_name' => 'username',
         'password' => 'password',
         'client_id' => \Simps\MQTT\Client::genClientID(),
@@ -47,7 +49,6 @@ function getTestMQTT5ConnectConfig(string $host = '127.0.0.1')
     return [
         'host' => $host,
         'port' => 1883,
-        'time_out' => 5,
         'user_name' => 'username',
         'password' => 'password',
         'client_id' => \Simps\MQTT\Client::genClientID(),
