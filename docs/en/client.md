@@ -16,7 +16,6 @@ An array of client options, you can set the following options:
 $config = [
     'host' => '127.0.0.1',
     'port' => 1883,
-    'time_out' => 5,
     'user_name' => '',
     'password' => '',
     'client_id' => '',

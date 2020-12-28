@@ -16,7 +16,6 @@ Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = 
 $config = [
     'host' => '127.0.0.1', // MQTT服务端IP
     'port' => 1883, // MQTT服务端端口
-    'time_out' => 5, // 连接MQTT服务端超时时间，默认0.5秒
     'user_name' => '', // 用户名
     'password' => '', // 密码
     'client_id' => '', // 客户端id

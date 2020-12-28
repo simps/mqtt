@@ -25,8 +25,6 @@ class Client
     private $config = [
         'host' => '127.0.0.1',
         'port' => 1883,
-        'time_out' => 0.5,
-        'select_time_out' => 0.5,
         'user_name' => '',
         'password' => '',
         'client_id' => '',
@@ -62,7 +60,7 @@ class Client
         if (!empty($swConfig)) {
             $this->client->set($swConfig);
         }
-        if (!$this->client->connect($this->config['host'], $this->config['port'], $this->config['time_out'])) {
+        if (!$this->client->connect($this->config['host'], $this->config['port'])) {
             $this->reConnect();
         }
     }
@@ -166,7 +164,7 @@ class Client
                 sleep(3);
             }
             $this->client->close();
-            $result = $this->client->connect($this->config['host'], $this->config['port'], $this->config['time_out']);
+            $result = $this->client->connect($this->config['host'], $this->config['port']);
             ++$reConnectTime;
         }
         $this->connect((bool) $this->connectData['clean_session'] ?? true, $this->connectData['will'] ?? []);
@@ -221,7 +219,7 @@ class Client
         } else {
             $write = $error = [];
             $read = [$this->client];
-            $n = swoole_client_select($read, $write, $error, $this->config['select_time_out']);
+            $n = swoole_client_select($read, $write, $error);
             if ($n > 0) {
                 $response = $this->client->recv();
             } else {
