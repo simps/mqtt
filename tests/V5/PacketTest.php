@@ -38,7 +38,7 @@ class PacketTest extends TestCase
 
     public function testConnect()
     {
-        $config = getTestMQTT5ConnectConfig('broker.emqx.io');
+        $config = getTestMQTT5ConnectConfig(false);
         $client = new Client($config, SWOOLE_MQTT_CONFIG);
         $res = $client->connect();
         $this->assertIsArray($res);
@@ -82,7 +82,7 @@ class PacketTest extends TestCase
     public function testPublish()
     {
         go(function () {
-            $config = getTestMQTT5ConnectConfig('broker.emqx.io');
+            $config = getTestMQTT5ConnectConfig(false);
             $client = new Client($config, SWOOLE_MQTT_CONFIG);
             $res = $client->connect();
             $this->assertIsArray($res);
