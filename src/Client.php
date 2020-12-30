@@ -241,6 +241,10 @@ class Client
 
     public function buildMessageId(): int
     {
+        if ($this->messageId === 65535) {
+            $this->messageId = 0;
+        }
+
         return ++$this->messageId;
     }
 
