@@ -28,31 +28,39 @@ const SWOOLE_MQTT_CONFIG = [
     'open_mqtt_protocol' => true,
     'package_max_length' => 2 * 1024 * 1024,
     'connect_timeout' => 1.0,
-    'write_timeout' => 5.0,
+    'write_timeout' => 3.0,
     'read_timeout' => 0.5,
 ];
 
-function getTestConnectConfig(string $host = '127.0.0.1')
+function getTestConnectConfig(bool $isLocal = true, string $host = 'broker.emqx.io')
 {
+    if ($isLocal) {
+        $host = '127.0.0.1';
+    }
+
     return [
         'host' => $host,
         'port' => 1883,
         'user_name' => 'username',
         'password' => 'password',
         'client_id' => \Simps\MQTT\Client::genClientID(),
-        'keep_alive' => 20,
+        'keep_alive' => 10,
     ];
 }
 
-function getTestMQTT5ConnectConfig(string $host = '127.0.0.1')
+function getTestMQTT5ConnectConfig(bool $isLocal = true, string $host = 'broker.emqx.io')
 {
+    if ($isLocal) {
+        $host = '127.0.0.1';
+    }
+
     return [
         'host' => $host,
         'port' => 1883,
         'user_name' => 'username',
         'password' => 'password',
         'client_id' => \Simps\MQTT\Client::genClientID(),
-        'keep_alive' => 20,
+        'keep_alive' => 10,
         'properties' => [
             'session_expiry_interval' => 60,
             'receive_maximum' => 65535,

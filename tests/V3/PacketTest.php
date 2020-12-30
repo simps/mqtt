@@ -38,7 +38,7 @@ class PacketTest extends TestCase
 
     public function testConnect()
     {
-        $config = getTestConnectConfig('broker.emqx.io');
+        $config = getTestConnectConfig(false);
         $client = new Client($config, SWOOLE_MQTT_CONFIG);
         $res = $client->connect();
         $this->assertIsArray($res);
