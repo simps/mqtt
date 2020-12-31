@@ -71,7 +71,7 @@ class Client
             'type' => Types::CONNECT,
             'protocol_name' => $this->config['protocol_name'],
             'protocol_level' => (int) $this->config['protocol_level'],
-            'clean_session' => $clean ? 0 : 1,
+            'clean_session' => $clean,
             'client_id' => $this->config['client_id'],
             'keep_alive' => $this->config['keep_alive'],
             'properties' => $this->config['properties'],
