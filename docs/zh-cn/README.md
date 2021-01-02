@@ -7,8 +7,8 @@
 ## 依赖要求
 
 * PHP >= `7.0`
-* Swoole >= `4.4.19`
 * mbstring PHP 扩展
+* Swoole扩展 >= `4.4.19` (使用 [Client](/zh-cn/client) 时需要)
 
 ## 安装
 
