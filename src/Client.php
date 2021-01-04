@@ -40,6 +40,8 @@ class Client
 
     private $clientType;
 
+    protected $subscribeData;
+
     const COROUTINE_CLIENT_TYPE = 1;
 
     const SYNC_CLIENT_TYPE = 2;
@@ -95,6 +97,8 @@ class Client
             'properties' => $properties,
             'topics' => $topics,
         ];
+     
+        $this->subscribeData = [$topics, $properties];
 
         return $this->send($data);
     }
@@ -168,6 +172,8 @@ class Client
             ++$reConnectTime;
         }
         $this->connect((bool) $this->connectData['clean_session'] ?? true, $this->connectData['will'] ?? []);
+
+        $this->subscribeData && $this->subscribe(...$this->subscribeData);
     }
 
     public function send(array $data, bool $response = true)
