@@ -97,7 +97,7 @@ class Client
             'properties' => $properties,
             'topics' => $topics,
         ];
-     
+
         $this->subscribeData = [$topics, $properties];
 
         return $this->send($data);
