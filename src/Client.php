@@ -36,6 +36,8 @@ class Client
 
     private $messageId = 0;
 
+    private $connectData = [];
+
     private $clientType;
 
     const COROUTINE_CLIENT_TYPE = 1;
@@ -79,6 +81,8 @@ class Client
         if (!empty($will)) {
             $data['will'] = $will;
         }
+
+        $this->connectData = $data;
 
         return $this->send($data);
     }
@@ -185,6 +189,7 @@ class Client
         $response = $this->getResponse();
         if ($response === '' || !$this->client->isConnected()) {
             $this->reConnect();
+            $this->connect($this->connectData['clean_session'] ?? true, $this->connectData['will'] ?? []);
         } elseif ($response === false) {
             if ($this->client->errCode === SOCKET_ECONNRESET) {
                 $this->client->close();
