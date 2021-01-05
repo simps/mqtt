@@ -15,9 +15,9 @@ namespace SimpsTest\MQTT\V5;
 
 use PHPUnit\Framework\TestCase;
 use Simps\MQTT\Client;
+use Simps\MQTT\Exception\InvalidArgumentException;
 use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Types;
-use Simps\MQTT\Exception\InvalidArgumentException;
 
 /**
  * @internal
