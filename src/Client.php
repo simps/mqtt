@@ -36,8 +36,6 @@ class Client
 
     private $messageId = 0;
 
-    private $connectData = [];
-
     private $clientType;
 
     const COROUTINE_CLIENT_TYPE = 1;
@@ -81,8 +79,6 @@ class Client
         if (!empty($will)) {
             $data['will'] = $will;
         }
-
-        $this->connectData = $data;
 
         return $this->send($data);
     }
@@ -167,7 +163,6 @@ class Client
             $result = $this->client->connect($this->config['host'], $this->config['port']);
             ++$reConnectTime;
         }
-        $this->connect((bool) $this->connectData['clean_session'] ?? true, $this->connectData['will'] ?? []);
     }
 
     public function send(array $data, bool $response = true)
