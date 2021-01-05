@@ -23,6 +23,7 @@ $config = [
     'protocol_name' => 'MQTT', // or MQIsdp
     'protocol_level' => 4, // or 3, 5
     'properties' => [], // optional in MQTT5
+    'reconnect_delay' => 3,
 ];
 ```
 
