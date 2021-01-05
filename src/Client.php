@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Simps\MQTT;
 
-use Simps\MQTT\Exception\InvalidArgumentException;
+use Simps\MQTT\Exception\ProtocolException;
 use Simps\MQTT\Exception\RuntimeException;
 use Simps\MQTT\Hex\ReasonCode;
 use Swoole\Coroutine;
@@ -125,13 +125,13 @@ class Client
             switch ($this->config['protocol_level']) {
                 case ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0:
                     if (!isset($properties['topic_alias'])) {
-                        throw new InvalidArgumentException(
+                        throw new ProtocolException(
                             'Protocol Error, Topic cannot be empty or need to set topic_alias'
                         );
                     }
                     break;
                 default:
-                    throw new InvalidArgumentException('Protocol Error, Topic cannot be empty');
+                    throw new ProtocolException('Protocol Error, Topic cannot be empty');
             }
         }
 
