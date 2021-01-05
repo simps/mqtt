@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Simps\MQTT\Client;
 use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Types;
+use Simps\MQTT\Exception\InvalidArgumentException;
 
 /**
  * @internal
@@ -139,5 +140,16 @@ class PacketTest extends TestCase
     {
         $status = $client->close();
         $this->assertTrue($status);
+    }
+
+    public function testPublishNonTopic()
+    {
+        go(function () {
+            $config = getTestMQTT5ConnectConfig(false);
+            $client = new Client($config, SWOOLE_MQTT_CONFIG);
+            $client->connect();
+            $this->expectException(InvalidArgumentException::class);
+            $client->publish('', 'hello,simps', 1);
+        });
     }
 }
