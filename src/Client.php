@@ -154,15 +154,15 @@ class Client
         return $this->send(['type' => Types::AUTH, 'code' => $code, 'properties' => $properties]);
     }
 
-    private function reConnect(int $sleep)
+    private function reConnect(int $delay)
     {
         $reConnectTime = 1;
         $result = false;
         while (!$result) {
             if ($this->isCoroutineClientType()) {
-                Coroutine::sleep($sleep);
+                Coroutine::sleep($delay);
             } else {
-                sleep($sleep);
+                sleep($delay);
             }
             $this->client->close();
             $result = $this->client->connect($this->config['host'], $this->config['port']);
