@@ -148,8 +148,13 @@ class PacketTest extends TestCase
             $config = getTestMQTT5ConnectConfig(false);
             $client = new Client($config, SWOOLE_MQTT_CONFIG);
             $client->connect();
-            $this->expectException(InvalidArgumentException::class);
-            $client->publish('', 'hello,simps', 1);
+            try {
+                $client->publish('', 'hello,simps', 1);
+            } catch (InvalidArgumentException $e) {
+                $this->assertContains('Protocol Error', $e->getMessage());
+            }
+            $buffer = $client->publish(self::$topic . '/get', 'hello,simps', 1);
+            $this->assertIsArray($buffer);
         });
     }
 }
