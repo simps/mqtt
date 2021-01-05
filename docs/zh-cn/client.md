@@ -23,6 +23,7 @@ $config = [
     'protocol_name' => 'MQTT', // 协议名，默认为MQTT(3.1.1版本)，也可为MQIsdp(3.1版本)
     'protocol_level' => 4, // 协议等级，MQTT3.1.1版本为4，5.0版本为5，MQIsdp为3
     'properties' => [], // MQTT5 中所需要的属性
+    'reconnect_delay' => 3, // 重连时的延迟时间
 ];
 ```
 

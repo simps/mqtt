@@ -32,7 +32,7 @@ class Client
         'protocol_name' => ProtocolInterface::MQTT_PROTOCOL_NAME,
         'protocol_level' => ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1,
         'properties' => [],
-        'reconnect_timeout' => 3,
+        'reconnect_delay' => 3,
     ];
 
     private $messageId = 0;
@@ -62,7 +62,7 @@ class Client
             $this->client->set($swConfig);
         }
         if (!$this->client->connect($this->config['host'], $this->config['port'])) {
-            $this->reConnect($this->config['reconnect_timeout']);
+            $this->reConnect($this->config['reconnect_delay']);
         }
     }
 
@@ -154,15 +154,15 @@ class Client
         return $this->send(['type' => Types::AUTH, 'code' => $code, 'properties' => $properties]);
     }
 
-    private function reConnect(int $timeout)
+    private function reConnect(int $sleep)
     {
         $reConnectTime = 1;
         $result = false;
         while (!$result) {
             if ($this->isCoroutineClientType()) {
-                Coroutine::sleep($timeout);
+                Coroutine::sleep($sleep);
             } else {
-                sleep($timeout);
+                sleep($sleep);
             }
             $this->client->close();
             $result = $this->client->connect($this->config['host'], $this->config['port']);
@@ -189,7 +189,7 @@ class Client
     {
         $response = $this->getResponse();
         if ($response === '' || !$this->client->isConnected()) {
-            $this->reConnect($this->config['reconnect_timeout']);
+            $this->reConnect($this->config['reconnect_delay']);
             $this->connect($this->connectData['clean_session'] ?? true, $this->connectData['will'] ?? []);
         } elseif ($response === false) {
             if ($this->client->errCode === SOCKET_ECONNRESET) {
