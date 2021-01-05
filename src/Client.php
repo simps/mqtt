@@ -189,7 +189,7 @@ class Client
     {
         $response = $this->getResponse();
         if ($response === '' || !$this->client->isConnected()) {
-            $this->reConnect();
+            $this->reConnect($this->config['reconnect_timeout']);
             $this->connect($this->connectData['clean_session'] ?? true, $this->connectData['will'] ?? []);
         } elseif ($response === false) {
             if ($this->client->errCode === SOCKET_ECONNRESET) {
