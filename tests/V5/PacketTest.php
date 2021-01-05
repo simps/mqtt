@@ -15,6 +15,7 @@ namespace SimpsTest\MQTT\V5;
 
 use PHPUnit\Framework\TestCase;
 use Simps\MQTT\Client;
+use Simps\MQTT\Exception\ProtocolException;
 use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Types;
 
@@ -139,5 +140,21 @@ class PacketTest extends TestCase
     {
         $status = $client->close();
         $this->assertTrue($status);
+    }
+
+    public function testPublishNonTopic()
+    {
+        go(function () {
+            $config = getTestMQTT5ConnectConfig(false);
+            $client = new Client($config, SWOOLE_MQTT_CONFIG);
+            $client->connect();
+            try {
+                $client->publish('', 'hello,simps', 1);
+            } catch (ProtocolException $e) {
+                $this->assertContains('Protocol Error', $e->getMessage());
+            }
+            $buffer = $client->publish(self::$topic . '/get', 'hello,simps', 1);
+            $this->assertIsArray($buffer);
+        });
     }
 }
