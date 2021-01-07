@@ -39,8 +39,7 @@ class PacketTest extends TestCase
 
     public function testConnect()
     {
-        $config = getTestMQTT5ConnectConfig(false);
-        $client = new Client($config, SWOOLE_MQTT_CONFIG);
+        $client = new Client(getTestMQTT5ConnectConfig(false), SWOOLE_MQTT_CONFIG);
         $res = $client->connect();
         $this->assertIsArray($res);
         $this->assertSame($res['type'], Types::CONNACK);
@@ -83,8 +82,7 @@ class PacketTest extends TestCase
     public function testPublish()
     {
         go(function () {
-            $config = getTestMQTT5ConnectConfig(false);
-            $client = new Client($config, SWOOLE_MQTT_CONFIG);
+            $client = new Client(getTestMQTT5ConnectConfig(false), SWOOLE_MQTT_CONFIG);
             $res = $client->connect();
             $this->assertIsArray($res);
             $buffer = $client->publish(self::$topic . '/get', 'hello,simps', 1);
@@ -144,17 +142,12 @@ class PacketTest extends TestCase
 
     public function testPublishNonTopic()
     {
-        go(function () {
-            $config = getTestMQTT5ConnectConfig(false);
-            $client = new Client($config, SWOOLE_MQTT_CONFIG);
-            $client->connect();
-            try {
-                $client->publish('', 'hello,simps', 1);
-            } catch (ProtocolException $e) {
-                $this->assertContains('Protocol Error', $e->getMessage());
-            }
-            $buffer = $client->publish(self::$topic . '/get', 'hello,simps', 1);
-            $this->assertIsArray($buffer);
-        });
+        $client = new Client(getTestMQTT5ConnectConfig(false), SWOOLE_MQTT_CONFIG);
+        $client->connect();
+        $this->expectException(ProtocolException::class);
+        $this->expectExceptionMessage('Protocol Error, Topic cannot be empty or need to set topic_alias');
+        $client->publish('', 'hello,simps');
+
+        return $client;
     }
 }
