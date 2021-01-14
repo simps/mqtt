@@ -173,7 +173,7 @@ abstract class ReasonCode
     public static function getReasonPhrase(int $value, bool $isQos = false): string
     {
         if ($isQos) {
-            return static::$qosReasonPhrases[$value] ?? 'Wrong QoS';
+            return static::$qosReasonPhrases[$value] ?? 'QoS not supported';
         }
 
         return static::$reasonPhrases[$value] ?? 'Unknown';

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Packet;
 
+use Simps\MQTT\Exception\ProtocolException;
+use Simps\MQTT\ProtocolInterface;
 use Simps\MQTT\Tools\PackTool;
 use Simps\MQTT\Types;
 
@@ -28,6 +30,9 @@ class Pack
         if (!empty($array['will'])) {
             $connectFlags |= 1 << 2;
             if (isset($array['will']['qos'])) {
+                if ($array['will']['qos'] > ProtocolInterface::MQTT_QOS_2) {
+                    throw new ProtocolException("QoS {$array['will']['qos']} not supported");
+                }
                 $connectFlags |= $array['will']['qos'] << 3;
             }
             if (!empty($array['will']['retain'])) {
