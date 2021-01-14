@@ -3,7 +3,7 @@ name: mirror
 on: [ push, delete, create ]
 
 jobs:
- git-mirror:
+ mirror:
   runs-on: ubuntu-latest
   steps:
    - name: Configure Private Key
