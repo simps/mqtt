@@ -29,8 +29,10 @@ class PackV5
         }
         if (!empty($array['will'])) {
             $connectFlags |= 1 << 2;
-            $connectFlags |= $array['will']['qos'] << 3;
-            if ($array['will']['retain']) {
+            if (isset($array['will']['qos'])) {
+                $connectFlags |= $array['will']['qos'] << 3;
+            }
+            if (!empty($array['will']['retain'])) {
                 $connectFlags |= 1 << 5;
             }
         }

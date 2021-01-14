@@ -21,24 +21,26 @@ class Pack
     public static function connect(array $array): string
     {
         $body = PackTool::string($array['protocol_name']) . chr($array['protocol_level']);
-        $connect_flags = 0;
+        $connectFlags = 0;
         if (!empty($array['clean_session'])) {
-            $connect_flags |= 1 << 1;
+            $connectFlags |= 1 << 1;
         }
         if (!empty($array['will'])) {
-            $connect_flags |= 1 << 2;
-            $connect_flags |= $array['will']['qos'] << 3;
-            if ($array['will']['retain']) {
-                $connect_flags |= 1 << 5;
+            $connectFlags |= 1 << 2;
+            if (isset($array['will']['qos'])) {
+                $connectFlags |= $array['will']['qos'] << 3;
+            }
+            if (!empty($array['will']['retain'])) {
+                $connectFlags |= 1 << 5;
             }
         }
         if (!empty($array['password'])) {
-            $connect_flags |= 1 << 6;
+            $connectFlags |= 1 << 6;
         }
         if (!empty($array['user_name'])) {
-            $connect_flags |= 1 << 7;
+            $connectFlags |= 1 << 7;
         }
-        $body .= chr($connect_flags);
+        $body .= chr($connectFlags);
 
         $keepAlive = !empty($array['keep_alive']) && (int) $array['keep_alive'] >= 0 ? (int) $array['keep_alive'] : 0;
         $body .= PackTool::shortInt($keepAlive);
