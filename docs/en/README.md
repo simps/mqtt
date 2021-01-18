@@ -8,7 +8,7 @@ Support for `QoS 0`, `QoS 1`, `QoS 2`.
 
 ## Requirements
 
-* PHP >= `7.0`
+* PHP >= `7.1`
 * ext-mbstring
 * [ext-swoole](https://github.com/swoole/swoole-src) >= `4.4.19` (The ext-swoole >= `v4.4.19` needs to be loaded when using [the MQTT Client](/en/client))
 

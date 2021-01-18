@@ -6,7 +6,7 @@
 
 ## 依赖要求
 
-* PHP >= `7.0`
+* PHP >= `7.1`
 * mbstring PHP 扩展
 * [Swoole 扩展](https://github.com/swoole/swoole-src) >= `4.4.19` (使用 [Client](/zh-cn/client) 时需要)
 
