@@ -15,8 +15,8 @@ namespace Simps\MQTT\Packet;
 
 use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Property\UnPackProperty;
+use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Tools\UnPackTool;
-use Simps\MQTT\Types;
 
 class UnPackV5
 {
