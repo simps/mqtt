@@ -221,7 +221,7 @@ class Client
         return true;
     }
 
-    protected function getResponse(): ?string
+    protected function getResponse()
     {
         if ($this->isCoroutineClientType()) {
             $response = $this->client->recv();
