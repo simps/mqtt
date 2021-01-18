@@ -16,7 +16,7 @@ use Simps\MQTT\Client;
 /**
  * Support publish in fpm, need to specify clientType as Client::SYNC_CLIENT_TYPE
  */
-$client = new Client(getTestMQTT5ConnectConfig(), SWOOLE_MQTT_CONFIG, SWOOLE_SOCK_TCP, Client::SYNC_CLIENT_TYPE);
+$client = new Client(SIMPS_MQTT_LOCAL_HOST, SIMPS_MQTT_PORT, getTestMQTT5ConnectConfig(), Client::SYNC_CLIENT_TYPE);
 
 while (!$client->connect()) {
     sleep(3);

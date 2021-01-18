@@ -11,9 +11,9 @@
 
 include __DIR__ . '/bootstrap.php';
 
-use Simps\MQTT\Protocol;
 use Simps\MQTT\Tools\Common;
-use Simps\MQTT\Types;
+use Simps\MQTT\Protocol\Types;
+use Simps\MQTT\Protocol\V3;
 
 $server = new Swoole\Server('127.0.0.1', 1883, SWOOLE_BASE);
 
@@ -33,7 +33,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
     try {
         // debug
 //        Common::printf($data);
-        $data = Protocol::unpack($data);
+        $data = V3::unpack($data);
         if (is_array($data) && isset($data['type'])) {
             switch ($data['type']) {
                 case Types::CONNECT:
@@ -48,7 +48,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
 
                     $server->send(
                         $fd,
-                        Protocol::pack(
+                        V3::pack(
                             [
                                 'type' => Types::CONNACK,
                                 'code' => 0,
@@ -58,7 +58,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     );
                     break;
                 case Types::PINGREQ:
-                    $server->send($fd, Protocol::pack(['type' => Types::PINGRESP]));
+                    $server->send($fd, V3::pack(['type' => Types::PINGRESP]));
                     break;
                 case Types::DISCONNECT:
                     if ($server->exist($fd)) {
@@ -71,7 +71,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                         if ($sub_fd != $fd) {
                             $server->send(
                                 $sub_fd,
-                                Protocol::pack(
+                                V3::pack(
                                     [
                                         'type' => $data['type'],
                                         'topic' => $data['topic'],
@@ -89,7 +89,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     if ($data['qos'] === 1) {
                         $server->send(
                             $fd,
-                            Protocol::pack(
+                            V3::pack(
                                 [
                                     'type' => Types::PUBACK,
                                     'message_id' => $data['message_id'] ?? '',
@@ -110,7 +110,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     }
                     $server->send(
                         $fd,
-                        Protocol::pack(
+                        V3::pack(
                             [
                                 'type' => Types::SUBACK,
                                 'message_id' => $data['message_id'] ?? '',
@@ -122,7 +122,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                 case Types::UNSUBSCRIBE:
                     $server->send(
                         $fd,
-                        Protocol::pack(
+                        V3::pack(
                             [
                                 'type' => Types::UNSUBACK,
                                 'message_id' => $data['message_id'] ?? '',
