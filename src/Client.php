@@ -187,7 +187,7 @@ class Client
 
     public function send(array $data, bool $response = true)
     {
-        if ($this->config['protocol_level'] === 5) {
+        if ($this->config['protocol_level'] === ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0) {
             $package = ProtocolV5::pack($data);
         } else {
             $package = Protocol::pack($data);
@@ -218,7 +218,7 @@ class Client
                 throw new RuntimeException($errMsg, $this->client->errCode);
             }
         } elseif (is_string($response) && strlen($response) > 0) {
-            if ($this->config['protocol_level'] === 5) {
+            if ($this->config['protocol_level'] === ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0) {
                 return ProtocolV5::unpack($response);
             }
 

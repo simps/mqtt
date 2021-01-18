@@ -123,10 +123,10 @@ class PacketTest extends TestCase
 
     public function testPublishNonTopic()
     {
-        $client = new Client(getTestMQTT5ConnectConfig(false), SWOOLE_MQTT_CONFIG);
+        $client = new Client(getTestConnectConfig(false), SWOOLE_MQTT_CONFIG);
         $client->connect();
         $this->expectException(ProtocolException::class);
-        $this->expectExceptionMessage('Protocol Error, Topic cannot be empty or need to set topic_alias');
+        $this->expectExceptionMessage('Protocol Error, Topic cannot be empty');
         $client->publish('', 'hello,simps');
 
         return $client;
