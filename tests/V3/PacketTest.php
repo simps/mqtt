@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Simps\MQTT\Client;
 use Simps\MQTT\Exception\ProtocolException;
 use Simps\MQTT\Hex\ReasonCode;
-use Simps\MQTT\Types;
+use Simps\MQTT\Protocol\Types;
 
 /**
  * @internal
@@ -27,106 +27,96 @@ class PacketTest extends TestCase
 {
     private static $topic = '';
 
+    private static $client;
+
     public static function setUpBeforeClass()
     {
         self::$topic = 'testtopic/simps-' . rand(100, 999);
+        self::$client = new Client(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestConnectConfig());
     }
 
     public static function tearDownAfterClass()
     {
         self::$topic = '';
+        self::$client = null;
     }
 
     public function testConnect()
     {
-        $config = getTestConnectConfig(false);
-        $client = new Client($config, SWOOLE_MQTT_CONFIG);
-        $res = $client->connect();
+        $res = self::$client->connect();
         $this->assertIsArray($res);
         $this->assertSame($res['type'], Types::CONNACK);
-
-        return $client;
     }
 
     /**
      * @depends testConnect
      */
-    public function testSubscribe(Client $client)
+    public function testSubscribe()
     {
         $topics[self::$topic] = 1;
-        $res = $client->subscribe($topics);
+        $res = self::$client->subscribe($topics);
         $this->assertIsArray($res);
         $this->assertSame($res['type'], Types::SUBACK);
         $this->assertSame($res['codes'][0], ReasonCode::GRANTED_QOS_1);
-
-        return $client;
     }
 
     /**
      * @depends testSubscribe
      */
-    public function testPublish(Client $client)
+    public function testPublish()
     {
-        $buffer = $client->publish(self::$topic, 'hello,simps', 1);
+        $buffer = self::$client->publish(self::$topic, 'hello,simps', 1);
         $this->assertIsArray($buffer);
         $this->assertSame($buffer['type'], Types::PUBACK);
-
-        return $client;
     }
 
     /**
      * @depends testPublish
      */
-    public function testRecv(Client $client)
+    public function testRecv()
     {
-        $buffer = $client->recv();
+        $buffer = self::$client->recv();
         $this->assertIsArray($buffer);
         $this->assertSame($buffer['type'], Types::PUBLISH);
         $this->assertSame($buffer['topic'], self::$topic);
         $this->assertSame($buffer['message'], 'hello,simps');
-
-        return $client;
     }
 
     /**
      * @depends testRecv
      */
-    public function testPing(Client $client)
+    public function testPing()
     {
-        $buffer = $client->ping();
+        $buffer = self::$client->ping();
         $this->assertIsArray($buffer);
         $this->assertSame($buffer['type'], Types::PINGRESP);
-
-        return $client;
     }
 
     /**
      * @depends testPing
      */
-    public function testUnsubscribe(Client $client)
+    public function testUnsubscribe()
     {
-        $status = $client->unSubscribe([self::$topic]);
+        $status = self::$client->unSubscribe([self::$topic]);
         $this->assertIsArray($status);
         $this->assertSame($status['type'], Types::UNSUBACK);
-
-        return $client;
     }
 
     /**
      * @depends testUnsubscribe
      */
-    public function testClose(Client $client)
+    public function testClose()
     {
-        $status = $client->close();
+        $status = self::$client->close();
         $this->assertTrue($status);
     }
 
     public function testPublishNonTopic()
     {
-        $client = new Client(getTestMQTT5ConnectConfig(false), SWOOLE_MQTT_CONFIG);
+        $client = new Client(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestConnectConfig());
         $client->connect();
         $this->expectException(ProtocolException::class);
-        $this->expectExceptionMessage('Protocol Error, Topic cannot be empty or need to set topic_alias');
+        $this->expectExceptionMessage('Protocol Error, Topic cannot be empty');
         $client->publish('', 'hello,simps');
 
         return $client;
