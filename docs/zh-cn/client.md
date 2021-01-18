@@ -5,37 +5,40 @@
 创建一个MQTT客户端实例
 
 ```php
-Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int $clientType = Client::COROUTINE_CLIENT_TYPE)
+Simps\MQTT\Client::__construct(string $host, int $port, ?ClientConfig $config = null, int $clientType = Client::COROUTINE_CLIENT_TYPE)
 ```
 
-* 参数`array $config`
+* 参数`string $host`
 
-客户端选项数组，可以设置以下选项：
+Broker 的 IP 地址
+
+* 参数`int $port`
+
+Broker 的端口
+
+* 参数`ClientConfig $config`
+
+客户端配置对象。
+
+示例：
 
 ```php
 $config = [
-    'host' => '127.0.0.1', // MQTT服务端IP
-    'port' => 1883, // MQTT服务端端口
-    'user_name' => '', // 用户名
+    'userName' => '', // 用户名
     'password' => '', // 密码
-    'client_id' => '', // 客户端id
-    'keep_alive' => 10, // 默认0秒，设置成0代表禁用
-    'protocol_name' => 'MQTT', // 协议名，默认为MQTT(3.1.1版本)，也可为MQIsdp(3.1版本)
-    'protocol_level' => 4, // 协议等级，MQTT3.1.1版本为4，5.0版本为5，MQIsdp为3
+    'clientId' => '', // 客户端id
+    'keepAlive' => 10, // 默认0秒，设置成0代表禁用
+    'protocolName' => 'MQTT', // 协议名，默认为MQTT(3.1.1版本)，也可为MQIsdp(3.1版本)
+    'protocolLevel' => 4, // 协议等级，MQTT3.1.1版本为4，5.0版本为5，MQIsdp为3
     'properties' => [], // MQTT5 中所需要的属性
-    'reconnect_delay' => 3, // 重连时的延迟时间
+    'reconnectDelay' => 3, // 重连时的延迟时间
+    'swooleConfig' => []
 ];
+$configObj = new Simps\MQTT\Config\ClientConfig($config);
+$client = new Simps\MQTT\Client('127.0.0.1', 1883, $configObj);
 ```
 
 !> Client 会根据设置的`protocol_level`来使用对应的协议解析
-
-* 参数`array $swConfig`
-
-设置`Swoole\Coroutine\Client | Swoole\Client`的配置，请参考Swoole文档：[set()](https://wiki.swoole.com/#/coroutine_client/client?id=set)
-
-* 参数`int $type`
-
-设置`sockType`，如：`SWOOLE_TCP`、`SWOOLE_TCP | SWOOLE_SSL`
 
 * 参数`int $clientType`
 
