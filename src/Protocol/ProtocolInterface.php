@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Simps\MQTT;
+namespace Simps\MQTT\Protocol;
 
 interface ProtocolInterface
 {

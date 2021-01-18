@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace Simps\MQTT;
+namespace Simps\MQTT\Protocol;
 
 use Simps\MQTT\Exception\InvalidArgumentException;
 use Simps\MQTT\Exception\RuntimeException;
@@ -22,7 +22,7 @@ use Simps\MQTT\Tools\UnPackTool;
 use Throwable;
 use TypeError;
 
-class Protocol implements ProtocolInterface
+class V3 implements ProtocolInterface
 {
     public static function pack(array $array): string
     {
