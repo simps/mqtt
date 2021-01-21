@@ -15,7 +15,7 @@ use Simps\MQTT\Client;
 use Swoole\Coroutine;
 
 Coroutine\run(function () {
-    $client = new Client(getTestMQTT5ConnectConfig(), SWOOLE_MQTT_CONFIG);
+    $client = new Client(SIMPS_MQTT_LOCAL_HOST, SIMPS_MQTT_PORT, getTestMQTT5ConnectConfig());
     while (!$client->connect()) {
         Coroutine::sleep(3);
         $client->connect();

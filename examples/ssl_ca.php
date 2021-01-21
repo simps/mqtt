@@ -13,17 +13,9 @@ include __DIR__ . '/bootstrap.php';
 
 use Simps\MQTT\Client;
 use Swoole\Coroutine;
+use Simps\MQTT\Config\ClientConfig;
 
 Coroutine\run(function () {
-    $config = [
-        'host' => 'test.mosquitto.org',
-        'port' => 8883,
-        'user_name' => '',
-        'password' => '',
-        'client_id' => Client::genClientID(),
-        'keep_alive' => 20,
-    ];
-
     $swooleConfig = [
         'open_mqtt_protocol' => true,
         'package_max_length' => 2 * 1024 * 1024,
@@ -32,7 +24,15 @@ Coroutine\run(function () {
         'ssl_verify_peer' => true,
     ];
 
-    $client = new Client($config, $swooleConfig, SWOOLE_SOCK_TCP | SWOOLE_SSL);
+    $config = new ClientConfig();
+    $config->setClientId(Client::genClientID())
+        ->setKeepAlive(20)
+        ->setUserName('')
+        ->setPassword('')
+        ->setSwooleConfig($swooleConfig)
+        ->setSockType(SWOOLE_SOCK_TCP | SWOOLE_SSL);
+
+    $client = new Client('test.mosquitto.org', 8883, $config);
 
     while (!$data = $client->connect()) {
         Coroutine::sleep(3);
@@ -47,7 +47,7 @@ Coroutine\run(function () {
         if ($buffer && $buffer !== true) {
             $timeSincePing = time();
         }
-        if (isset($config['keep_alive']) && $timeSincePing < (time() - $config['keep_alive'])) {
+        if ($timeSincePing < (time() - $config->getKeepAlive())) {
             $buffer = $client->ping();
             if ($buffer) {
                 echo 'send ping success' . PHP_EOL;

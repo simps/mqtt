@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Simps\MQTT;
 
+use Simps\MQTT\Config\ClientConfig;
 use Simps\MQTT\Exception\ProtocolException;
 use Simps\MQTT\Exception\RuntimeException;
 use Simps\MQTT\Hex\ReasonCode;
@@ -23,62 +24,56 @@ class Client
     /** @var Coroutine\Client|\Swoole\Client */
     private $client;
 
-    private $config = [
-        'host' => '127.0.0.1',
-        'port' => 1883,
-        'user_name' => '',
-        'password' => '',
-        'client_id' => '',
-        'keep_alive' => 0,
-        'protocol_name' => ProtocolInterface::MQTT_PROTOCOL_NAME,
-        'protocol_level' => ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1,
-        'properties' => [],
-        'reconnect_delay' => 3,
-    ];
-
     private $messageId = 0;
 
     private $connectData = [];
 
+    private $host;
+
+    private $port;
+
+    private $config;
+
     private $clientType;
 
-    const COROUTINE_CLIENT_TYPE = 1;
+    public const COROUTINE_CLIENT_TYPE = 1;
 
-    const SYNC_CLIENT_TYPE = 2;
+    public const SYNC_CLIENT_TYPE = 2;
 
     public function __construct(
-        array $config,
-        array $swConfig = [],
-        int $type = SWOOLE_SOCK_TCP,
+        string $host,
+        int $port,
+        ?ClientConfig $config = null,
         int $clientType = self::COROUTINE_CLIENT_TYPE
     ) {
-        $this->config = array_replace_recursive($this->config, $config);
+        $this->host = $host;
+        $this->port = $port;
+        $this->config = $config;
         $this->clientType = $clientType;
+
         if ($this->isCoroutineClientType()) {
-            $this->client = new Coroutine\Client($type);
+            $this->client = new Coroutine\Client($config->getSockType());
         } else {
-            $this->client = new \Swoole\Client($type);
+            $this->client = new \Swoole\Client($config->getSockType());
         }
-        if (!empty($swConfig)) {
-            $this->client->set($swConfig);
-        }
-        if (!$this->client->connect($this->config['host'], $this->config['port'])) {
-            $this->reConnect($this->config['reconnect_delay']);
+        $this->client->set($config->getSwooleConfig());
+        if (!$this->client->connect($host, $port)) {
+            $this->reConnect($config->getReconnectDelay());
         }
     }
 
     public function connect(bool $clean = true, array $will = [])
     {
         $data = [
-            'type' => Types::CONNECT,
-            'protocol_name' => $this->config['protocol_name'],
-            'protocol_level' => (int) $this->config['protocol_level'],
+            'type' => Protocol\Types::CONNECT,
+            'protocol_name' => $this->getConfig()->getProtocolName(),
+            'protocol_level' => $this->getConfig()->getProtocolLevel(),
             'clean_session' => $clean,
-            'client_id' => $this->config['client_id'],
-            'keep_alive' => $this->config['keep_alive'],
-            'properties' => $this->config['properties'],
-            'user_name' => $this->config['user_name'],
-            'password' => $this->config['password'],
+            'client_id' => $this->getConfig()->getClientId(),
+            'keep_alive' => $this->getConfig()->getKeepAlive(),
+            'properties' => $this->getConfig()->getProperties(),
+            'user_name' => $this->getConfig()->getUserName(),
+            'password' => $this->getConfig()->getPassword(),
         ];
         if (!empty($will)) {
             $data['will'] = $will;
@@ -92,7 +87,7 @@ class Client
     public function subscribe(array $topics, array $properties = [])
     {
         $data = [
-            'type' => Types::SUBSCRIBE,
+            'type' => Protocol\Types::SUBSCRIBE,
             'message_id' => $this->buildMessageId(),
             'properties' => $properties,
             'topics' => $topics,
@@ -104,7 +99,7 @@ class Client
     public function unSubscribe(array $topics, array $properties = [])
     {
         $data = [
-            'type' => Types::UNSUBSCRIBE,
+            'type' => Protocol\Types::UNSUBSCRIBE,
             'message_id' => $this->buildMessageId(),
             'properties' => $properties,
             'topics' => $topics,
@@ -122,8 +117,8 @@ class Client
         array $properties = []
     ) {
         if (empty($topic)) {
-            switch ($this->config['protocol_level']) {
-                case ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0:
+            switch ($this->getConfig()->getProtocolLevel()) {
+                case Protocol\ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0:
                     if (!isset($properties['topic_alias'])) {
                         throw new ProtocolException(
                             'Protocol Error, Topic cannot be empty or need to set topic_alias'
@@ -139,7 +134,7 @@ class Client
 
         return $this->send(
             [
-                'type' => Types::PUBLISH,
+                'type' => Protocol\Types::PUBLISH,
                 'qos' => $qos,
                 'dup' => $dup,
                 'retain' => $retain,
@@ -154,24 +149,23 @@ class Client
 
     public function ping()
     {
-        return $this->send(['type' => Types::PINGREQ]);
+        return $this->send(['type' => Protocol\Types::PINGREQ]);
     }
 
     public function close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = []): bool
     {
-        $this->send(['type' => Types::DISCONNECT, 'code' => $code, 'properties' => $properties], false);
+        $this->send(['type' => Protocol\Types::DISCONNECT, 'code' => $code, 'properties' => $properties], false);
 
         return $this->client->close();
     }
 
     public function auth(int $code = ReasonCode::SUCCESS, array $properties = [])
     {
-        return $this->send(['type' => Types::AUTH, 'code' => $code, 'properties' => $properties]);
+        return $this->send(['type' => Protocol\Types::AUTH, 'code' => $code, 'properties' => $properties]);
     }
 
     private function reConnect(int $delay)
     {
-        $reConnectTime = 1;
         $result = false;
         while (!$result) {
             if ($this->isCoroutineClientType()) {
@@ -180,17 +174,16 @@ class Client
                 sleep($delay);
             }
             $this->client->close();
-            $result = $this->client->connect($this->config['host'], $this->config['port']);
-            ++$reConnectTime;
+            $result = $this->client->connect($this->getHost(), $this->getPort());
         }
     }
 
     public function send(array $data, bool $response = true)
     {
-        if ($this->config['protocol_level'] === ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0) {
-            $package = ProtocolV5::pack($data);
+        if ($this->getConfig()->getProtocolLevel() === Protocol\ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0) {
+            $package = Protocol\V5::pack($data);
         } else {
-            $package = Protocol::pack($data);
+            $package = Protocol\V3::pack($data);
         }
         $this->client->send($package);
         if ($response) {
@@ -204,8 +197,8 @@ class Client
     {
         $response = $this->getResponse();
         if ($response === '' || !$this->client->isConnected()) {
-            $this->reConnect($this->config['reconnect_delay']);
-            $this->connect($this->connectData['clean_session'] ?? true, $this->connectData['will'] ?? []);
+            $this->reConnect($this->getConfig()->getReconnectDelay());
+            $this->connect($this->getConnectData('clean_session') ?? true, $this->getConnectData('will') ?? []);
         } elseif ($response === false) {
             if ($this->client->errCode === SOCKET_ECONNRESET) {
                 $this->client->close();
@@ -218,11 +211,11 @@ class Client
                 throw new RuntimeException($errMsg, $this->client->errCode);
             }
         } elseif (is_string($response) && strlen($response) > 0) {
-            if ($this->config['protocol_level'] === ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0) {
-                return ProtocolV5::unpack($response);
+            if ($this->getConfig()->getProtocolLevel() === Protocol\ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0) {
+                return Protocol\V5::unpack($response);
             }
 
-            return Protocol::unpack($response);
+            return Protocol\V3::unpack($response);
         }
 
         return true;
@@ -267,5 +260,29 @@ class Client
     public static function genClientID(string $prefix = 'Simps_'): string
     {
         return uniqid($prefix);
+    }
+
+    public function getHost(): string
+    {
+        return $this->host;
+    }
+
+    public function getPort(): int
+    {
+        return $this->port;
+    }
+
+    public function getConfig(): ClientConfig
+    {
+        return $this->config;
+    }
+
+    public function getConnectData(?string $key = null)
+    {
+        if ($key && isset($this->connectData[$key])) {
+            return $this->connectData[$key];
+        }
+
+        return $this->connectData;
     }
 }

@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Simps\MQTT\Packet;
 
 use Simps\MQTT\Exception\ProtocolException;
-use Simps\MQTT\ProtocolInterface;
+use Simps\MQTT\Protocol\ProtocolInterface;
+use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Tools\PackTool;
-use Simps\MQTT\Types;
 
 class Pack
 {

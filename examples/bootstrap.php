@@ -22,6 +22,8 @@ foreach (
     }
 }
 
+use Simps\MQTT\Config\ClientConfig;
+
 const SSL_CERTS_DIR = __DIR__ . '/ssl_certs';
 
 const SWOOLE_MQTT_CONFIG = [
@@ -32,40 +34,32 @@ const SWOOLE_MQTT_CONFIG = [
     'read_timeout' => 0.5,
 ];
 
-function getTestConnectConfig(bool $isLocal = true, string $host = 'broker.emqx.io')
-{
-    if ($isLocal) {
-        $host = '127.0.0.1';
-    }
+const SIMPS_MQTT_LOCAL_HOST = '127.0.0.1';
+const SIMPS_MQTT_REMOTE_HOST = 'broker.emqx.io';
+const SIMPS_MQTT_PORT = 1883;
 
-    return [
-        'host' => $host,
-        'port' => 1883,
-        'user_name' => 'username',
-        'password' => 'password',
-        'client_id' => \Simps\MQTT\Client::genClientID(),
-        'keep_alive' => 10,
-    ];
+function getTestConnectConfig()
+{
+    $config = new ClientConfig();
+    return $config->setUserName('username')
+        ->setPassword('password')
+        ->setClientId(\Simps\MQTT\Client::genClientID())
+        ->setKeepAlive(10)
+        ->setSwooleConfig(SWOOLE_MQTT_CONFIG);
 }
 
-function getTestMQTT5ConnectConfig(bool $isLocal = true, string $host = 'broker.emqx.io')
+function getTestMQTT5ConnectConfig()
 {
-    if ($isLocal) {
-        $host = '127.0.0.1';
-    }
-
-    return [
-        'host' => $host,
-        'port' => 1883,
-        'user_name' => 'username',
-        'password' => 'password',
-        'client_id' => \Simps\MQTT\Client::genClientID(),
-        'keep_alive' => 10,
-        'properties' => [
+    $config = new ClientConfig();
+    return $config->setUserName('username')
+        ->setPassword('password')
+        ->setClientId(\Simps\MQTT\Client::genClientID())
+        ->setKeepAlive(10)
+        ->setProperties([
             'session_expiry_interval' => 60,
             'receive_maximum' => 65535,
             'topic_alias_maximum' => 65535,
-        ],
-        'protocol_level' => 5,
-    ];
+        ])
+        ->setProtocolLevel(5)
+        ->setSwooleConfig(SWOOLE_MQTT_CONFIG);
 }

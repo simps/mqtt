@@ -5,37 +5,40 @@
 Create a MQTT client instance
 
 ```php
-Simps\MQTT\Client::__construct(array $config, array $swConfig = [], int $type = SWOOLE_SOCK_TCP, int $clientType = Client::COROUTINE_CLIENT_TYPE)
+Simps\MQTT\Client::__construct(string $host, int $port, ?ClientConfig $config = null, int $clientType = Client::COROUTINE_CLIENT_TYPE)
 ```
 
-* `array $config`
+* `string $host`
 
-An array of client options, you can set the following options:
+Broker's host
+
+* `int $port`
+
+Broker's port
+
+* `ClientConfig $config`
+
+ClientConfig object.
+
+Example.
 
 ```php
 $config = [
-    'host' => '127.0.0.1',
-    'port' => 1883,
-    'user_name' => '',
-    'password' => '',
-    'client_id' => '',
-    'keep_alive' => 10,
-    'protocol_name' => 'MQTT', // or MQIsdp
-    'protocol_level' => 4, // or 3, 5
+    'userName' => '', // 用户名
+    'password' => '', // 密码
+    'clientId' => '', // 客户端id
+    'keepAlive' => 10, // 默认0秒，设置成0代表禁用
+    'protocolName' => 'MQTT', // or MQIsdp
+    'protocolLevel' => 4, // or 3, 5
     'properties' => [], // optional in MQTT5
-    'reconnect_delay' => 3,
+    'reconnectDelay' => 3,
+    'swooleConfig' => []
 ];
+$configObj = new Simps\MQTT\Config\ClientConfig($config);
+$client = new Simps\MQTT\Client('127.0.0.1', 1883, $configObj);
 ```
 
 !> The Client will use the corresponding protocol resolution according to the `protocol_level` set.
-
-* `array $swConfig`
-
-To set the configuration of `Swoole\Coroutine\Client`, please see Swoole document: [set()](https://www.swoole.co.uk/docs/modules/swoole-coroutine-client-set)
-
-* `int $type`
-
-Set `sockType`, such as: `SWOOLE_TCP`, `SWOOLE_TCP | SWOOLE_SSL`
 
 * `int $clientType`
 

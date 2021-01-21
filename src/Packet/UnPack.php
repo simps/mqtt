@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Packet;
 
+use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Tools\UnPackTool;
-use Simps\MQTT\Types;
 
 class UnPack
 {

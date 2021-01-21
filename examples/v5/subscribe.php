@@ -15,8 +15,7 @@ use Simps\MQTT\Client;
 use Swoole\Coroutine;
 
 Coroutine\run(function () {
-    $config = getTestMQTT5ConnectConfig();
-    $client = new Client($config, SWOOLE_MQTT_CONFIG);
+    $client = new Client(SIMPS_MQTT_LOCAL_HOST, SIMPS_MQTT_PORT, getTestMQTT5ConnectConfig());
     $will = [
         'topic' => 'simps-mqtt/user001/update',
         'qos' => 1,
@@ -56,7 +55,7 @@ Coroutine\run(function () {
         if ($buffer && $buffer !== true) {
             $timeSincePing = time();
         }
-        if (isset($config['keep_alive']) && $timeSincePing < (time() - $config['keep_alive'])) {
+        if ($timeSincePing < (time() - $client->getConfig()->getKeepAlive())) {
             $buffer = $client->ping();
             if ($buffer) {
                 echo 'send ping success' . PHP_EOL;
