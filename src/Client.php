@@ -168,6 +168,7 @@ class Client
     {
         $result = false;
         $maxAttempts = $this->getConfig()->getMaxAttempts();
+        $delay = $this->getConfig()->getDelay();
         while (!$result) {
             if ($maxAttempts === 0) {
                 if ($this->isCoroutineClientType()) {
@@ -177,7 +178,7 @@ class Client
                 }
                 throw new RuntimeException($errMsg, $this->client->errCode);
             }
-            $this->sleep();
+            $this->sleep($delay);
             $this->client->close();
             $result = $this->client->connect($this->getHost(), $this->getPort());
             if ($maxAttempts > 0) {
@@ -270,13 +271,12 @@ class Client
         return uniqid($prefix);
     }
 
-    public function sleep(): void
+    public function sleep(int $ms): void
     {
-        $delay = $this->getConfig()->getDelay();
         if ($this->isCoroutineClientType()) {
-            Coroutine::sleep($delay / 1000);
+            Coroutine::sleep($ms / 1000);
         } else {
-            usleep($delay * 1000);
+            usleep($ms * 1000);
         }
     }
 
