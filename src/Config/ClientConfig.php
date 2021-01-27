@@ -33,7 +33,9 @@ class ClientConfig extends AbstractConfig
 
     protected $properties = [];
 
-    protected $reconnectDelay = 3;
+    protected $delay = 3000;
+
+    protected $maxAttempts = -1;
 
     protected $sockType = SWOOLE_SOCK_TCP;
 
@@ -133,14 +135,26 @@ class ClientConfig extends AbstractConfig
         return $this;
     }
 
-    public function getReconnectDelay(): int
+    public function getDelay(): int
     {
-        return $this->reconnectDelay;
+        return $this->delay;
     }
 
-    public function setReconnectDelay(int $delay): self
+    public function setDelay(int $ms): self
     {
-        $this->reconnectDelay = $delay;
+        $this->delay = $ms;
+
+        return $this;
+    }
+
+    public function getMaxAttempts(): int
+    {
+        return $this->maxAttempts;
+    }
+
+    public function setMaxAttempts(int $attempts): self
+    {
+        $this->maxAttempts = $attempts;
 
         return $this;
     }

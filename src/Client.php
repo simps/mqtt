@@ -58,7 +58,7 @@ class Client
         }
         $this->client->set($config->getSwooleConfig());
         if (!$this->client->connect($host, $port)) {
-            $this->reConnect($config->getReconnectDelay());
+            $this->reConnect();
         }
     }
 
@@ -164,17 +164,25 @@ class Client
         return $this->send(['type' => Protocol\Types::AUTH, 'code' => $code, 'properties' => $properties]);
     }
 
-    private function reConnect(int $delay)
+    private function reConnect()
     {
         $result = false;
+        $maxAttempts = $this->getConfig()->getMaxAttempts();
         while (!$result) {
-            if ($this->isCoroutineClientType()) {
-                Coroutine::sleep($delay);
-            } else {
-                sleep($delay);
+            if ($maxAttempts === 0) {
+                if ($this->isCoroutineClientType()) {
+                    $errMsg = $this->client->errMsg;
+                } else {
+                    $errMsg = socket_strerror($this->client->errCode);
+                }
+                throw new RuntimeException($errMsg, $this->client->errCode);
             }
+            $this->sleep();
             $this->client->close();
             $result = $this->client->connect($this->getHost(), $this->getPort());
+            if ($maxAttempts > 0) {
+                $maxAttempts--;
+            }
         }
     }
 
@@ -197,7 +205,7 @@ class Client
     {
         $response = $this->getResponse();
         if ($response === '' || !$this->client->isConnected()) {
-            $this->reConnect($this->getConfig()->getReconnectDelay());
+            $this->reConnect();
             $this->connect($this->getConnectData('clean_session') ?? true, $this->getConnectData('will') ?? []);
         } elseif ($response === false) {
             if ($this->client->errCode === SOCKET_ECONNRESET) {
@@ -260,6 +268,16 @@ class Client
     public static function genClientID(string $prefix = 'Simps_'): string
     {
         return uniqid($prefix);
+    }
+
+    public function sleep(): void
+    {
+        $delay = $this->getConfig()->getDelay();
+        if ($this->isCoroutineClientType()) {
+            Coroutine::sleep($delay / 1000);
+        } else {
+            usleep($delay * 1000);
+        }
     }
 
     public function getHost(): string
