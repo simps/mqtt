@@ -45,6 +45,8 @@ function getTestConnectConfig()
         ->setPassword('password')
         ->setClientId(\Simps\MQTT\Client::genClientID())
         ->setKeepAlive(10)
+        ->setDelay(3000) // 3s
+        ->setMaxAttempts(5)
         ->setSwooleConfig(SWOOLE_MQTT_CONFIG);
 }
 
@@ -55,6 +57,8 @@ function getTestMQTT5ConnectConfig()
         ->setPassword('password')
         ->setClientId(\Simps\MQTT\Client::genClientID())
         ->setKeepAlive(10)
+        ->setDelay(3000) // 3s
+        ->setMaxAttempts(5)
         ->setProperties([
             'session_expiry_interval' => 60,
             'receive_maximum' => 65535,

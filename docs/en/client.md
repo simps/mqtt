@@ -24,14 +24,15 @@ Example.
 
 ```php
 $config = [
-    'userName' => '', // 用户名
-    'password' => '', // 密码
-    'clientId' => '', // 客户端id
-    'keepAlive' => 10, // 默认0秒，设置成0代表禁用
+    'userName' => '',
+    'password' => '',
+    'clientId' => '',
+    'keepAlive' => 10,
     'protocolName' => 'MQTT', // or MQIsdp
     'protocolLevel' => 4, // or 3, 5
     'properties' => [], // optional in MQTT5
-    'reconnectDelay' => 3,
+    'delay' => 3000, // 3s
+    'maxAttempts' => 5,
     'swooleConfig' => []
 ];
 $configObj = new Simps\MQTT\Config\ClientConfig($config);
