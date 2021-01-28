@@ -16,10 +16,7 @@ use Swoole\Coroutine;
 
 Coroutine\run(function () {
     $client = new Client(SIMPS_MQTT_LOCAL_HOST, SIMPS_MQTT_PORT, getTestMQTT5ConnectConfig());
-    while (!$client->connect()) {
-        Coroutine::sleep(3);
-        $client->connect();
-    }
+    $client->connect();
     $topics = ['simps-mqtt/user001/get'];
     $res = $client->unsubscribe($topics);
     var_dump($res);

@@ -28,12 +28,7 @@ Coroutine\run(function () {
             'payload_format_indicator' => true, // false 0 1
         ],
     ];
-    while (!$data = $client->connect(false, $will)) {
-        Coroutine::sleep(3);
-        $client->connect(true, $will);
-    }
-//    $topics['simps-mqtt/user001/get'] = 0;
-//    $topics['simps-mqtt/user001/update'] = 2;
+    $client->connect(true, $will);
     $topics['simps-mqtt/user001/get'] = [
         'qos' => 1,
         'no_local' => true,
@@ -46,8 +41,8 @@ Coroutine\run(function () {
         'retain_as_published' => true,
         'retain_handling' => 2,
     ];
-    $timeSincePing = time();
     $res = $client->subscribe($topics);
+    $timeSincePing = time();
     var_dump($res);
     while (true) {
         $buffer = $client->recv();

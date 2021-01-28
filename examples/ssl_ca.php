@@ -29,18 +29,16 @@ Coroutine\run(function () {
         ->setKeepAlive(20)
         ->setUserName('')
         ->setPassword('')
+        ->setDelay(3000) // 3s
+        ->setMaxAttempts(5)
         ->setSwooleConfig($swooleConfig)
         ->setSockType(SWOOLE_SOCK_TCP | SWOOLE_SSL);
 
     $client = new Client('test.mosquitto.org', 8883, $config);
-
-    while (!$data = $client->connect()) {
-        Coroutine::sleep(3);
-        $client->connect();
-    }
+    $client->connect();
     $topics['testtopic/#'] = 0;
-    $timeSincePing = time();
     $client->subscribe($topics);
+    $timeSincePing = time();
     while (true) {
         $buffer = $client->recv();
         var_dump($buffer);
