@@ -22,14 +22,11 @@ Coroutine\run(function () {
         'retain' => 0,
         'message' => 'byebye',
     ];
-    while (!$client->connect(false, $will)) {
-        Coroutine::sleep(3);
-        $client->connect(true, $will);
-    }
+    $client->connect(true, $will);
     $topics['simps-mqtt/user001/get'] = 0;
     $topics['simps-mqtt/user001/update'] = 1;
-    $timeSincePing = time();
     $client->subscribe($topics);
+    $timeSincePing = time();
     while (true) {
         $buffer = $client->recv();
         var_dump($buffer);
