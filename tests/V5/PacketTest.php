@@ -140,7 +140,5 @@ class PacketTest extends TestCase
         $this->expectException(ProtocolException::class);
         $this->expectExceptionMessage('Protocol Error, Topic cannot be empty or need to set topic_alias');
         $client->publish('', 'hello,simps');
-
-        return $client;
     }
 }

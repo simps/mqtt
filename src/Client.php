@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Simps\MQTT;
 
 use Simps\MQTT\Config\ClientConfig;
+use Simps\MQTT\Exception\ConnectException;
 use Simps\MQTT\Exception\ProtocolException;
-use Simps\MQTT\Exception\RuntimeException;
 use Simps\MQTT\Hex\ReasonCode;
 use Swoole\Coroutine;
 
@@ -176,7 +176,7 @@ class Client
                 } else {
                     $errMsg = socket_strerror($this->client->errCode);
                 }
-                throw new RuntimeException($errMsg, $this->client->errCode);
+                throw new ConnectException($errMsg, $this->client->errCode);
             }
             $this->sleep($delay);
             $this->client->close();
@@ -194,7 +194,9 @@ class Client
         } else {
             $package = Protocol\V3::pack($data);
         }
+
         $this->client->send($package);
+
         if ($response) {
             return $this->recv();
         }
@@ -217,7 +219,7 @@ class Client
                 } else {
                     $errMsg = socket_strerror($this->client->errCode);
                 }
-                throw new RuntimeException($errMsg, $this->client->errCode);
+                throw new ConnectException($errMsg, $this->client->errCode);
             }
         } elseif (is_string($response) && strlen($response) > 0) {
             if ($this->getConfig()->getProtocolLevel() === Protocol\ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0) {
