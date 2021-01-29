@@ -299,8 +299,12 @@ class Client
 
     public function getConnectData(?string $key = null)
     {
-        if ($key && isset($this->connectData[$key])) {
-            return $this->connectData[$key];
+        if ($key) {
+            if (isset($this->connectData[$key])) {
+                return $this->connectData[$key];
+            }
+
+            return null;
         }
 
         return $this->connectData;
