@@ -23,7 +23,7 @@ use Swoole\Coroutine;
  * @internal
  * @coversNothing
  */
-class Client extends TestCase
+class ClientTest extends TestCase
 {
     public function testConnectException()
     {
