@@ -25,13 +25,14 @@ foreach (
 use Simps\MQTT\Config\ClientConfig;
 
 const SSL_CERTS_DIR = __DIR__ . '/ssl_certs';
+const TESTS_DIR = __DIR__ . '/../tests';
 
 const SWOOLE_MQTT_CONFIG = [
     'open_mqtt_protocol' => true,
     'package_max_length' => 2 * 1024 * 1024,
-    'connect_timeout' => 1.0,
-    'write_timeout' => 3.0,
-    'read_timeout' => 0.5,
+    'connect_timeout' => 5.0,
+//    'write_timeout' => 10.0,
+//    'read_timeout' => 5.0,
 ];
 
 const SIMPS_MQTT_LOCAL_HOST = '127.0.0.1';
