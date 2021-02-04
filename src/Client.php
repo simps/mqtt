@@ -132,6 +132,12 @@ class Client
 
         $response = $qos > 0;
 
+        // A PUBLISH packet MUST NOT contain a Packet Identifier if its QoS value is set to 0
+        $message_id = 0;
+        if ($qos) {
+            $message_id = $this->buildMessageId();
+        }
+
         return $this->send(
             [
                 'type' => Protocol\Types::PUBLISH,
@@ -139,7 +145,7 @@ class Client
                 'dup' => $dup,
                 'retain' => $retain,
                 'topic' => $topic,
-                'message_id' => $this->buildMessageId(),
+                'message_id' => $message_id,
                 'properties' => $properties,
                 'message' => $message,
             ],
