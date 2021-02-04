@@ -41,11 +41,11 @@ Coroutine\run(function () {
     $timeSincePing = time();
     while (true) {
         $buffer = $client->recv();
-        var_dump($buffer);
         if ($buffer && $buffer !== true) {
+            var_dump($buffer);
             $timeSincePing = time();
         }
-        if ($timeSincePing < (time() - $config->getKeepAlive())) {
+        if ($timeSincePing <= (time() - $config->getKeepAlive())) {
             $buffer = $client->ping();
             if ($buffer) {
                 echo 'send ping success' . PHP_EOL;

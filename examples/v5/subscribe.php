@@ -13,11 +13,12 @@ include __DIR__ . '/../bootstrap.php';
 
 use Simps\MQTT\Client;
 use Swoole\Coroutine;
+use Simps\MQTT\Protocol\Types;
 
 Coroutine\run(function () {
     $client = new Client(SIMPS_MQTT_LOCAL_HOST, SIMPS_MQTT_PORT, getTestMQTT5ConnectConfig());
     $will = [
-        'topic' => 'simps-mqtt/user001/update',
+        'topic' => 'simps-mqtt/user001/delete',
         'qos' => 1,
         'retain' => 0,
         'message' => 'byebye',
@@ -46,11 +47,21 @@ Coroutine\run(function () {
     var_dump($res);
     while (true) {
         $buffer = $client->recv();
-        var_dump($buffer);
         if ($buffer && $buffer !== true) {
+            var_dump($buffer);
+            // QoS1 PUBACK
+            if ($buffer['type'] === Types::PUBLISH && $buffer['qos'] === 1) {
+                $client->send(
+                    [
+                        'type' => Types::PUBACK,
+                        'message_id' => $buffer['message_id']
+                    ],
+                    false
+                );
+            }
             $timeSincePing = time();
         }
-        if ($timeSincePing < (time() - $client->getConfig()->getKeepAlive())) {
+        if ($timeSincePing <= (time() - $client->getConfig()->getKeepAlive())) {
             $buffer = $client->ping();
             if ($buffer) {
                 echo 'send ping success' . PHP_EOL;
