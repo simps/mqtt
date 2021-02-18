@@ -16,7 +16,7 @@ use Swoole\Coroutine;
 use Simps\MQTT\Protocol\Types;
 
 Coroutine\run(function () {
-    $client = new Client(SIMPS_MQTT_LOCAL_HOST, SIMPS_MQTT_PORT, getTestConnectConfig());
+    $client = new Client(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestConnectConfig());
     $will = [
         'topic' => 'simps-mqtt/user001/delete',
         'qos' => 0,
@@ -49,9 +49,6 @@ Coroutine\run(function () {
             if ($buffer) {
                 echo 'send ping success' . PHP_EOL;
                 $timeSincePing = time();
-            } else {
-                $client->close();
-                break;
             }
         }
     }

@@ -66,9 +66,6 @@ Coroutine\run(function () {
             if ($buffer) {
                 echo 'send ping success' . PHP_EOL;
                 $timeSincePing = time();
-            } else {
-                $client->close();
-                break;
             }
         }
     }
