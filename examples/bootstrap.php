@@ -22,6 +22,7 @@ foreach (
     }
 }
 
+use Simps\MQTT\Client;
 use Simps\MQTT\Config\ClientConfig;
 
 const SSL_CERTS_DIR = __DIR__ . '/ssl_certs';
@@ -42,9 +43,9 @@ const SIMPS_MQTT_PORT = 1883;
 function getTestConnectConfig()
 {
     $config = new ClientConfig();
-    return $config->setUserName('username')
-        ->setPassword('password')
-        ->setClientId(\Simps\MQTT\Client::genClientID())
+    return $config->setUserName('')
+        ->setPassword('')
+        ->setClientId(Client::genClientID())
         ->setKeepAlive(10)
         ->setDelay(3000) // 3s
         ->setMaxAttempts(5)
@@ -54,9 +55,9 @@ function getTestConnectConfig()
 function getTestMQTT5ConnectConfig()
 {
     $config = new ClientConfig();
-    return $config->setUserName('username')
-        ->setPassword('password')
-        ->setClientId(\Simps\MQTT\Client::genClientID())
+    return $config->setUserName('')
+        ->setPassword('')
+        ->setClientId(Client::genClientID())
         ->setKeepAlive(10)
         ->setDelay(3000) // 3s
         ->setMaxAttempts(5)
