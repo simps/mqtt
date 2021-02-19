@@ -43,7 +43,7 @@ class Client
     public function __construct(
         string $host,
         int $port,
-        ?ClientConfig $config = null,
+        ClientConfig $config,
         int $clientType = self::COROUTINE_CLIENT_TYPE
     ) {
         $this->host = $host;

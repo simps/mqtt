@@ -5,7 +5,7 @@
 Create a MQTT client instance
 
 ```php
-Simps\MQTT\Client::__construct(string $host, int $port, ?ClientConfig $config = null, int $clientType = Client::COROUTINE_CLIENT_TYPE)
+Simps\MQTT\Client::__construct(string $host, int $port, ClientConfig $config, int $clientType = Client::COROUTINE_CLIENT_TYPE)
 ```
 
 * `string $host`
