@@ -12,8 +12,8 @@
 include __DIR__ . '/bootstrap.php';
 
 use Simps\MQTT\Client;
-use Swoole\Coroutine;
 use Simps\MQTT\Config\ClientConfig;
+use Swoole\Coroutine;
 
 Coroutine\run(function () {
     $swooleConfig = [

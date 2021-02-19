@@ -12,11 +12,11 @@
 include __DIR__ . '/bootstrap.php';
 
 use Simps\MQTT\Client;
-use Swoole\Coroutine;
 use Simps\MQTT\Protocol\Types;
+use Swoole\Coroutine;
 
 Coroutine\run(function () {
-    $client = new Client(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestConnectConfig());
+    $client = new Client(SIMPS_MQTT_LOCAL_HOST, SIMPS_MQTT_PORT, getTestConnectConfig());
     $will = [
         'topic' => 'simps-mqtt/user001/delete',
         'qos' => 0,
@@ -37,10 +37,15 @@ Coroutine\run(function () {
                 $client->send(
                     [
                         'type' => Types::PUBACK,
-                        'message_id' => $buffer['message_id']
+                        'message_id' => $buffer['message_id'],
                     ],
                     false
                 );
+            }
+            if ($buffer['type'] === Types::DISCONNECT) {
+                echo "Broker is disconnected\n";
+                $client->close();
+                break;
             }
             $timeSincePing = time();
         }

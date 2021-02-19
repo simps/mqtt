@@ -12,8 +12,9 @@
 include __DIR__ . '/../bootstrap.php';
 
 use Simps\MQTT\Client;
-use Swoole\Coroutine;
+use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Protocol\Types;
+use Swoole\Coroutine;
 
 Coroutine\run(function () {
     $client = new Client(SIMPS_MQTT_LOCAL_HOST, SIMPS_MQTT_PORT, getTestMQTT5ConnectConfig());
@@ -54,10 +55,19 @@ Coroutine\run(function () {
                 $client->send(
                     [
                         'type' => Types::PUBACK,
-                        'message_id' => $buffer['message_id']
+                        'message_id' => $buffer['message_id'],
                     ],
                     false
                 );
+            }
+            if ($buffer['type'] === Types::DISCONNECT) {
+                echo sprintf(
+                    "Broker is disconnected, The reason is %s [%d]\n",
+                    ReasonCode::getReasonPhrase($buffer['code']),
+                    $buffer['code']
+                );
+                $client->close($buffer['code']);
+                break;
             }
             $timeSincePing = time();
         }

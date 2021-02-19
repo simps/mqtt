@@ -32,8 +32,8 @@ const SWOOLE_MQTT_CONFIG = [
     'open_mqtt_protocol' => true,
     'package_max_length' => 2 * 1024 * 1024,
     'connect_timeout' => 5.0,
-//    'write_timeout' => 10.0,
-//    'read_timeout' => 5.0,
+    //    'write_timeout' => 10.0,
+    //    'read_timeout' => 5.0,
 ];
 
 const SIMPS_MQTT_LOCAL_HOST = '127.0.0.1';
@@ -43,6 +43,7 @@ const SIMPS_MQTT_PORT = 1883;
 function getTestConnectConfig()
 {
     $config = new ClientConfig();
+
     return $config->setUserName('')
         ->setPassword('')
         ->setClientId(Client::genClientID())
@@ -55,6 +56,7 @@ function getTestConnectConfig()
 function getTestMQTT5ConnectConfig()
 {
     $config = new ClientConfig();
+
     return $config->setUserName('')
         ->setPassword('')
         ->setClientId(Client::genClientID())

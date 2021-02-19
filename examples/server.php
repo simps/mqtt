@@ -11,9 +11,9 @@
 
 include __DIR__ . '/bootstrap.php';
 
-use Simps\MQTT\Tools\Common;
 use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Protocol\V3;
+use Simps\MQTT\Tools\Common;
 
 $server = new Swoole\Server('127.0.0.1', 1883, SWOOLE_BASE);
 
