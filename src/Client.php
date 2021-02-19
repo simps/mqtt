@@ -217,14 +217,13 @@ class Client
             $this->reConnect();
             $this->connect($this->getConnectData('clean_session') ?? true, $this->getConnectData('will') ?? []);
         } elseif ($response === false) {
-            if ($this->client->errCode === SOCKET_ECONNRESET) {
-                $this->client->close();
-            } elseif ($this->client->errCode !== SOCKET_ETIMEDOUT) {
+            if ($this->client->errCode !== SOCKET_ETIMEDOUT) {
                 if ($this->isCoroutineClientType()) {
                     $errMsg = $this->client->errMsg;
                 } else {
                     $errMsg = socket_strerror($this->client->errCode);
                 }
+                $this->client->close();
                 throw new ConnectException($errMsg, $this->client->errCode);
             }
         } elseif (is_string($response) && strlen($response) > 0) {

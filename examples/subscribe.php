@@ -29,32 +29,36 @@ Coroutine\run(function () {
     $client->subscribe($topics);
     $timeSincePing = time();
     while (true) {
-        $buffer = $client->recv();
-        if ($buffer && $buffer !== true) {
-            var_dump($buffer);
-            // QoS1 PUBACK
-            if ($buffer['type'] === Types::PUBLISH && $buffer['qos'] === 1) {
-                $client->send(
-                    [
-                        'type' => Types::PUBACK,
-                        'message_id' => $buffer['message_id'],
-                    ],
-                    false
-                );
-            }
-            if ($buffer['type'] === Types::DISCONNECT) {
-                echo "Broker is disconnected\n";
-                $client->close();
-                break;
-            }
-            $timeSincePing = time();
-        }
-        if ($timeSincePing <= (time() - $client->getConfig()->getKeepAlive())) {
-            $buffer = $client->ping();
-            if ($buffer) {
-                echo 'send ping success' . PHP_EOL;
+        try {
+            $buffer = $client->recv();
+            if ($buffer && $buffer !== true) {
+                var_dump($buffer);
+                // QoS1 PUBACK
+                if ($buffer['type'] === Types::PUBLISH && $buffer['qos'] === 1) {
+                    $client->send(
+                        [
+                            'type' => Types::PUBACK,
+                            'message_id' => $buffer['message_id'],
+                        ],
+                        false
+                    );
+                }
+                if ($buffer['type'] === Types::DISCONNECT) {
+                    echo "Broker is disconnected\n";
+                    $client->close();
+                    break;
+                }
                 $timeSincePing = time();
             }
+            if ($timeSincePing <= (time() - $client->getConfig()->getKeepAlive())) {
+                $buffer = $client->ping();
+                if ($buffer) {
+                    echo 'send ping success' . PHP_EOL;
+                    $timeSincePing = time();
+                }
+            }
+        } catch (\Throwable $e) {
+            throw $e;
         }
     }
 });
