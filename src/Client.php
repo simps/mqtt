@@ -223,9 +223,7 @@ class Client
                 } else {
                     $errMsg = socket_strerror($this->client->errCode);
                 }
-                if ($this->client->errCode === SOCKET_ECONNRESET) {
-                    $this->client->close();
-                }
+                $this->client->close();
                 throw new ConnectException($errMsg, $this->client->errCode);
             }
         } elseif (is_string($response) && strlen($response) > 0) {
