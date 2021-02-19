@@ -5,7 +5,7 @@
 创建一个MQTT客户端实例
 
 ```php
-Simps\MQTT\Client::__construct(string $host, int $port, ?ClientConfig $config = null, int $clientType = Client::COROUTINE_CLIENT_TYPE)
+Simps\MQTT\Client::__construct(string $host, int $port, ClientConfig $config, int $clientType = Client::COROUTINE_CLIENT_TYPE)
 ```
 
 * 参数`string $host`
