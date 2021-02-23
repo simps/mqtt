@@ -106,10 +106,9 @@ class Pack
 
     public static function subAck(array $array): string
     {
-        $payload = $array['payload'];
         $body = PackTool::shortInt($array['message_id']) . call_user_func_array(
             'pack',
-            array_merge(['C*'], $payload)
+            array_merge(['C*'], $array['code'])
         );
         $head = PackTool::packHeader(Types::SUBACK, strlen($body));
 

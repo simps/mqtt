@@ -142,7 +142,7 @@ class PackV5
 
         $body .= call_user_func_array(
             'pack',
-            array_merge(['C*'], $array['payload'])
+            array_merge(['C*'], $array['code'])
         );
         $head = PackTool::packHeader(Types::SUBACK, strlen($body));
 
