@@ -30,7 +30,7 @@ class Publish extends AbstractMessage
 
     protected $retain = 0;
 
-    protected $messageId;
+    protected $messageId = 0;
 
     public function getTopic(): string
     {
@@ -92,12 +92,12 @@ class Publish extends AbstractMessage
         return $this;
     }
 
-    public function getMessageId(): ?int
+    public function getMessageId(): int
     {
         return $this->messageId;
     }
 
-    public function setMessageId(?int $messageId): self
+    public function setMessageId(int $messageId): self
     {
         $this->messageId = $messageId;
 
