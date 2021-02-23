@@ -182,6 +182,7 @@ class Client
                 } else {
                     $errMsg = socket_strerror($this->client->errCode);
                 }
+                $this->client->close();
                 throw new ConnectException($errMsg, $this->client->errCode);
             }
             $this->sleep($delay);
@@ -216,16 +217,14 @@ class Client
         if ($response === '' || !$this->client->isConnected()) {
             $this->reConnect();
             $this->connect($this->getConnectData('clean_session') ?? true, $this->getConnectData('will') ?? []);
-        } elseif ($response === false) {
-            if ($this->client->errCode !== SOCKET_ETIMEDOUT) {
-                if ($this->isCoroutineClientType()) {
-                    $errMsg = $this->client->errMsg;
-                } else {
-                    $errMsg = socket_strerror($this->client->errCode);
-                }
-                $this->client->close();
-                throw new ConnectException($errMsg, $this->client->errCode);
+        } elseif ($response === false && $this->client->errCode !== SOCKET_ETIMEDOUT) {
+            if ($this->isCoroutineClientType()) {
+                $errMsg = $this->client->errMsg;
+            } else {
+                $errMsg = socket_strerror($this->client->errCode);
             }
+            $this->client->close();
+            throw new ConnectException($errMsg, $this->client->errCode);
         } elseif (is_string($response) && strlen($response) > 0) {
             if ($this->getConfig()->getProtocolLevel() === Protocol\ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0) {
                 return Protocol\V5::unpack($response);
@@ -257,11 +256,7 @@ class Client
 
     protected function isCoroutineClientType(): bool
     {
-        if ($this->clientType === self::COROUTINE_CLIENT_TYPE) {
-            return true;
-        }
-
-        return false;
+        return $this->clientType === self::COROUTINE_CLIENT_TYPE;
     }
 
     public function buildMessageId(): int
