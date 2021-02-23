@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Config;
 
-class AbstractConfig
+abstract class AbstractConfig
 {
     public function __construct(array $data = [])
     {
