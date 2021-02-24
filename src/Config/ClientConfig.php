@@ -170,4 +170,9 @@ class ClientConfig extends AbstractConfig
 
         return $this;
     }
+
+    public function isMQTT5(): bool
+    {
+        return $this->getProtocolLevel() === ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0;
+    }
 }
