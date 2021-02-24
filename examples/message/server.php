@@ -100,7 +100,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     $server->send(
                         $fd,
                         (new SubAck())->setMessageId($data['message_id'] ?? '')
-                            ->setCode($payload)
+                            ->setCodes($payload)
                     );
                     break;
                 case Types::UNSUBSCRIBE:

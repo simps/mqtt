@@ -114,7 +114,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                             [
                                 'type' => Types::SUBACK,
                                 'message_id' => $data['message_id'] ?? '',
-                                'code' => $payload,
+                                'codes' => $payload,
                             ]
                         )
                     );
