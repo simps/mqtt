@@ -1,6 +1,9 @@
 * MQTT Coroutine Client
     * [Client API](en/client)
 
+* MQTT Server
+  * [Message API](en/message)
+
 * MQTT Protocol Analysis
     * [Protocol API](en/protocol)
 
