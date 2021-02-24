@@ -21,7 +21,7 @@ class SubAck extends AbstractMessage
 {
     protected $messageId = 0;
 
-    protected $code = [];
+    protected $codes = [];
 
     public function getMessageId(): int
     {
@@ -35,14 +35,14 @@ class SubAck extends AbstractMessage
         return $this;
     }
 
-    public function getCode(): array
+    public function getCodes(): array
     {
-        return $this->code;
+        return $this->codes;
     }
 
-    public function setCode(array $code): self
+    public function setCodes(array $code): self
     {
-        $this->code = $code;
+        $this->codes = $code;
 
         return $this;
     }
@@ -52,7 +52,7 @@ class SubAck extends AbstractMessage
         $buffer = [
             'type' => Types::SUBACK,
             'message_id' => $this->getMessageId(),
-            'code' => $this->getCode(),
+            'codes' => $this->getCodes(),
         ];
 
         if ($this->isMQTT5()) {
