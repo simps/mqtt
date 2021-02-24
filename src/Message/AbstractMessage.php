@@ -62,5 +62,10 @@ abstract class AbstractMessage
         return $this->getProtocolLevel() === ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0;
     }
 
-    abstract public function __toString();
+    abstract public function getContents();
+
+    public function __toString()
+    {
+        return $this->getContents();
+    }
 }

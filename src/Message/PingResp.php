@@ -19,7 +19,7 @@ use Simps\MQTT\Protocol\V5;
 
 class PingResp extends AbstractMessage
 {
-    public function __toString()
+    public function getContents()
     {
         $buffer = [
             'type' => Types::PINGRESP,
