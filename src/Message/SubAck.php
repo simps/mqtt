@@ -47,7 +47,7 @@ class SubAck extends AbstractMessage
         return $this;
     }
 
-    public function __toString()
+    public function getContents()
     {
         $buffer = [
             'type' => Types::SUBACK,

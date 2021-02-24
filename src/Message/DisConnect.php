@@ -34,7 +34,7 @@ class DisConnect extends AbstractMessage
         return $this;
     }
 
-    public function __toString()
+    public function getContents()
     {
         $buffer = [
             'type' => Types::DISCONNECT,
