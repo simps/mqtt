@@ -16,6 +16,7 @@ namespace SimpsTest\MQTT\Unit;
 use PHPUnit\Framework\TestCase;
 use Simps\MQTT\Client as MQTTClient;
 use Simps\MQTT\Exception\ConnectException;
+use Simps\MQTT\Exception\ProtocolException;
 use Simps\MQTT\Protocol\Types;
 use Swoole\Coroutine;
 
@@ -53,5 +54,22 @@ class ClientTest extends TestCase
         $this->assertSame($buffer['type'], Types::PUBLISH);
         $this->assertSame($buffer['topic'], $topic);
         $this->assertSame(strlen($buffer['message']), strlen($base64));
+    }
+
+    public function testNonWillWithProtocolException()
+    {
+        try {
+            $client = new MQTTClient(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestConnectConfig());
+            $will = [
+                'topic' => '',
+                'qos' => 1,
+                'retain' => 0,
+                'message' => 'message',
+            ];
+            $client->connect(false, $will);
+        } catch (\Throwable $ex) {
+            $this->assertInstanceOf(ProtocolException::class, $ex);
+            $this->assertSame($ex->getMessage(), 'Topic cannot be empty');
+        }
     }
 }

@@ -77,7 +77,7 @@ class Client
         ];
         if (!empty($will)) {
             if (!isset($will['topic']) || empty($will['topic'])) {
-                throw new ProtocolException('Protocol Error, Topic cannot be empty');
+                throw new ProtocolException('Topic cannot be empty');
             }
             $data['will'] = $will;
         }
@@ -122,12 +122,10 @@ class Client
         if (empty($topic)) {
             if ($this->getConfig()->isMQTT5()) {
                 if (!isset($properties['topic_alias']) || empty($properties['topic_alias'])) {
-                    throw new ProtocolException(
-                        'Protocol Error, Topic cannot be empty or need to set topic_alias'
-                    );
+                    throw new ProtocolException('Topic cannot be empty or need to set topic_alias');
                 }
             } else {
-                throw new ProtocolException('Protocol Error, Topic cannot be empty');
+                throw new ProtocolException('Topic cannot be empty');
             }
         }
 

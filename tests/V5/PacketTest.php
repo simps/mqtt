@@ -138,7 +138,7 @@ class PacketTest extends TestCase
         $client = new Client(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestMQTT5ConnectConfig());
         $client->connect();
         $this->expectException(ProtocolException::class);
-        $this->expectExceptionMessage('Protocol Error, Topic cannot be empty or need to set topic_alias');
+        $this->expectExceptionMessage('Topic cannot be empty or need to set topic_alias');
         $client->publish('', 'hello,simps');
     }
 }
