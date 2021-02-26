@@ -76,6 +76,9 @@ class Client
             'password' => $this->getConfig()->getPassword(),
         ];
         if (!empty($will)) {
+            if (!isset($will['topic']) || empty($will['topic'])) {
+                throw new ProtocolException('Protocol Error, Topic cannot be empty');
+            }
             $data['will'] = $will;
         }
 
@@ -117,16 +120,14 @@ class Client
         array $properties = []
     ) {
         if (empty($topic)) {
-            switch ($this->getConfig()->getProtocolLevel()) {
-                case Protocol\ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0:
-                    if (!isset($properties['topic_alias'])) {
-                        throw new ProtocolException(
-                            'Protocol Error, Topic cannot be empty or need to set topic_alias'
-                        );
-                    }
-                    break;
-                default:
-                    throw new ProtocolException('Protocol Error, Topic cannot be empty');
+            if ($this->getConfig()->isMQTT5()) {
+                if (!isset($properties['topic_alias']) || empty($properties['topic_alias'])) {
+                    throw new ProtocolException(
+                        'Protocol Error, Topic cannot be empty or need to set topic_alias'
+                    );
+                }
+            } else {
+                throw new ProtocolException('Protocol Error, Topic cannot be empty');
             }
         }
 
