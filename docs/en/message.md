@@ -1,6 +1,6 @@
 # Message API
 
-It is mainly convenient for replying to the ACK on the other side in the Server.
+It is mainly convenient for replying to the ACK on the other side in the Server/Client.
 
 ## Usage examples
 
@@ -29,4 +29,18 @@ $ack->setProtocolLevel(ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0)
 
 $ack_data = $ack->getContents();
 $ack_data = (string) $ack;
+```
+
+### Server
+
+```php
+$server->send($fd, $ack->getContents());
+$server->send($fd, (string) $ack);
+```
+
+### Client
+
+```php
+// Add param to get an array
+$client->send($ack->getContents(true), false);
 ```
