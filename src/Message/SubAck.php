@@ -47,7 +47,7 @@ class SubAck extends AbstractMessage
         return $this;
     }
 
-    public function getContents()
+    public function getContents(bool $getArray = false)
     {
         $buffer = [
             'type' => Types::SUBACK,
@@ -57,7 +57,13 @@ class SubAck extends AbstractMessage
 
         if ($this->isMQTT5()) {
             $buffer['properties'] = $this->getProperties();
+        }
 
+        if ($getArray) {
+            return $buffer;
+        }
+
+        if ($this->isMQTT5()) {
             return V5::pack($buffer);
         }
 

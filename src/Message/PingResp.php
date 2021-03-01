@@ -19,11 +19,15 @@ use Simps\MQTT\Protocol\V5;
 
 class PingResp extends AbstractMessage
 {
-    public function getContents()
+    public function getContents(bool $getArray = false)
     {
         $buffer = [
             'type' => Types::PINGRESP,
         ];
+
+        if ($getArray) {
+            return $buffer;
+        }
 
         if ($this->isMQTT5()) {
             return V5::pack($buffer);
