@@ -141,7 +141,7 @@ abstract class ReasonCode
         self::TOPIC_FILTER_INVALID => 'Topic Filter invalid',
         self::RECEIVE_MAXIMUM_EXCEEDED => 'Receive Maximum exceeded',
         self::TOPIC_ALIAS_INVALID => 'Topic Alias invalid',
-        self::MESSAGE_RATE_TOO_HIGH => 'MESSAGE_RATE_TOO_HIGH',
+        self::MESSAGE_RATE_TOO_HIGH => 'Message rate too high',
         self::ADMINISTRATIVE_ACTION => 'Administrative action',
         self::SHARED_SUBSCRIPTIONS_NOT_SUPPORTED => 'Shared Subscriptions not supported',
         self::MAXIMUM_CONNECT_TIME => 'Maximum connect time',
