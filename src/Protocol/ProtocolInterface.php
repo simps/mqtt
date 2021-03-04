@@ -31,6 +31,20 @@ interface ProtocolInterface
 
     public const MQTT_QOS_2 = 2;
 
+    public const MQTT_RETAIN_0 = 0;
+
+    public const MQTT_RETAIN_1 = 1;
+
+    public const MQTT_RETAIN_2 = 2;
+
+    public const MQTT_DUP_0 = 0;
+
+    public const MQTT_DUP_1 = 1;
+
+    public const MQTT_SESSION_PRESENT_0 = 0;
+
+    public const MQTT_SESSION_PRESENT_1 = 1;
+
     public static function pack(array $array): string;
 
     public static function unpack(string $data): array;

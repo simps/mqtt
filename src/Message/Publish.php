@@ -26,9 +26,9 @@ class Publish extends AbstractMessage
 
     protected $qos = ProtocolInterface::MQTT_QOS_0;
 
-    protected $dup = 0;
+    protected $dup = ProtocolInterface::MQTT_DUP_0;
 
-    protected $retain = 0;
+    protected $retain = ProtocolInterface::MQTT_RETAIN_0;
 
     protected $messageId = 0;
 
