@@ -20,9 +20,9 @@ use Simps\MQTT\Protocol\V5;
 
 class Publish extends AbstractMessage
 {
-    protected $topic;
+    protected $topic = '';
 
-    protected $message;
+    protected $message = '';
 
     protected $qos = ProtocolInterface::MQTT_QOS_0;
 
@@ -37,7 +37,7 @@ class Publish extends AbstractMessage
         return $this->topic;
     }
 
-    public function setTopic(?string $topic): self
+    public function setTopic(string $topic): self
     {
         $this->topic = $topic;
 
@@ -49,7 +49,7 @@ class Publish extends AbstractMessage
         return $this->message;
     }
 
-    public function setMessage(?string $message): self
+    public function setMessage(string $message): self
     {
         $this->message = $message;
 

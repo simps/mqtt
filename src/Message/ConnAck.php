@@ -13,13 +13,14 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Message;
 
+use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Protocol\V3;
 use Simps\MQTT\Protocol\V5;
 
 class ConnAck extends AbstractMessage
 {
-    protected $code = 0;
+    protected $code = ReasonCode::SUCCESS;
 
     protected $sessionPresent = 0;
 
