@@ -66,4 +66,20 @@ class MessageTest extends TestCase
             'The results of getContents and toArray should be the same'
         );
     }
+
+    public function testWillMessage()
+    {
+        $message = new Message\Will();
+        $message->setTopic('topic')
+            ->setQos(ProtocolInterface::MQTT_QOS_1)
+            ->setRetain(1)
+            ->setMessage('this is content');
+        $this->assertIsArray($message->getContents(true));
+        $this->assertIsArray($message->toArray());
+        $this->assertEquals(
+            $message->toArray(),
+            $message->getContents(true),
+            'The results of getContents and toArray should be the same'
+        );
+    }
 }
