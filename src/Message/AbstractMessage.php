@@ -64,6 +64,11 @@ abstract class AbstractMessage
 
     abstract public function getContents(bool $getArray = false);
 
+    public function toArray()
+    {
+        return $this->getContents(true);
+    }
+
     public function __toString()
     {
         return $this->getContents();

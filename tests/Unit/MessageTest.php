@@ -41,6 +41,12 @@ class MessageTest extends TestCase
             'The results of getContents and toString should be the same'
         );
         $this->assertIsArray($message->getContents(true));
+        $this->assertIsArray($message->toArray());
+        $this->assertEquals(
+            $message->toArray(),
+            $message->getContents(true),
+            'The results of getContents and toArray should be the same'
+        );
     }
 
     public function testPingRespMessage()
@@ -53,5 +59,11 @@ class MessageTest extends TestCase
         );
         $this->assertIsArray($message->getContents(true));
         $this->assertEquals($message->getContents(true)['type'], Types::PINGRESP);
+        $this->assertIsArray($message->toArray());
+        $this->assertEquals(
+            $message->toArray(),
+            $message->getContents(true),
+            'The results of getContents and toArray should be the same'
+        );
     }
 }
