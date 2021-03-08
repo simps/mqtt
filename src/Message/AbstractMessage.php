@@ -35,6 +35,10 @@ abstract class AbstractMessage
 
     public function getProtocolLevel(): int
     {
+        if (!empty($this->getProperties()) && $this->protocolLevel !== ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0) {
+            return ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0;
+        }
+
         return $this->protocolLevel;
     }
 

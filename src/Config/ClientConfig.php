@@ -17,13 +17,13 @@ use Simps\MQTT\Protocol\ProtocolInterface;
 
 class ClientConfig extends AbstractConfig
 {
-    protected $clientId;
+    protected $clientId = '';
 
     protected $swooleConfig = [];
 
-    protected $userName;
+    protected $userName = '';
 
-    protected $password;
+    protected $password = '';
 
     protected $keepAlive = 0;
 
@@ -39,12 +39,12 @@ class ClientConfig extends AbstractConfig
 
     protected $sockType = SWOOLE_SOCK_TCP;
 
-    public function getClientId(): ?string
+    public function getClientId(): string
     {
         return $this->clientId;
     }
 
-    public function setClientId(?string $clientId): self
+    public function setClientId(string $clientId): self
     {
         $this->clientId = $clientId;
 
@@ -63,24 +63,24 @@ class ClientConfig extends AbstractConfig
         return $this;
     }
 
-    public function getUserName(): ?string
+    public function getUserName(): string
     {
         return $this->userName;
     }
 
-    public function setUserName(?string $userName): self
+    public function setUserName(string $userName): self
     {
         $this->userName = $userName;
 
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function setPassword(?string $password): self
+    public function setPassword(string $password): self
     {
         $this->password = $password;
 
@@ -113,6 +113,10 @@ class ClientConfig extends AbstractConfig
 
     public function getProtocolLevel(): int
     {
+        if (!empty($this->getProperties()) && $this->protocolLevel !== ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0) {
+            return ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0;
+        }
+
         return $this->protocolLevel;
     }
 
