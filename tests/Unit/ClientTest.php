@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Simps\MQTT\Client as MQTTClient;
 use Simps\MQTT\Exception\ConnectException;
 use Simps\MQTT\Exception\ProtocolException;
+use Simps\MQTT\Protocol\ProtocolInterface;
 use Simps\MQTT\Protocol\Types;
 use Swoole\Coroutine;
 
@@ -62,8 +63,8 @@ class ClientTest extends TestCase
             $client = new MQTTClient(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestConnectConfig());
             $will = [
                 'topic' => '',
-                'qos' => 1,
-                'retain' => 0,
+                'qos' => ProtocolInterface::MQTT_QOS_0,
+                'retain' => ProtocolInterface::MQTT_RETAIN_0,
                 'message' => 'message',
             ];
             $client->connect(false, $will);

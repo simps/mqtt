@@ -30,8 +30,8 @@ class MessageTest extends TestCase
         $message->setProtocolLevel(ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0)
             ->setTopic('simps/mqtt/message')
             ->setQos(ProtocolInterface::MQTT_QOS_1)
-            ->setDup(1)
-            ->setRetain(0)
+            ->setDup(ProtocolInterface::MQTT_DUP_0)
+            ->setRetain(ProtocolInterface::MQTT_RETAIN_0)
             ->setMessage('this is content')
             ->setMessageId(1)
             ->setProperties(['message_expiry_interval' => 100]);
@@ -72,7 +72,7 @@ class MessageTest extends TestCase
         $message = new Message\Will();
         $message->setTopic('topic')
             ->setQos(ProtocolInterface::MQTT_QOS_1)
-            ->setRetain(1)
+            ->setRetain(ProtocolInterface::MQTT_RETAIN_0)
             ->setMessage('this is content');
         $this->assertIsArray($message->getContents(true));
         $this->assertIsArray($message->toArray());
@@ -81,5 +81,27 @@ class MessageTest extends TestCase
             $message->getContents(true),
             'The results of getContents and toArray should be the same'
         );
+    }
+
+    public function testIsMQTT5()
+    {
+        $message = new Message\Publish();
+        $message->setTopic('simps/mqtt/message')
+            ->setQos(ProtocolInterface::MQTT_QOS_1)
+            ->setDup(ProtocolInterface::MQTT_DUP_0)
+            ->setRetain(ProtocolInterface::MQTT_RETAIN_0)
+            ->setMessage('this is content')
+            ->setMessageId(1);
+
+        $this->assertFalse($message->isMQTT5());
+        $this->assertEquals($message->getProtocolLevel(), ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1);
+
+        $message->setProperties(['message_expiry_interval' => 100]);
+        $this->assertTrue($message->isMQTT5());
+        $this->assertEquals($message->getProtocolLevel(), ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0);
+
+        $message->setProtocolLevel(ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1);
+        $this->assertTrue($message->isMQTT5());
+        $this->assertEquals($message->getProtocolLevel(), ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0);
     }
 }
