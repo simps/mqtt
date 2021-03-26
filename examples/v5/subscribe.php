@@ -70,7 +70,6 @@ Coroutine\run(function () {
                     $client->close($buffer['code']);
                     break;
                 }
-                $timeSincePing = time();
             }
             if ($timeSincePing <= (time() - $client->getConfig()->getKeepAlive())) {
                 $buffer = $client->ping();

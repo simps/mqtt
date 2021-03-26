@@ -43,7 +43,6 @@ Coroutine\run(function () {
         $buffer = $client->recv();
         if ($buffer && $buffer !== true) {
             var_dump($buffer);
-            $timeSincePing = time();
         }
         if ($timeSincePing <= (time() - $config->getKeepAlive())) {
             $buffer = $client->ping();

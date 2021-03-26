@@ -48,7 +48,6 @@ Coroutine\run(function () {
                     $client->close();
                     break;
                 }
-                $timeSincePing = time();
             }
             if ($timeSincePing <= (time() - $client->getConfig()->getKeepAlive())) {
                 $buffer = $client->ping();
