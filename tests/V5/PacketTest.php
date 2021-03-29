@@ -118,10 +118,11 @@ class PacketTest extends TestCase
      */
     public function testUnsubscribe()
     {
-        $status = self::$client->unSubscribe([self::$topic . '/get']);
+        $status = self::$client->unSubscribe([self::$topic . '/get', self::$topic . '/update']);
         $this->assertIsArray($status);
         $this->assertSame($status['type'], Types::UNSUBACK);
         $this->assertSame(ReasonCode::getReasonPhrase($status['codes'][0]), 'Success');
+        $this->assertSame(ReasonCode::getReasonPhrase($status['codes'][1]), 'Success');
     }
 
     /**
