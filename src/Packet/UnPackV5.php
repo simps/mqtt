@@ -224,13 +224,8 @@ class UnPackV5
             $package['properties'] = UnPackProperty::pubAndSub($propertiesTotalLength, $remaining);
         }
 
-        if (isset($remaining[0])) {
-            $code = ord($remaining[0]);
-        } else {
-            $code = ReasonCode::SUCCESS;
-        }
-
-        $package['code'] = $code;
+        $codes = unpack('C*', $remaining);
+        $package['codes'] = array_values($codes);
 
         return $package;
     }

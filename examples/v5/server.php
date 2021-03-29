@@ -129,12 +129,21 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     );
                     break;
                 case Types::UNSUBSCRIBE:
+                    $payload = [];
+                    foreach ($data['topics'] as $k => $qos) {
+                        if (is_numeric($qos) && $qos < 3) {
+                            $payload[] = $qos;
+                        } else {
+                            $payload[] = 0x80;
+                        }
+                    }
                     $server->send(
                         $fd,
                         V5::pack(
                             [
                                 'type' => Types::UNSUBACK,
                                 'message_id' => $data['message_id'] ?? '',
+                                'codes' => $payload,
                             ]
                         )
                     );

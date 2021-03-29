@@ -171,8 +171,10 @@ class PackV5
         // UNSUBACK Properties
         $body .= PackProperty::pubAndSub($array['properties'] ?? []);
 
-        $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
-        $body .= chr($code);
+        $body .= call_user_func_array(
+            'pack',
+            array_merge(['C*'], $array['codes'])
+        );
         $head = PackTool::packHeader(Types::UNSUBACK, strlen($body));
 
         return $head . $body;
