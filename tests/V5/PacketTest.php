@@ -121,7 +121,7 @@ class PacketTest extends TestCase
         $status = self::$client->unSubscribe([self::$topic . '/get']);
         $this->assertIsArray($status);
         $this->assertSame($status['type'], Types::UNSUBACK);
-        $this->assertSame(ReasonCode::getReasonPhrase($status['code']), 'Success');
+        $this->assertSame(ReasonCode::getReasonPhrase($status['codes'][0]), 'Success');
     }
 
     /**
