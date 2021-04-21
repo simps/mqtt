@@ -44,4 +44,31 @@ class Types
     public const DISCONNECT = 14; // Client is disconnecting
 
     public const AUTH = 15; // Authentication exchange
+
+    protected static $types = [
+        self::CONNECT => 'connect',
+        self::CONNACK => 'connack',
+        self::PUBLISH => 'publish',
+        self::PUBACK => 'puback',
+        self::PUBREC => 'pubrec',
+        self::PUBREL => 'pubrel',
+        self::PUBCOMP => 'pubcomp',
+        self::SUBSCRIBE => 'subscribe',
+        self::SUBACK => 'suback',
+        self::UNSUBSCRIBE => 'unsubscribe',
+        self::PINGREQ => 'pingreq',
+        self::PINGRESP => 'pingresp',
+        self::DISCONNECT => 'disconnect',
+        self::AUTH => 'auth',
+    ];
+
+    public static function getTypes(): array
+    {
+        return static::$types;
+    }
+
+    public static function getType(int $type): string
+    {
+        return static::$types[$type] ?? 'Unknown';
+    }
 }
