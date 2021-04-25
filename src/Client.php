@@ -176,13 +176,7 @@ class Client
         $delay = $this->getConfig()->getDelay();
         while (!$result) {
             if ($maxAttempts === 0) {
-                if ($this->isCoroutineClientType()) {
-                    $errMsg = $this->client->errMsg;
-                } else {
-                    $errMsg = socket_strerror($this->client->errCode);
-                }
-                $this->client->close();
-                throw new ConnectException($errMsg, $this->client->errCode);
+                $this->handleException();
             }
             $this->sleep($delay);
             $this->client->close();
@@ -191,6 +185,17 @@ class Client
                 $maxAttempts--;
             }
         }
+    }
+
+    private function handleException()
+    {
+        if ($this->isCoroutineClientType()) {
+            $errMsg = $this->client->errMsg;
+        } else {
+            $errMsg = socket_strerror($this->client->errCode);
+        }
+        $this->client->close();
+        throw new ConnectException($errMsg, $this->client->errCode);
     }
 
     public function send(array $data, bool $response = true)
@@ -217,13 +222,7 @@ class Client
             $this->reConnect();
             $this->connect($this->getConnectData('clean_session') ?? true, $this->getConnectData('will') ?? []);
         } elseif ($response === false && $this->client->errCode !== SOCKET_ETIMEDOUT) {
-            if ($this->isCoroutineClientType()) {
-                $errMsg = $this->client->errMsg;
-            } else {
-                $errMsg = socket_strerror($this->client->errCode);
-            }
-            $this->client->close();
-            throw new ConnectException($errMsg, $this->client->errCode);
+            $this->handleException();
         } elseif (is_string($response) && strlen($response) > 0) {
             if ($this->getConfig()->isMQTT5()) {
                 return Protocol\V5::unpack($response);
