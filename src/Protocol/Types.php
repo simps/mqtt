@@ -69,6 +69,6 @@ class Types
 
     public static function getType(int $type): string
     {
-        return static::$types[$type] ?? 'Unknown';
+        return static::$types[$type] ?? '';
     }
 }
