@@ -55,11 +55,11 @@ class ClientConfigTest extends TestCase
         ]);
         $config->setSwooleConfig([
             'open_mqtt_protocol' => false,
-            'package_max_length' => 2 * 1024 * 1024
+            'package_max_length' => 2 * 1024 * 1024,
         ]);
         $this->assertEquals($config->getSwooleConfig(), [
             'open_mqtt_protocol' => false,
-            'package_max_length' => 2 * 1024 * 1024
+            'package_max_length' => 2 * 1024 * 1024,
         ]);
     }
 }
