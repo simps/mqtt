@@ -15,7 +15,6 @@ namespace SimpsTest\MQTT\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Simps\MQTT\Client;
-use Simps\MQTT\Config\AbstractConfig;
 use Simps\MQTT\Config\ClientConfig;
 use Simps\MQTT\Protocol\ProtocolInterface;
 
