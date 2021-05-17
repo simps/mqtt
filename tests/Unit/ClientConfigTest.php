@@ -45,4 +45,21 @@ class ClientConfigTest extends TestCase
         $this->assertTrue($config->isMQTT5());
         $this->assertEquals($config->getProtocolLevel(), ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0);
     }
+
+    public function testSwooleDefaultConfig()
+    {
+        $config = new ClientConfig();
+        $config->setSwooleConfig([]);
+        $this->assertEquals($config->getSwooleConfig(), [
+            'open_mqtt_protocol' => true,
+        ]);
+        $config->setSwooleConfig([
+            'open_mqtt_protocol' => false,
+            'package_max_length' => 2 * 1024 * 1024,
+        ]);
+        $this->assertEquals($config->getSwooleConfig(), [
+            'open_mqtt_protocol' => false,
+            'package_max_length' => 2 * 1024 * 1024,
+        ]);
+    }
 }

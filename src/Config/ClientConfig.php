@@ -19,7 +19,9 @@ class ClientConfig extends AbstractConfig
 {
     protected $clientId = '';
 
-    protected $swooleConfig = [];
+    protected $swooleConfig = [
+        'open_mqtt_protocol' => true,
+    ];
 
     protected $userName = '';
 
@@ -58,7 +60,7 @@ class ClientConfig extends AbstractConfig
 
     public function setSwooleConfig(array $config): self
     {
-        $this->swooleConfig = $config;
+        $this->swooleConfig = array_merge($this->swooleConfig, $config);
 
         return $this;
     }
