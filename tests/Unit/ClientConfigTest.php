@@ -15,6 +15,7 @@ namespace SimpsTest\MQTT\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Simps\MQTT\Client;
+use Simps\MQTT\Config\AbstractConfig;
 use Simps\MQTT\Config\ClientConfig;
 use Simps\MQTT\Protocol\ProtocolInterface;
 
@@ -44,5 +45,22 @@ class ClientConfigTest extends TestCase
         $config->setProtocolLevel(ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1);
         $this->assertTrue($config->isMQTT5());
         $this->assertEquals($config->getProtocolLevel(), ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0);
+    }
+
+    public function testSwooleDefaultConfig()
+    {
+        $config = new ClientConfig();
+        $config->setSwooleConfig([]);
+        $this->assertEquals($config->getSwooleConfig(), [
+            'open_mqtt_protocol' => true,
+        ]);
+        $config->setSwooleConfig([
+            'open_mqtt_protocol' => false,
+            'package_max_length' => 2 * 1024 * 1024
+        ]);
+        $this->assertEquals($config->getSwooleConfig(), [
+            'open_mqtt_protocol' => false,
+            'package_max_length' => 2 * 1024 * 1024
+        ]);
     }
 }
