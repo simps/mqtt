@@ -307,4 +307,9 @@ class Client
 
         return $this->connectData;
     }
+
+    public function getClient()
+    {
+        return $this->client;
+    }
 }
