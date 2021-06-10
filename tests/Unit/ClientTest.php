@@ -73,4 +73,15 @@ class ClientTest extends TestCase
             $this->assertSame($ex->getMessage(), 'Topic cannot be empty');
         }
     }
+
+    public function testGetClient()
+    {
+        $client = new MQTTClient(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestConnectConfig(), MQTTClient::SYNC_CLIENT_TYPE);
+        $this->assertInstanceOf(MQTTClient::class, $client);
+        $this->assertInstanceOf(\Swoole\Client::class, $client->getClient());
+
+        $client = new MQTTClient(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestConnectConfig());
+        $this->assertInstanceOf(MQTTClient::class, $client);
+        $this->assertInstanceOf(Coroutine\Client::class, $client->getClient());
+    }
 }
