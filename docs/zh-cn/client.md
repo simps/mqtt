@@ -223,3 +223,11 @@ Simps\MQTT\Client->buildMessageId()
 ```php
 Simps\MQTT\Client->genClientID(string $prefix = 'Simps_')
 ```
+
+## getClient()
+
+获取 `Swoole\Coroutine\Client` 或 `\Swoole\Client` 的实例
+
+```php
+Simps\MQTT\Client->getClient()
+```

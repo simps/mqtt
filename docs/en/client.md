@@ -204,3 +204,11 @@ Generate ClientId
 ```php
 Simps\MQTT\Client->genClientID(string $prefix = 'Simps_')
 ```
+
+## getClient()
+
+Get an instance of `Swoole\Coroutine\Client` or `\Swoole\Client`
+
+```php
+Simps\MQTT\Client->getClient()
+```
