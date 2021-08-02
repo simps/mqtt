@@ -38,10 +38,9 @@ jobs:
 
       - name: Setup Deps
         run:
-          composer install -o --ignore-platform-reqs
+          composer install -o
 
       - name: Coding Standards Check
-        if: ${{ matrix.php-versions != '8.0' }}
         run: |
           composer cs-check
 
