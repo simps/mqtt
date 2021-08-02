@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Message;
 
-use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Protocol\V3;
 use Simps\MQTT\Protocol\V5;
