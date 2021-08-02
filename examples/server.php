@@ -79,7 +79,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                                         'dup' => $data['dup'],
                                         'qos' => $data['qos'],
                                         'retain' => $data['retain'],
-                                        'message_id' => $data['message_id'] ?? '',
+                                        'message_id' => $data['message_id'] ?? 0,
                                     ]
                                 )
                             );
@@ -92,7 +92,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                             V3::pack(
                                 [
                                     'type' => Types::PUBACK,
-                                    'message_id' => $data['message_id'] ?? '',
+                                    'message_id' => $data['message_id'] ?? 0,
                                 ]
                             )
                         );
@@ -113,7 +113,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                         V3::pack(
                             [
                                 'type' => Types::SUBACK,
-                                'message_id' => $data['message_id'] ?? '',
+                                'message_id' => $data['message_id'] ?? 0,
                                 'codes' => $payload,
                             ]
                         )
@@ -125,7 +125,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                         V3::pack(
                             [
                                 'type' => Types::UNSUBACK,
-                                'message_id' => $data['message_id'] ?? '',
+                                'message_id' => $data['message_id'] ?? 0,
                             ]
                         )
                     );
