@@ -76,14 +76,14 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                                 ->setDup($data['dup'])
                                 ->setQos($data['qos'])
                                 ->setRetain($data['retain'])
-                                ->setMessageId($data['message_id'] ?? null)
+                                ->setMessageId($data['message_id'] ?? 0)
                             );
                     }
 
                     if ($data['qos'] === 1) {
                         $server->send(
                             $fd,
-                            (new PubAck())->setMessageId($data['message_id'] ?? '')
+                            (new PubAck())->setMessageId($data['message_id'])
                         );
                     }
 
@@ -99,14 +99,14 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     }
                     $server->send(
                         $fd,
-                        (new SubAck())->setMessageId($data['message_id'] ?? '')
+                        (new SubAck())->setMessageId($data['message_id'] ?? 0)
                             ->setCodes($payload)
                     );
                     break;
                 case Types::UNSUBSCRIBE:
                     $server->send(
                         $fd,
-                        (new UnSubAck())->setMessageId($data['message_id'] ?? '')
+                        (new UnSubAck())->setMessageId($data['message_id'] ?? 0)
                     );
                     break;
             }
