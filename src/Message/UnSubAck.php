@@ -22,7 +22,7 @@ class UnSubAck extends AbstractMessage
 {
     protected $messageId = 0;
 
-    protected $code = ReasonCode::SUCCESS;
+    protected $codes = [];
 
     public function getMessageId(): int
     {
