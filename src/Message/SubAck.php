@@ -40,9 +40,9 @@ class SubAck extends AbstractMessage
         return $this->codes;
     }
 
-    public function setCodes(array $code): self
+    public function setCodes(array $codes): self
     {
-        $this->codes = $code;
+        $this->codes = $codes;
 
         return $this;
     }

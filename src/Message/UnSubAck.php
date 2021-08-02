@@ -36,14 +36,14 @@ class UnSubAck extends AbstractMessage
         return $this;
     }
 
-    public function getCode(): int
+    public function getCodes(): array
     {
-        return $this->code;
+        return $this->codes;
     }
 
-    public function setCode(int $code): self
+    public function setCodes(array $codes): self
     {
-        $this->code = $code;
+        $this->codes = $codes;
 
         return $this;
     }
@@ -56,7 +56,7 @@ class UnSubAck extends AbstractMessage
         ];
 
         if ($this->isMQTT5()) {
-            $buffer['code'] = $this->getCode();
+            $buffer['codes'] = $this->getCodes();
             $buffer['properties'] = $this->getProperties();
         }
 
