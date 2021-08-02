@@ -29,13 +29,13 @@ class PacketTest extends TestCase
 
     private static $client;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$topic = 'testtopic/simps-' . rand(100, 999);
         self::$client = new Client(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestMQTT5ConnectConfig());
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::$topic = '';
         self::$client = null;

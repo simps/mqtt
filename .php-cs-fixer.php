@@ -21,7 +21,7 @@ For the full copyright and license information,
 please view the LICENSE file that was distributed with this source code
 TEXT;
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,
@@ -29,7 +29,7 @@ return PhpCsFixer\Config::create()
         '@DoctrineAnnotation' => true,
         '@PhpCsFixer' => true,
         'header_comment' => [
-            'commentType' => 'PHPDoc',
+            'comment_type' => 'PHPDoc',
             'header' => $header,
             'separate' => 'bottom',
             'location' => 'after_open',
@@ -85,7 +85,7 @@ return PhpCsFixer\Config::create()
         'combine_consecutive_unsets' => true,
         'declare_strict_types' => true,
         'linebreak_after_opening_tag' => true,
-        'lowercase_constants' => true,
+        'constant_case' => true,
         'lowercase_static_reference' => true,
         'no_useless_else' => true,
         'no_unused_imports' => true,
