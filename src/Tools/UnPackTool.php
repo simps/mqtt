@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Tools;
 
+use Simps\MQTT\Exception\InvalidArgumentException;
 use Simps\MQTT\Exception\LengthException;
+use Simps\MQTT\Protocol\Types;
 
 class UnPackTool extends Common
 {
@@ -96,5 +98,22 @@ class UnPackTool extends Common
         $remainingLength = static::getRemainingLength($data, $headBytes);
 
         return substr($data, $headBytes, $remainingLength);
+    }
+
+    /**
+     * Get the MQTT protocol level.
+     */
+    public static function getLevel(string $data): int
+    {
+        $type = static::getType($data);
+
+        if ($type !== Types::CONNECT) {
+            throw new InvalidArgumentException(sprintf('packet must be of type connect, %s given', Types::getType($type)));
+        }
+
+        $remaining = static::getRemaining($data);
+        $length = unpack('n', $remaining)[1];
+
+        return ord($remaining[$length + 2]);
     }
 }
