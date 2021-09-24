@@ -9,3 +9,7 @@
 
 * 版本升级指南
   * [1.2 升级指南](zh-cn/upgrade/1.2.md)
+
+* Debug Tools
+
+  - [Debug Tools](zh-cn/tools.md)
