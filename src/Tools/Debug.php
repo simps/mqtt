@@ -69,9 +69,9 @@ class Debug
             $hexDump = $hexDump . sprintf('%02x ', ord($c));
             if ($hasAscii) {
                 if (ord($c) > 31 && ord($c) < 128) {
-                    $asciiDump = $asciiDump . $c;
+                    $asciiDump .= $c;
                 } else {
-                    $asciiDump = $asciiDump . '.';
+                    $asciiDump .= '.';
                 }
             }
             $column++;
