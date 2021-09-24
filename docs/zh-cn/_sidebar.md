@@ -13,4 +13,4 @@
 * Tools
 
   - [Debug Tools](zh-cn/debug.md)
-  - [自适应协议等级](zh-cn/debug.md)
+  - [自适应协议等级](zh-cn/level.md)
