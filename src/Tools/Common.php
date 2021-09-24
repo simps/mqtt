@@ -13,6 +13,12 @@ declare(strict_types=1);
 
 namespace Simps\MQTT\Tools;
 
+/**
+ * @method static string hexDump(string $encode)
+ * @method static string hexDumpAscii(string $encode)
+ * @method static string printableText(string $encode)
+ * @method static string hexStream(string $encode)
+ */
 abstract class Common
 {
     public static function printf(string $data)
@@ -28,5 +34,10 @@ abstract class Common
             printf("%4d: %08b : 0x%02x : %d : %s\n", $i, $ascii, $ascii, $ascii, $chr);
         }
         echo "\033[0m";
+    }
+
+    public static function __callStatic($method, $arguments)
+    {
+        return (new Debug())->setEncode(...$arguments)->{$method}();
     }
 }
