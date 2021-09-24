@@ -10,6 +10,7 @@
 * 版本升级指南
   * [1.2 升级指南](zh-cn/upgrade/1.2.md)
 
-* Debug Tools
+* Tools
 
-  - [Debug Tools](zh-cn/tools.md)
+  - [Debug Tools](zh-cn/debug.md)
+  - [自适应协议等级](zh-cn/debug.md)
