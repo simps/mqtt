@@ -44,6 +44,11 @@ class Debug
         return $this->toHexDump($this->getEncode(), true);
     }
 
+    public function ascii(): string
+    {
+        return $this->toAscii($this->getEncode());
+    }
+
     public function printableText(): string
     {
         return $this->getEncode();
@@ -88,6 +93,39 @@ class Debug
 
         if ($column > 0) {
             $line = sprintf($sprintf, $address, $hexDump, $asciiDump);
+            $result .= $line;
+        }
+
+        return $result;
+    }
+
+    private function toAscii($contents)
+    {
+        $address = $column = 0;
+        $result = $asciiDump = '';
+
+        $sprintf = '%08x    %s';
+
+        foreach (str_split($contents) as $c) {
+            if (ord($c) > 31 && ord($c) < 128) {
+                $asciiDump .= $c;
+            } else {
+                $asciiDump .= '.';
+            }
+
+            $column++;
+            if (($column % 16) == 0) {
+                $line = sprintf($sprintf, $address, $asciiDump);
+                $result .= $line . PHP_EOL;
+
+                $asciiDump = '';
+                $column = 0;
+                $address += 16;
+            }
+        }
+
+        if ($column > 0) {
+            $line = sprintf($sprintf, $address, $asciiDump);
             $result .= $line;
         }
 

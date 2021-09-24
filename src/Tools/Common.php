@@ -18,6 +18,7 @@ namespace Simps\MQTT\Tools;
  * @method static string hexDumpAscii(string $encode)
  * @method static string printableText(string $encode)
  * @method static string hexStream(string $encode)
+ * @method static string ascii(string $encode)
  */
 abstract class Common
 {

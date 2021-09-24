@@ -95,4 +95,20 @@ class ToolsTest extends TestCase
         $this->assertSame($debug->hexStream(), $hex);
         $this->assertSame(UnPackTool::hexStream($bin), $hex);
     }
+
+    public function testDebug2Ascii()
+    {
+        $hex = '106200044d515454050e000a0b110000003c21ffff22ffff001353696d70735f3631336231613330313962663213180000003c020000003c030004746573740101001973696d70732d6d7174742f757365723030312f64656c6574650006627965627965';
+        $string = '00000000    .b..MQTT........
+00000010    .<!.."....Simps_
+00000020    613b1a3019bf2...
+00000030    ..<....<...test.
+00000040    ...simps-mqtt/us
+00000050    er001/delete..by
+00000060    ebye';
+        $bin = hex2bin($hex);
+        $debug = new Debug($bin);
+        $this->assertSame($debug->ascii(), $string);
+        $this->assertSame(UnPackTool::ascii($bin), $string);
+    }
 }
