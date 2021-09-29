@@ -27,10 +27,10 @@
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.0",
     "phpunit/phpunit": "^8.5",
-    "swoole/ide-helper": ">=4.4.19"
+    "swoole/ide-helper": ">=4.4.20"
   },
   "suggest": {
-    "ext-swoole": "The ext-swoole >= v4.4.19 needs to be loaded when using the MQTT Client."
+    "ext-swoole": "The ext-swoole >= v4.4.20 or v4.5.3 needs to be loaded when using the MQTT Client."
   },
   "autoload": {
     "psr-4": {
