@@ -1,0 +1,55 @@
+#!/usr/bin/env php
+<?php
+
+include 'vendor/autoload.php';
+
+use Simps\MQTT\Protocol\Types;
+use Simps\MQTT\Protocol\ProtocolInterface;
+
+function getConstants(string $objectOrClass)
+{
+    $objClass = new \ReflectionClass($objectOrClass);
+    return $objClass->getConstants();
+}
+
+function genData(array $constants, string $prefix = '')
+{
+    $data = '';
+    foreach ($constants as $name => $value) {
+        $value = is_int($value) ? $value : "'{$value}'";
+        $data .= "define('{$prefix}{$name}', $value);\n";
+    }
+    return $data;
+}
+
+$constants = "<?php
+/**
+ * This file is part of Simps
+ *
+ * @link     https://github.com/simps/mqtt
+ * @contact  Lu Fei <lufei@simps.io>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code
+ */
+
+declare(strict_types=1);
+
+";
+
+$protocolConstants = getConstants(ProtocolInterface::class);
+$constants .= genData($protocolConstants);
+$typeConstants = getConstants(Types::class);
+$constants .= genData($typeConstants, 'MQTT_TYPE_');
+
+$verbose = [
+    'NONE' => 0,
+    'HEXDUMP' => 1,
+    'HEXDUMP_ASCII' => 2,
+    'ASCII' => 3,
+    'TEXT' => 4,
+    'HEX_STREAM' => 5,
+];
+$constants .= genData($verbose, 'MQTT_VERBOSE_');
+
+file_put_contents('src/constants.php', $constants);

@@ -27,7 +27,8 @@
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.0",
     "phpunit/phpunit": "^8.5",
-    "swoole/ide-helper": ">=4.4.20"
+    "swoole/ide-helper": ">=4.4.20",
+    "simps/mqtt-cli": "*"
   },
   "suggest": {
     "ext-swoole": "The ext-swoole >= v4.4.20 or v4.5.3 needs to be loaded when using the MQTT Client."
@@ -35,7 +36,10 @@
   "autoload": {
     "psr-4": {
       "Simps\\MQTT\\": "src/"
-    }
+    },
+    "files": [
+      "src/constants.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
@@ -46,5 +50,10 @@
     "cs-check": "/usr/bin/env php ./vendor/bin/php-cs-fixer fix --dry-run",
     "cs-fix": "/usr/bin/env php ./vendor/bin/php-cs-fixer fix",
     "test": "./tests/co-phpunit --colors=always"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.4-dev"
+    }
   }
 }
