@@ -42,6 +42,8 @@ jobs:
           sudo make install
 
       - name: Setup Deps
+        env:
+          COMPOSER_ROOT_VERSION: 1.4-dev
         run:
           composer install -o
 
