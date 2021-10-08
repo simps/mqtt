@@ -68,7 +68,7 @@ class UnPackTool extends Common
         $result = $shift = 0;
         for ($i = 0; $i < $len; $i++) {
             $byte = ord($remaining[$i]);
-            $result |= ($byte & 0x7f) << $shift++ * 7;
+            $result |= ($byte & 0x7F) << $shift++ * 7;
         }
 
         $remaining = substr($remaining, $headBytes, $remainingLength);
