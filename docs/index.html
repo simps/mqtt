@@ -5,7 +5,7 @@
   <title>PHP MQTT | 协议解析和协程客户端</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="由 Simps 提供的适用于 PHP 的 MQTT 协议解析和协程客户端">
-  <meta name="keywords" content="php,协程,swoole,swoole4,mqtt,mqtt3.1,mqtt5.0,mqtt客户端,mqtt协程客户端">
+  <meta name="keywords" content="mqtt,phpmqtt,mqtt3.1,mqtt5.0,mqtt客户端,mqtt协程客户端,mqtt协议,mqtt协议解析">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/sy-records/docsify-nightly/lib/themes/vue.css">
   <style>
@@ -56,8 +56,16 @@
       },
       plugins: [
         function (hook) {
+          hook.beforeEach(function(html) {
+            return (
+                    html +
+                    '\n\n----\n\n' +
+                    'Copyright © 2019-' + new Date().getFullYear() + ' <a href="https://github.com/sy-records" target="_blank" style="color: inherit; font-weight: normal; text-decoration: none;">Lu Fei</a>'
+            );
+          }),
           hook.doneEach(function () {
             pangu.spacingElementByClassName('content')
+            if (document.location.hash !== '#/') document.title += ' | PHP MQTT'
           })
         }
       ],
