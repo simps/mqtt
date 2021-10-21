@@ -8,14 +8,17 @@ on:
 
 jobs:
   ci:
-    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.os }}
+    name: Test on PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
         os: [ubuntu-latest]
-        php-versions: ['7.2', '7.3', '7.4', '8.0']
-      max-parallel: 4
+        php-version: ['7.2', '7.3', '7.4', '8.0']
+        swoole-version: ['v4.4.26', 'v4.5.11', 'v4.6.7', 'v4.7.1', 'v4.8.0', 'master']
+      max-parallel: 5
       fail-fast: false
+    env:
+      SWOOLE_VERSION: ${{ matrix.swoole-version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -23,15 +26,15 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: ${{ matrix.php-version }}
           tools: phpize
           ini-values: extension=swoole
           coverage: none
 
       - name: Build Swoole
+        if: matrix.swoole-version != 'v4.4.26' && matrix.php-version != '8.0'
         run: |
-          version=$(curl -s https://api.github.com/repos/swoole/swoole-src/releases/latest | jq '.tag_name' -r)
-          wget https://github.com/swoole/swoole-src/archive/${version}.tar.gz -O swoole.tar.gz
+          wget https://github.com/swoole/swoole-src/archive/${SWOOLE_VERSION}.tar.gz -O swoole.tar.gz
           mkdir -p swoole
           tar -xf swoole.tar.gz -C swoole --strip-components=1
           rm swoole.tar.gz
@@ -40,6 +43,7 @@ jobs:
           ./configure --enable-openssl --enable-mysqlnd --enable-http2
           make -j$(nproc)
           sudo make install
+          php --ri swoole
 
       - name: Setup Deps
         env:
@@ -52,5 +56,6 @@ jobs:
           composer cs-check
 
       - name: Run Test Cases
+        if: matrix.swoole-version != 'v4.4.26' && matrix.php-version != '8.0'
         run: |
           composer test
