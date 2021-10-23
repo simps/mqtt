@@ -202,7 +202,7 @@ Simps\MQTT\Client->buildMessageId()
 Generate ClientId
 
 ```php
-Simps\MQTT\Client->genClientID(string $prefix = 'Simps_')
+Simps\MQTT\Client::genClientID(string $prefix = 'Simps_')
 ```
 
 ## getClient()
