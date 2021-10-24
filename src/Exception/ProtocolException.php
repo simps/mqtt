@@ -10,11 +10,6 @@
  */
 
 declare(strict_types=1);
-/**
- * User: lufei
- * Date: 2021/1/5
- * Email: lufei@swoole.com
- */
 
 namespace Simps\MQTT\Exception;
 
