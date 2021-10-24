@@ -4,10 +4,10 @@ on: [ push, delete, create ]
 
 jobs:
  mirror:
+  if: github.repository == 'simps/mqtt'
   runs-on: ubuntu-latest
   steps:
    - name: Configure Private Key
-     if: github.repository_owner == 'simps'
      env:
       SSH_PRIVATE_KEY: ${{ secrets.GITEE_PRIVATE_KEY }}
      run: |
@@ -17,7 +17,6 @@ jobs:
       echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
    - name: Push Mirror
-     if: github.repository_owner == 'simps'
      env:
       SOURCE_REPO: 'https://github.com/simps/mqtt.git'
       DESTINATION_REPO: 'git@gitee.com:phpiot/mqtt.git'
