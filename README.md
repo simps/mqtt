@@ -1,4 +1,4 @@
-English | [中文](./README-CN.md)
+English | [中](./README-CN.md)
 
 # MQTT Protocol Analysis & Coroutine Client
 
