@@ -15,6 +15,9 @@ jobs:
         os: [ubuntu-latest]
         php-version: ['7.2', '7.3', '7.4', '8.0']
         swoole-version: ['v4.4.26', 'v4.5.11', 'v4.6.7', 'v4.7.1', 'v4.8.0', 'master']
+        exclude:
+            - php-version: '8.0'
+              swoole-version: 'v4.4.26'
       max-parallel: 5
       fail-fast: false
     env:
@@ -32,7 +35,6 @@ jobs:
           coverage: none
 
       - name: Build Swoole
-        if: matrix.swoole-version != 'v4.4.26' && matrix.php-version != '8.0'
         run: |
           wget https://github.com/swoole/swoole-src/archive/${SWOOLE_VERSION}.tar.gz -O swoole.tar.gz
           mkdir -p swoole
@@ -56,6 +58,5 @@ jobs:
           composer cs-check
 
       - name: Run Test Cases
-        if: matrix.swoole-version != 'v4.4.26' && matrix.php-version != '8.0'
         run: |
           composer test
