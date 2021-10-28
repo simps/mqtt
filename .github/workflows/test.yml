@@ -18,6 +18,7 @@ jobs:
         exclude:
             - php-version: '8.0'
               swoole-version: 'v4.4.26'
+      max-parallel: 10
       fail-fast: false
     env:
       SWOOLE_VERSION: ${{ matrix.swoole-version }}
@@ -71,6 +72,7 @@ jobs:
         exclude:
           - php-version: '8.0'
             swoole-version: 'v4.4.26'
+      max-parallel: 10
       fail-fast: false
     env:
       SWOOLE_VERSION: ${{ matrix.swoole-version }}
@@ -99,7 +101,7 @@ jobs:
           rm swoole.tar.gz
           cd swoole
           phpize
-          ./configure --enable-openssl --enable-mysqlnd --enable-http2
+          ./configure --enable-openssl --with-openssl-dir=/usr/local/opt/openssl@1.1 --enable-mysqlnd --enable-http2
           make -j$(nproc)
           sudo make install
           php --ri swoole
