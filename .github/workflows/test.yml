@@ -8,7 +8,7 @@ on:
 
 jobs:
   linux:
-    name: Test on PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} ${{ matrix.os }}
+    name: PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} Test on Linux
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
@@ -62,7 +62,7 @@ jobs:
           composer test
 
   macos:
-    name: Test on PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} ${{ matrix.os }}
+    name: PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} Test on macOS
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
