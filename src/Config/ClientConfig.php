@@ -41,6 +41,8 @@ class ClientConfig extends AbstractConfig
 
     protected $sockType = SWOOLE_SOCK_TCP;
 
+    protected $verbose = MQTT_VERBOSE_NONE;
+
     public function getClientId(): string
     {
         return $this->clientId;
@@ -180,5 +182,17 @@ class ClientConfig extends AbstractConfig
     public function isMQTT5(): bool
     {
         return $this->getProtocolLevel() === ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0;
+    }
+
+    public function getVerbose(): int
+    {
+        return $this->verbose;
+    }
+
+    public function setVerbose(int $verbose)
+    {
+        $this->verbose = $verbose;
+
+        return $this;
     }
 }
