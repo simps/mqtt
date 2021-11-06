@@ -17,6 +17,7 @@ use Simps\MQTT\Config\ClientConfig;
 use Simps\MQTT\Exception\ConnectException;
 use Simps\MQTT\Exception\ProtocolException;
 use Simps\MQTT\Hex\ReasonCode;
+use Simps\MQTT\Tools\Common;
 use Swoole\Coroutine;
 
 class Client
@@ -224,6 +225,8 @@ class Client
         } elseif ($response === false && $this->client->errCode !== SOCKET_ETIMEDOUT) {
             $this->handleException();
         } elseif (is_string($response) && strlen($response) > 0) {
+            $this->handleVerbose($response);
+
             if ($this->getConfig()->isMQTT5()) {
                 return Protocol\V5::unpack($response);
             }
@@ -311,5 +314,29 @@ class Client
     public function getClient()
     {
         return $this->client;
+    }
+
+    protected function handleVerbose(string $data)
+    {
+        switch ($this->getConfig()->getVerbose()) {
+            case MQTT_VERBOSE_HEXDUMP:
+                echo Common::hexDump($data), PHP_EOL;
+                break;
+            case MQTT_VERBOSE_HEXDUMP_ASCII:
+                echo Common::hexDumpAscii($data), PHP_EOL;
+                break;
+            case MQTT_VERBOSE_ASCII:
+                echo Common::ascii($data), PHP_EOL;
+                break;
+            case MQTT_VERBOSE_TEXT:
+                echo Common::printableText($data), PHP_EOL;
+                break;
+            case MQTT_VERBOSE_HEX_STREAM:
+                echo Common::hexStream($data), PHP_EOL;
+                break;
+            case MQTT_VERBOSE_NONE:
+            default:
+                break;
+        }
     }
 }
