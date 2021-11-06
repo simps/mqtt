@@ -19,7 +19,7 @@ jobs:
    - name: Push Mirror
      env:
       SOURCE_REPO: 'https://github.com/simps/mqtt.git'
-      DESTINATION_REPO: 'git@gitee.com:phpiot/mqtt.git'
+      DESTINATION_REPO: 'git@gitee.com:phpmqtt/mqtt.git'
      run: |
       git clone --mirror "$SOURCE_REPO" && cd `basename "$SOURCE_REPO"`
       git remote set-url --push origin "$DESTINATION_REPO"
