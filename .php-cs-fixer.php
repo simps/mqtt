@@ -1,24 +1,23 @@
 <?php
+
+declare(strict_types=1);
 /**
- * This file is part of Simps
+ * This file is part of Simps.
  *
  * @link     https://github.com/simps/mqtt
  * @contact  Lu Fei <lufei@simps.io>
  *
  * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code
+ * please view the LICENSE file that was distributed with this source code.
  */
-
-declare(strict_types=1);
-
 $header = <<<'TEXT'
-This file is part of Simps
+This file is part of Simps.
 
 @link     https://github.com/simps/mqtt
 @contact  Lu Fei <lufei@simps.io>
 
 For the full copyright and license information,
-please view the LICENSE file that was distributed with this source code
+please view the LICENSE file that was distributed with this source code.
 TEXT;
 
 return (new PhpCsFixer\Config())
@@ -31,8 +30,8 @@ return (new PhpCsFixer\Config())
         'header_comment' => [
             'comment_type' => 'PHPDoc',
             'header' => $header,
-            'separate' => 'bottom',
-            'location' => 'after_open',
+            'separate' => 'none',
+            'location' => 'after_declare_strict',
         ],
         'array_syntax' => [
             'syntax' => 'short',
