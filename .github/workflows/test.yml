@@ -19,7 +19,8 @@ jobs:
             - php-version: '8.0'
               swoole-version: 'v4.4.26'
         include:
-          - php-version: '8.1'
+          - os: [ubuntu-latest]
+            php-version: '8.1'
             swoole-version: 'master'
       max-parallel: 15
       fail-fast: false
@@ -76,7 +77,8 @@ jobs:
           - php-version: '8.0'
             swoole-version: 'v4.4.26'
         include:
-          - php-version: '8.1'
+          - os: [macos-latest]
+            php-version: '8.1'
             swoole-version: 'master'
       max-parallel: 15
       fail-fast: false
