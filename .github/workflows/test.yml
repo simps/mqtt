@@ -18,7 +18,10 @@ jobs:
         exclude:
             - php-version: '8.0'
               swoole-version: 'v4.4.26'
-      max-parallel: 10
+        include:
+          - php-version: '8.1'
+            swoole-version: 'master'
+      max-parallel: 15
       fail-fast: false
     env:
       SWOOLE_VERSION: ${{ matrix.swoole-version }}
@@ -75,7 +78,7 @@ jobs:
         include:
           - php-version: '8.1'
             swoole-version: 'master'
-      max-parallel: 10
+      max-parallel: 15
       fail-fast: false
     env:
       SWOOLE_VERSION: ${{ matrix.swoole-version }}
