@@ -10,6 +10,7 @@ jobs:
   linux:
     name: PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} Test on Linux
     runs-on: "${{ matrix.os }}"
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -22,7 +23,8 @@ jobs:
           - os: [ubuntu-latest]
             php-version: '8.1'
             swoole-version: 'master'
-            php-cs-fixer-ignore-env: '1'
+            php-cs-fixer-ignore-env: true
+            experimental: true
       max-parallel: 15
       fail-fast: false
     env:
@@ -71,6 +73,7 @@ jobs:
   macos:
     name: PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} Test on macOS
     runs-on: "${{ matrix.os }}"
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
         os: [macos-latest]
@@ -83,7 +86,8 @@ jobs:
           - os: [macos-latest]
             php-version: '8.1'
             swoole-version: 'master'
-            php-cs-fixer-ignore-env: '1'
+            php-cs-fixer-ignore-env: true
+            experimental: true
       max-parallel: 15
       fail-fast: false
     env:
