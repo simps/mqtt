@@ -10,13 +10,11 @@ jobs:
   linux:
     name: PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} Test on Linux
     runs-on: "${{ matrix.os }}"
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
         os: [ubuntu-latest]
         php-version: ['7.2', '7.3', '7.4', '8.0']
         swoole-version: ['v4.4.26', 'v4.5.11', 'v4.6.7', 'v4.7.1', 'v4.8.1', 'master']
-        experimental: [false]
         exclude:
             - php-version: '8.0'
               swoole-version: 'v4.4.26'
@@ -24,8 +22,6 @@ jobs:
           - os: ubuntu-latest
             php-version: '8.1'
             swoole-version: 'master'
-            php-cs-fixer-ignore-env: true
-            experimental: true
       max-parallel: 15
       fail-fast: false
     env:
@@ -62,8 +58,7 @@ jobs:
           composer install -o
 
       - name: Coding Standards Check
-        env:
-          PHP_CS_FIXER_IGNORE_ENV: ${{ matrix.php-cs-fixer-ignore-env }}
+        if: matrix.php-version != '8.1'
         run: |
           composer cs-check
 
@@ -74,13 +69,11 @@ jobs:
   macos:
     name: PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} Test on macOS
     runs-on: "${{ matrix.os }}"
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
         os: [macos-latest]
         php-version: ['7.2', '7.3', '7.4', '8.0']
         swoole-version: ['v4.4.26', 'v4.5.11', 'v4.6.7', 'v4.7.1', 'v4.8.1', 'master']
-        experimental: [false]
         exclude:
           - php-version: '8.0'
             swoole-version: 'v4.4.26'
@@ -89,7 +82,6 @@ jobs:
             php-version: '8.1'
             swoole-version: 'master'
             php-cs-fixer-ignore-env: true
-            experimental: true
       max-parallel: 15
       fail-fast: false
     env:
@@ -131,8 +123,7 @@ jobs:
           composer install -o
 
       - name: Coding Standards Check
-        env:
-          PHP_CS_FIXER_IGNORE_ENV: ${{ matrix.php-cs-fixer-ignore-env }}
+        if: matrix.php-version != '8.1'
         run: |
           composer cs-check
 
