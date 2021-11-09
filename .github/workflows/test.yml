@@ -22,6 +22,7 @@ jobs:
           - os: [ubuntu-latest]
             php-version: '8.1'
             swoole-version: 'master'
+            php-cs-fixer-ignore-env: '1'
       max-parallel: 15
       fail-fast: false
     env:
@@ -58,6 +59,8 @@ jobs:
           composer install -o
 
       - name: Coding Standards Check
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: ${{ matrix.php-cs-fixer-ignore-env }}
         run: |
           composer cs-check
 
@@ -80,6 +83,7 @@ jobs:
           - os: [macos-latest]
             php-version: '8.1'
             swoole-version: 'master'
+            php-cs-fixer-ignore-env: '1'
       max-parallel: 15
       fail-fast: false
     env:
@@ -121,6 +125,8 @@ jobs:
           composer install -o
 
       - name: Coding Standards Check
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: ${{ matrix.php-cs-fixer-ignore-env }}
         run: |
           composer cs-check
 
