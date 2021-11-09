@@ -72,6 +72,9 @@ jobs:
         exclude:
           - php-version: '8.0'
             swoole-version: 'v4.4.26'
+        include:
+          - php-version: '8.1'
+            swoole-version: 'master'
       max-parallel: 10
       fail-fast: false
     env:
