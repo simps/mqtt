@@ -18,7 +18,11 @@ jobs:
         exclude:
             - php-version: '8.0'
               swoole-version: 'v4.4.26'
-      max-parallel: 10
+        include:
+          - os: ubuntu-latest
+            php-version: '8.1'
+            swoole-version: 'master'
+      max-parallel: 15
       fail-fast: false
     env:
       SWOOLE_VERSION: ${{ matrix.swoole-version }}
@@ -54,6 +58,7 @@ jobs:
           composer install -o
 
       - name: Coding Standards Check
+        if: matrix.php-version != '8.1'
         run: |
           composer cs-check
 
@@ -72,7 +77,12 @@ jobs:
         exclude:
           - php-version: '8.0'
             swoole-version: 'v4.4.26'
-      max-parallel: 10
+        include:
+          - os: macos-latest
+            php-version: '8.1'
+            swoole-version: 'master'
+            php-cs-fixer-ignore-env: true
+      max-parallel: 15
       fail-fast: false
     env:
       SWOOLE_VERSION: ${{ matrix.swoole-version }}
@@ -113,6 +123,7 @@ jobs:
           composer install -o
 
       - name: Coding Standards Check
+        if: matrix.php-version != '8.1'
         run: |
           composer cs-check
 
