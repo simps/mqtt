@@ -24,16 +24,22 @@ class Client
     /** @var Coroutine\Client|\Swoole\Client */
     private $client;
 
+    /** @var int */
     private $messageId = 0;
 
+    /** @var array */
     private $connectData = [];
 
+    /** @var string */
     private $host;
 
+    /** @var int */
     private $port;
 
+    /** @var ClientConfig */
     private $config;
 
+    /** @var int */
     private $clientType;
 
     public const COROUTINE_CLIENT_TYPE = 1;

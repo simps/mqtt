@@ -36,6 +36,7 @@ class UnPackV5
             $properties = UnPackProperty::connect($propertiesTotalLength, $remaining);
         }
         $clientId = UnPackTool::string($remaining);
+        $willProperties = [];
         if ($willFlag) {
             $willPropertiesTotalLength = UnPackTool::byte($remaining);
             if ($willPropertiesTotalLength) {

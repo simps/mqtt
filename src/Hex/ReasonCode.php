@@ -108,6 +108,7 @@ abstract class ReasonCode
     public const WILDCARD_SUBSCRIPTIONS_NOT_SUPPORTED = 0xA2;
 
     /**
+     * @var array
      * @see https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901079
      */
     protected static $reasonPhrases = [
@@ -154,6 +155,7 @@ abstract class ReasonCode
         self::PACKET_IDENTIFIER_NOT_FOUND => 'Packet Identifier not found',
     ];
 
+    /** @var array */
     protected static $qosReasonPhrases = [
         self::GRANTED_QOS_0 => 'Granted QoS 0',
         self::GRANTED_QOS_1 => 'Granted QoS 1',
