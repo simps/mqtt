@@ -1,0 +1,25 @@
+parameters:
+	level: 6
+	inferPrivatePropertyTypeFromConstructor: true
+	checkMissingIterableValueType: false
+	bootstrapFiles:
+		- examples/bootstrap.php
+	paths:
+		- src
+		- tests
+	excludePaths:
+		- src/Tools/Common.php
+	ignoreErrors:
+		- '#Call to an undefined method \S+::setTopic\(\).#'
+		- '#Method Simps\\MQTT\\Message\\[a-zA-Z]+::getContents\(\) has no return type specified.#'
+		-
+			message: '#Method \S+ has no return type specified.#'
+			paths:
+				- tests/*
+				- src/Client.php
+		-
+			message: '#Property \S+ has no type specified.#'
+			paths:
+				- tests/*
+				- src/Message/*
+				- src/Property/PacketMap.php

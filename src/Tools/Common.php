@@ -21,7 +21,7 @@ namespace Simps\MQTT\Tools;
  */
 abstract class Common
 {
-    public static function printf(string $data)
+    public static function printf(string $data): void
     {
         echo "\033[36m";
         for ($i = 0; $i < strlen($data); $i++) {

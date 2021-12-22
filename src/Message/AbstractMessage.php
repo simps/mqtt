@@ -60,14 +60,14 @@ abstract class AbstractMessage
         return $this;
     }
 
-    public function isMQTT5()
+    public function isMQTT5(): bool
     {
         return $this->getProtocolLevel() === ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0;
     }
 
     abstract public function getContents(bool $getArray = false);
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->getContents(true);
     }

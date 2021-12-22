@@ -75,7 +75,7 @@ class UnPackTool extends Common
         return $result;
     }
 
-    private static function getRemainingLength(string $data, ?int &$headBytes): int
+    protected static function getRemainingLength(string $data, ?int &$headBytes): int
     {
         $headBytes = $multiplier = 1;
         $value = 0;

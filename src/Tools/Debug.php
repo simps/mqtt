@@ -58,7 +58,7 @@ class Debug
         return bin2hex($this->getEncode());
     }
 
-    private function toHexDump($contents, $hasAscii = false)
+    private function toHexDump(string $contents, bool $hasAscii = false): string
     {
         $address = $column = 0;
         $result = $hexDump = $asciiDump = '';
@@ -98,7 +98,7 @@ class Debug
         return $result;
     }
 
-    private function toAscii($contents)
+    private function toAscii(string $contents): string
     {
         $address = $column = 0;
         $result = $asciiDump = '';

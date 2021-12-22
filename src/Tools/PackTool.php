@@ -57,7 +57,7 @@ class PackTool extends Common
         return chr($type) . static::packRemainingLength($bodyLength);
     }
 
-    private static function packRemainingLength(int $bodyLength): string
+    protected static function packRemainingLength(int $bodyLength): string
     {
         $string = '';
         do {

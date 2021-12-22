@@ -44,6 +44,7 @@ class Types
 
     public const AUTH = 15; // Authentication exchange
 
+    /** @var array */
     protected static $types = [
         self::CONNECT => 'connect',
         self::CONNACK => 'connack',
