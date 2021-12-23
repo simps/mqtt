@@ -3,7 +3,7 @@ name: mirror
 on: [ push, delete, create ]
 
 jobs:
- mirror:
+ gitee:
   if: github.repository == 'simps/mqtt'
   runs-on: ubuntu-latest
   steps:
@@ -16,7 +16,7 @@ jobs:
       chmod 600 ~/.ssh/id_rsa
       echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
-   - name: Push Mirror
+   - name: Push to Gitee
      env:
       SOURCE_REPO: 'https://github.com/simps/mqtt.git'
       DESTINATION_REPO: 'git@gitee.com:phpmqtt/mqtt.git'

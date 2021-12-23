@@ -117,7 +117,7 @@ jobs:
           cd swoole
           phpize
           ./configure --enable-openssl --with-openssl-dir=/usr/local/opt/openssl@1.1 --enable-mysqlnd --enable-http2
-          make -j$(nproc)
+          make -j$(sysctl -n hw.logicalcpu)
           sudo make install
           php --ri swoole
 
