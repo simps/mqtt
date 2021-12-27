@@ -86,7 +86,7 @@ jobs:
             swoole-version: 'master'
           - os: macos-latest
             php-version: '8.1'
-            swoole-version: 'v4.8.4'
+            swoole-version: '4.8.x'
       max-parallel: 15
       fail-fast: false
     env:
