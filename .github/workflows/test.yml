@@ -18,13 +18,19 @@ jobs:
         exclude:
             - php-version: '8.0'
               swoole-version: 'v4.4.26'
+            - php-version: '7.2'
+              swoole-version: 'master'
+            - php-version: '7.3'
+              swoole-version: 'master'
+            - php-version: '7.4'
+              swoole-version: 'master'
         include:
           - os: ubuntu-latest
             php-version: '8.1'
             swoole-version: 'master'
           - os: ubuntu-latest
             php-version: '8.1'
-            swoole-version: 'v4.8.4'
+            swoole-version: 'v4.8.5'
       max-parallel: 15
       fail-fast: false
     env:
@@ -80,6 +86,12 @@ jobs:
         exclude:
           - php-version: '8.0'
             swoole-version: 'v4.4.26'
+          - php-version: '7.2'
+            swoole-version: 'master'
+          - php-version: '7.3'
+            swoole-version: 'master'
+          - php-version: '7.4'
+            swoole-version: 'master'
         include:
           - os: macos-latest
             php-version: '8.1'
