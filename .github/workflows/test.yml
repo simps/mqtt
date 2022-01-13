@@ -14,17 +14,23 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php-version: ['7.2', '7.3', '7.4', '8.0']
-        swoole-version: ['v4.4.26', 'v4.5.11', 'v4.6.7', 'v4.7.1', 'v4.8.5', 'master']
+        swoole-version: ['v4.4.26', 'v4.5.11', 'v4.6.7', 'v4.7.1', 'v4.8.6', 'master']
         exclude:
             - php-version: '8.0'
               swoole-version: 'v4.4.26'
+            - php-version: '7.2'
+              swoole-version: 'master'
+            - php-version: '7.3'
+              swoole-version: 'master'
+            - php-version: '7.4'
+              swoole-version: 'master'
         include:
           - os: ubuntu-latest
             php-version: '8.1'
             swoole-version: 'master'
           - os: ubuntu-latest
             php-version: '8.1'
-            swoole-version: 'v4.8.4'
+            swoole-version: 'v4.8.6'
       max-parallel: 15
       fail-fast: false
     env:
@@ -76,17 +82,23 @@ jobs:
       matrix:
         os: [macos-latest]
         php-version: ['7.2', '7.3', '7.4', '8.0']
-        swoole-version: ['v4.4.26', 'v4.5.11', 'v4.6.7', 'v4.7.1', '4.8.x', 'master']
+        swoole-version: ['v4.4.26', 'v4.5.11', 'v4.6.7', 'v4.7.1', 'v4.8.6', 'master']
         exclude:
           - php-version: '8.0'
             swoole-version: 'v4.4.26'
+          - php-version: '7.2'
+            swoole-version: 'master'
+          - php-version: '7.3'
+            swoole-version: 'master'
+          - php-version: '7.4'
+            swoole-version: 'master'
         include:
           - os: macos-latest
             php-version: '8.1'
             swoole-version: 'master'
           - os: macos-latest
             php-version: '8.1'
-            swoole-version: '4.8.x'
+            swoole-version: 'v4.8.6'
       max-parallel: 15
       fail-fast: false
     env:
