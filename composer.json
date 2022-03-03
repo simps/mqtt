@@ -52,10 +52,5 @@
     "cs-fix": "/usr/bin/env php ./vendor/bin/php-cs-fixer fix",
     "test": "./tests/co-phpunit --colors=always",
     "analyse": "phpstan analyse --memory-limit 4096M -c phpstan.neon"
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.4-dev"
-    }
   }
 }
