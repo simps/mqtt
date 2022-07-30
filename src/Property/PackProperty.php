@@ -200,8 +200,7 @@ class PackProperty
                 $tmpBody .= chr($property);
                 switch ($property) {
                     case Property::SUBSCRIPTION_IDENTIFIER:
-                        $value = PackTool::varInt((int) $item);
-                        $tmpBody .= $value;
+                        $tmpBody .= PackTool::varInt((int) $item);
                         break;
                 }
             } else {
@@ -220,7 +219,6 @@ class PackProperty
         $unSubscribe = array_flip(PacketMap::$unSubscribe);
         foreach ($data as $key => $item) {
             // Property::USER_PROPERTY
-
             $tmpBody .= chr($unSubscribe['user_property']);
             $tmpBody .= PackTool::stringPair((string) $key, (string) $item);
         }
