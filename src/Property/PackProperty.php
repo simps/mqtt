@@ -153,8 +153,7 @@ class PackProperty
                         $tmpBody .= chr((int) $item);
                         break;
                     case Property::SUBSCRIPTION_IDENTIFIER:
-                        $value = PackTool::varInt((int) $item);
-                        $tmpBody .= $value;
+                        $tmpBody .= PackTool::varInt((int) $item);
                         break;
                 }
             } else {
