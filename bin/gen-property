@@ -1,0 +1,49 @@
+#!/usr/bin/env php
+<?php
+
+include 'vendor/autoload.php';
+
+use Simps\MQTT\Hex\Property;
+
+function getConstants(string $objectOrClass)
+{
+    $objClass = new \ReflectionClass($objectOrClass);
+
+    return $objClass->getConstants();
+}
+
+function genData(array $constants, string $prefix = '')
+{
+    $data = '';
+    foreach ($constants as $name => $value) {
+        $value = strtolower($name);
+        $data .= "public const {$name} = '{$value}';\n\n";
+    }
+
+    return $data;
+}
+
+$constants = '<?php
+
+declare(strict_types=1);
+/**
+ * This file is part of Simps.
+ *
+ * @link     https://github.com/simps/mqtt
+ * @contact  Lu Fei <lufei@simps.io>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ */
+namespace Simps\\MQTT\\Constant;
+
+class Property
+{
+%s
+}
+';
+
+$propertyConstants = getConstants(Property::class);
+$constants = sprintf($constants, genData($propertyConstants));
+
+file_put_contents('src/Constant/Property.php', $constants);
