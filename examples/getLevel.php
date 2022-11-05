@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-include __DIR__ . '/bootstrap.php';
+include_once __DIR__ . '/bootstrap.php';
 
 use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Protocol\V3;
@@ -31,7 +31,7 @@ $server->on('connect', function ($server, $fd) {
     echo "Client #{$fd}: Connect.\n";
 });
 
-$server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
+$server->on('receive', function (Swoole\Server $server, $fd, $reactorId, $data) {
     $type = UnPackTool::getType($data);
     if ($type === Types::CONNECT) {
         $level = UnPackTool::getLevel($data);

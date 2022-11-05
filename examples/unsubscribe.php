@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-include __DIR__ . '/bootstrap.php';
+include_once __DIR__ . '/bootstrap.php';
 
 use Simps\MQTT\Client;
 use Swoole\Coroutine;
