@@ -44,7 +44,7 @@ class PacketTest extends TestCase
     {
         $res = self::$client->connect();
         $this->assertIsArray($res);
-        $this->assertSame($res['type'], Types::CONNACK);
+        $this->assertSame(Types::CONNACK, $res['type']);
     }
 
     /**
@@ -68,10 +68,10 @@ class PacketTest extends TestCase
         ];
         $res = self::$client->subscribe($topics);
         $this->assertIsArray($res);
-        $this->assertSame($res['type'], Types::SUBACK);
+        $this->assertSame(Types::SUBACK, $res['type']);
         $this->assertIsArray($res['codes']);
-        $this->assertSame($res['codes'][0], ReasonCode::GRANTED_QOS_1);
-        $this->assertSame($res['codes'][1], ReasonCode::GRANTED_QOS_2);
+        $this->assertSame(ReasonCode::GRANTED_QOS_1, $res['codes'][0]);
+        $this->assertSame(ReasonCode::GRANTED_QOS_2, $res['codes'][1]);
     }
 
     /**
@@ -85,8 +85,8 @@ class PacketTest extends TestCase
             $this->assertIsArray($res);
             $buffer = $client->publish(self::$topic . '/get', 'hello,simps', 1);
             $this->assertIsArray($buffer);
-            $this->assertSame($buffer['type'], Types::PUBACK);
-            $this->assertSame(ReasonCode::getReasonPhrase($buffer['code']), 'Success');
+            $this->assertSame(Types::PUBACK, $buffer['type']);
+            $this->assertSame('Success', ReasonCode::getReasonPhrase($buffer['code']));
         });
     }
 
@@ -97,9 +97,9 @@ class PacketTest extends TestCase
     {
         $buffer = self::$client->recv();
         $this->assertIsArray($buffer);
-        $this->assertSame($buffer['type'], Types::PUBLISH);
-        $this->assertSame($buffer['topic'], self::$topic . '/get');
-        $this->assertSame($buffer['message'], 'hello,simps');
+        $this->assertSame(Types::PUBLISH, $buffer['type']);
+        $this->assertSame(self::$topic . '/get', $buffer['topic']);
+        $this->assertSame('hello,simps', $buffer['message']);
     }
 
     /**
@@ -109,7 +109,7 @@ class PacketTest extends TestCase
     {
         $buffer = self::$client->ping();
         $this->assertIsArray($buffer);
-        $this->assertSame($buffer['type'], Types::PINGRESP);
+        $this->assertSame(Types::PINGRESP, $buffer['type']);
     }
 
     /**
@@ -119,9 +119,9 @@ class PacketTest extends TestCase
     {
         $status = self::$client->unSubscribe([self::$topic . '/get', self::$topic . '/update']);
         $this->assertIsArray($status);
-        $this->assertSame($status['type'], Types::UNSUBACK);
-        $this->assertSame(ReasonCode::getReasonPhrase($status['codes'][0]), 'Success');
-        $this->assertSame(ReasonCode::getReasonPhrase($status['codes'][1]), 'Success');
+        $this->assertSame(Types::UNSUBACK, $status['type']);
+        $this->assertSame('Success', ReasonCode::getReasonPhrase($status['codes'][0]));
+        $this->assertSame('Success', ReasonCode::getReasonPhrase($status['codes'][1]));
     }
 
     /**

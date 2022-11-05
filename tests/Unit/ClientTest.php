@@ -53,9 +53,9 @@ class ClientTest extends TestCase
         });
 
         $buffer = $client->recv();
-        $this->assertSame($buffer['type'], Types::PUBLISH);
-        $this->assertSame($buffer['topic'], $topic);
-        $this->assertSame(strlen($buffer['message']), strlen($base64));
+        $this->assertSame(Types::PUBLISH, $buffer['type']);
+        $this->assertSame($topic, $buffer['topic']);
+        $this->assertSame(strlen($base64), strlen($buffer['message']));
     }
 
     public function testNonWillWithProtocolException()
@@ -71,7 +71,7 @@ class ClientTest extends TestCase
             $client->connect(false, $will);
         } catch (\Throwable $ex) {
             $this->assertInstanceOf(ProtocolException::class, $ex);
-            $this->assertSame($ex->getMessage(), 'Topic cannot be empty');
+            $this->assertSame('Topic cannot be empty', $ex->getMessage());
         }
     }
 
