@@ -17,6 +17,7 @@ use Simps\MQTT\Client;
 use Simps\MQTT\Exception\ProtocolException;
 use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Protocol\Types;
+use Swoole\Coroutine;
 
 /**
  * @internal
@@ -79,7 +80,7 @@ class PacketTest extends TestCase
      */
     public function testPublish()
     {
-        go(function () {
+        Coroutine::create(function () {
             $client = new Client(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestMQTT5ConnectConfig());
             $res = $client->connect();
             $this->assertIsArray($res);
