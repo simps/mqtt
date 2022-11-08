@@ -29,9 +29,9 @@ class ToolsTest extends TestCase
         $connect_31 = '104400064d51497364700306000a001353696d70735f36313362316164323236626334001973696d70732d6d7174742f757365723030312f64656c6574650006627965627965';
         $connect_311 = '104200044d5154540406000a001353696d70735f36313362313830323035636633001973696d70732d6d7174742f757365723030312f64656c6574650006627965627965';
         $connect_50 = '106200044d515454050e000a0b110000003c21ffff22ffff001353696d70735f3631336231613330313962663213180000003c020000003c030004746573740101001973696d70732d6d7174742f757365723030312f64656c6574650006627965627965';
-        $this->assertSame(UnPackTool::getLevel(hex2bin($connect_31)), ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1);
-        $this->assertSame(UnPackTool::getLevel(hex2bin($connect_311)), ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1);
-        $this->assertSame(UnPackTool::getLevel(hex2bin($connect_50)), ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0);
+        $this->assertSame(ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1, UnPackTool::getLevel(hex2bin($connect_31)));
+        $this->assertSame(ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1, UnPackTool::getLevel(hex2bin($connect_311)));
+        $this->assertSame(ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0, UnPackTool::getLevel(hex2bin($connect_50)));
     }
 
     public function testInvalidGetLevel()
@@ -41,7 +41,7 @@ class ToolsTest extends TestCase
             UnPackTool::getLevel(hex2bin($connAck));
         } catch (\Throwable $ex) {
             $this->assertInstanceOf(InvalidArgumentException::class, $ex);
-            $this->assertSame($ex->getMessage(), 'packet must be of type connect, connack given');
+            $this->assertSame('packet must be of type connect, connack given', $ex->getMessage());
         }
     }
 
@@ -56,9 +56,8 @@ class ToolsTest extends TestCase
 00000050    65 72 30 30 31 2f 64 65 6c 65 74 65 00 06 62 79 
 00000060    65 62 79 65                                     ';
         $bin = hex2bin($hex);
-        $debug = new Debug($bin);
-        $this->assertSame($debug->hexDump(), $string);
-        $this->assertSame(UnPackTool::hexDump($bin), $string);
+        $this->assertSame($string, (new Debug($bin))->hexDump());
+        $this->assertSame($string, UnPackTool::hexDump($bin));
     }
 
     public function testDebug2hexDumpAscii()
@@ -72,27 +71,24 @@ class ToolsTest extends TestCase
 00000050    65 72 30 30 31 2f 64 65 6c 65 74 65 00 06 62 79    er001/delete..by
 00000060    65 62 79 65                                        ebye';
         $bin = hex2bin($hex);
-        $debug = new Debug($bin);
-        $this->assertSame($debug->hexDumpAscii(), $string);
-        $this->assertSame(UnPackTool::hexDumpAscii($bin), $string);
+        $this->assertSame($string, (new Debug($bin))->hexDumpAscii());
+        $this->assertSame($string, UnPackTool::hexDumpAscii($bin));
     }
 
     public function testDebug2PrintableText()
     {
         $hex = '106200044d515454050e000a0b110000003c21ffff22ffff001353696d70735f3631336231613330313962663213180000003c020000003c030004746573740101001973696d70732d6d7174742f757365723030312f64656c6574650006627965627965';
         $bin = hex2bin($hex);
-        $debug = new Debug($bin);
-        $this->assertSame($debug->printableText(), $bin);
-        $this->assertSame(UnPackTool::printableText($bin), $bin);
+        $this->assertSame($bin, (new Debug($bin))->printableText());
+        $this->assertSame($bin, UnPackTool::printableText($bin));
     }
 
     public function testDebug2HexStream()
     {
         $hex = '106200044d515454050e000a0b110000003c21ffff22ffff001353696d70735f3631336231613330313962663213180000003c020000003c030004746573740101001973696d70732d6d7174742f757365723030312f64656c6574650006627965627965';
         $bin = hex2bin($hex);
-        $debug = new Debug($bin);
-        $this->assertSame($debug->hexStream(), $hex);
-        $this->assertSame(UnPackTool::hexStream($bin), $hex);
+        $this->assertSame($hex, (new Debug($bin))->hexStream());
+        $this->assertSame($hex, UnPackTool::hexStream($bin));
     }
 
     public function testDebug2Ascii()
@@ -106,8 +102,7 @@ class ToolsTest extends TestCase
 00000050    er001/delete..by
 00000060    ebye';
         $bin = hex2bin($hex);
-        $debug = new Debug($bin);
-        $this->assertSame($debug->ascii(), $string);
-        $this->assertSame(UnPackTool::ascii($bin), $string);
+        $this->assertSame($string, (new Debug($bin))->ascii());
+        $this->assertSame($string, UnPackTool::ascii($bin));
     }
 }

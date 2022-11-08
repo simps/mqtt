@@ -44,7 +44,7 @@ class PacketTest extends TestCase
     {
         $res = self::$client->connect();
         $this->assertIsArray($res);
-        $this->assertSame($res['type'], Types::CONNACK);
+        $this->assertSame(Types::CONNACK, $res['type']);
     }
 
     /**
@@ -55,8 +55,8 @@ class PacketTest extends TestCase
         $topics[self::$topic] = 1;
         $res = self::$client->subscribe($topics);
         $this->assertIsArray($res);
-        $this->assertSame($res['type'], Types::SUBACK);
-        $this->assertSame($res['codes'][0], ReasonCode::GRANTED_QOS_1);
+        $this->assertSame(Types::SUBACK, $res['type']);
+        $this->assertSame(ReasonCode::GRANTED_QOS_1, $res['codes'][0]);
     }
 
     /**
@@ -66,7 +66,7 @@ class PacketTest extends TestCase
     {
         $buffer = self::$client->publish(self::$topic, 'hello,simps', 1);
         $this->assertIsArray($buffer);
-        $this->assertSame($buffer['type'], Types::PUBACK);
+        $this->assertSame(Types::PUBACK, $buffer['type']);
     }
 
     /**
@@ -76,9 +76,9 @@ class PacketTest extends TestCase
     {
         $buffer = self::$client->recv();
         $this->assertIsArray($buffer);
-        $this->assertSame($buffer['type'], Types::PUBLISH);
-        $this->assertSame($buffer['topic'], self::$topic);
-        $this->assertSame($buffer['message'], 'hello,simps');
+        $this->assertSame(Types::PUBLISH, $buffer['type']);
+        $this->assertSame(self::$topic, $buffer['topic']);
+        $this->assertSame('hello,simps', $buffer['message']);
     }
 
     /**
@@ -88,7 +88,7 @@ class PacketTest extends TestCase
     {
         $buffer = self::$client->ping();
         $this->assertIsArray($buffer);
-        $this->assertSame($buffer['type'], Types::PINGRESP);
+        $this->assertSame(Types::PINGRESP, $buffer['type']);
     }
 
     /**
@@ -98,7 +98,7 @@ class PacketTest extends TestCase
     {
         $status = self::$client->unSubscribe([self::$topic]);
         $this->assertIsArray($status);
-        $this->assertSame($status['type'], Types::UNSUBACK);
+        $this->assertSame(Types::UNSUBACK, $status['type']);
     }
 
     /**

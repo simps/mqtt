@@ -17,7 +17,7 @@ foreach (
     ] as $file
 ) {
     if (file_exists($file)) {
-        require $file;
+        require_once $file;
         break;
     }
 }

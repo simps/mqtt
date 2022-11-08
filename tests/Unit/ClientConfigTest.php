@@ -31,34 +31,29 @@ class ClientConfigTest extends TestCase
             ->setDelay(3000)
             ->setMaxAttempts(5)
             ->setSwooleConfig(SWOOLE_MQTT_CONFIG);
-        $this->assertEquals($config->getUserName(), '');
-        $this->assertEquals($config->getPassword(), '');
+        $this->assertEquals('', $config->getUserName());
+        $this->assertEquals('', $config->getPassword());
         $this->assertFalse($config->isMQTT5());
-        $this->assertEquals($config->getProtocolLevel(), ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1);
+        $this->assertEquals(ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1, $config->getProtocolLevel());
 
         $config->setProperties(['receive_maximum' => 65535]);
         $this->assertTrue($config->isMQTT5());
-        $this->assertEquals($config->getProtocolLevel(), ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0);
+        $this->assertEquals(ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0, $config->getProtocolLevel());
 
         $config->setProtocolLevel(ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1);
         $this->assertTrue($config->isMQTT5());
-        $this->assertEquals($config->getProtocolLevel(), ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0);
+        $this->assertEquals(ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0, $config->getProtocolLevel());
     }
 
     public function testSwooleDefaultConfig()
     {
         $config = new ClientConfig();
         $config->setSwooleConfig([]);
-        $this->assertEquals($config->getSwooleConfig(), [
-            'open_mqtt_protocol' => true,
-        ]);
+        $this->assertEquals(['open_mqtt_protocol' => true], $config->getSwooleConfig());
         $config->setSwooleConfig([
             'open_mqtt_protocol' => false,
             'package_max_length' => 2 * 1024 * 1024,
         ]);
-        $this->assertEquals($config->getSwooleConfig(), [
-            'open_mqtt_protocol' => false,
-            'package_max_length' => 2 * 1024 * 1024,
-        ]);
+        $this->assertEquals(['open_mqtt_protocol' => false,  'package_max_length' => 2 * 1024 * 1024], $config->getSwooleConfig());
     }
 }

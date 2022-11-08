@@ -35,8 +35,8 @@ class MessageTest extends TestCase
             ->setMessageId(1)
             ->setProperties(['message_expiry_interval' => 100]);
         $this->assertEquals(
-            $message->getContents(),
             (string) $message,
+            $message->getContents(),
             'The results of getContents and toString should be the same'
         );
         $this->assertIsArray($message->getContents(true));
@@ -57,7 +57,7 @@ class MessageTest extends TestCase
             'The results of getContents and toString should be the same'
         );
         $this->assertIsArray($message->getContents(true));
-        $this->assertEquals($message->getContents(true)['type'], Types::PINGRESP);
+        $this->assertEquals(Types::PINGRESP, $message->getContents(true)['type']);
         $this->assertIsArray($message->toArray());
         $this->assertEquals(
             $message->toArray(),
@@ -93,14 +93,14 @@ class MessageTest extends TestCase
             ->setMessageId(1);
 
         $this->assertFalse($message->isMQTT5());
-        $this->assertEquals($message->getProtocolLevel(), ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1);
+        $this->assertEquals(ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1, $message->getProtocolLevel());
 
         $message->setProperties(['message_expiry_interval' => 100]);
         $this->assertTrue($message->isMQTT5());
-        $this->assertEquals($message->getProtocolLevel(), ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0);
+        $this->assertEquals(ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0, $message->getProtocolLevel());
 
         $message->setProtocolLevel(ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1);
         $this->assertTrue($message->isMQTT5());
-        $this->assertEquals($message->getProtocolLevel(), ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0);
+        $this->assertEquals(ProtocolInterface::MQTT_PROTOCOL_LEVEL_5_0, $message->getProtocolLevel());
     }
 }

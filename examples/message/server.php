@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-include __DIR__ . '/../bootstrap.php';
+include_once __DIR__ . '/../bootstrap.php';
 
 use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Protocol\V3;
@@ -35,7 +35,7 @@ $server->on('connect', function ($server, $fd) {
     echo "Client #{$fd}: Connect.\n";
 });
 
-$server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
+$server->on('receive', function (Swoole\Server $server, $fd, $reactorId, $data) {
     try {
         // debug
 //        Common::printf($data);
@@ -90,7 +90,7 @@ $server->on('receive', function (Swoole\Server $server, $fd, $from_id, $data) {
                     break;
                 case Types::SUBSCRIBE:
                     $payload = [];
-                    foreach ($data['topics'] as $k => $qos) {
+                    foreach ($data['topics'] as $qos) {
                         if (is_numeric($qos) && $qos < 3) {
                             $payload[] = $qos;
                         } else {
