@@ -33,10 +33,10 @@ jobs:
             swoole-version: 'v4.8.13'
           - os: ubuntu-latest
             php-version: '8.1'
-            swoole-version: 'v5.0.1'
+            swoole-version: 'v5.0.3'
           - os: ubuntu-latest
             php-version: '8.0'
-            swoole-version: 'v5.0.1'
+            swoole-version: 'v5.0.3'
       max-parallel: 15
       fail-fast: false
     env:
@@ -107,10 +107,10 @@ jobs:
             swoole-version: 'v4.8.13'
           - os: macos-latest
             php-version: '8.1'
-            swoole-version: 'v5.0.1'
+            swoole-version: 'v5.0.3'
           - os: macos-latest
             php-version: '8.0'
-            swoole-version: 'v5.0.1'
+            swoole-version: 'v5.0.3'
       max-parallel: 15
       fail-fast: false
     env:
