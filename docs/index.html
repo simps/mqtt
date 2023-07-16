@@ -78,6 +78,11 @@
   <script src="//unpkg.com/docsify-copy-code@2/dist/docsify-copy-code.min.js"></script>
   <script>
     var _hmt = _hmt || [];
+    _hmt.push(['_requirePlugin', 'UrlChangeTracker', {
+      shouldTrackUrlChange: function (newPath, oldPath) {
+        return newPath && oldPath;
+      }}
+    ]);
     (function() {
       var hm = document.createElement("script");
       hm.src = "https://hm.baidu.com/hm.js?e451f878e32de0e912cbbd4887bf43aa";
