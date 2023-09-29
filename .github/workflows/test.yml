@@ -47,12 +47,11 @@ jobs:
       - name: Setup Dependencies
         env:
           COMPOSER_ROOT_VERSION: 2.x-dev
-          PHP_CS_FIXER_IGNORE_ENV: true
         run:
           composer install -o
 
       - name: Coding Standards Check
-        if: matrix.php-version != '8.1'
+        if: matrix.php-version != '8.2'
         run: |
           composer cs-check
 
@@ -105,12 +104,11 @@ jobs:
       - name: Setup Dependencies
         env:
           COMPOSER_ROOT_VERSION: 2.x-dev
-          PHP_CS_FIXER_IGNORE_ENV: true
         run:
           composer install -o
 
       - name: Coding Standards Check
-        if: matrix.php-version != '8.1'
+        if: matrix.php-version != '8.2'
         run: |
           composer cs-check
 
