@@ -47,6 +47,7 @@ jobs:
       - name: Setup Dependencies
         env:
           COMPOSER_ROOT_VERSION: 2.x-dev
+          PHP_CS_FIXER_IGNORE_ENV: true
         run:
           composer install -o
 
@@ -104,6 +105,7 @@ jobs:
       - name: Setup Dependencies
         env:
           COMPOSER_ROOT_VERSION: 2.x-dev
+          PHP_CS_FIXER_IGNORE_ENV: true
         run:
           composer install -o
 
