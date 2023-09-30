@@ -13,30 +13,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        php-version: ['7.2', '7.3', '7.4', '8.0']
-        swoole-version: ['v4.4.26', 'v4.5.11', 'v4.6.7', 'v4.7.1', 'v4.8.13', 'master']
-        exclude:
-            - php-version: '8.0'
-              swoole-version: 'v4.4.26'
-            - php-version: '7.2'
-              swoole-version: 'master'
-            - php-version: '7.3'
-              swoole-version: 'master'
-            - php-version: '7.4'
-              swoole-version: 'master'
-        include:
-          - os: ubuntu-latest
-            php-version: '8.1'
-            swoole-version: 'master'
-          - os: ubuntu-latest
-            php-version: '8.1'
-            swoole-version: 'v4.8.13'
-          - os: ubuntu-latest
-            php-version: '8.1'
-            swoole-version: 'v5.0.3'
-          - os: ubuntu-latest
-            php-version: '8.0'
-            swoole-version: 'v5.0.3'
+        php-version: [ '8.0', '8.1', '8.2' ]
+        swoole-version: [ 'v4.8.13', 'v5.1.0', 'master' ]
       max-parallel: 15
       fail-fast: false
     env:
@@ -73,7 +51,7 @@ jobs:
           composer install -o
 
       - name: Coding Standards Check
-        if: matrix.php-version != '8.1'
+        if: matrix.php-version != '8.2'
         run: |
           composer cs-check
 
@@ -87,30 +65,8 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest]
-        php-version: ['7.2', '7.3', '7.4', '8.0']
-        swoole-version: ['v4.4.26', 'v4.5.11', 'v4.6.7', 'v4.7.1', 'v4.8.13', 'master']
-        exclude:
-          - php-version: '8.0'
-            swoole-version: 'v4.4.26'
-          - php-version: '7.2'
-            swoole-version: 'master'
-          - php-version: '7.3'
-            swoole-version: 'master'
-          - php-version: '7.4'
-            swoole-version: 'master'
-        include:
-          - os: macos-latest
-            php-version: '8.1'
-            swoole-version: 'master'
-          - os: macos-latest
-            php-version: '8.1'
-            swoole-version: 'v4.8.13'
-          - os: macos-latest
-            php-version: '8.1'
-            swoole-version: 'v5.0.3'
-          - os: macos-latest
-            php-version: '8.0'
-            swoole-version: 'v5.0.3'
+        php-version: [ '8.0', '8.1', '8.2' ]
+        swoole-version: [ 'v4.8.13', 'v5.1.0', 'master' ]
       max-parallel: 15
       fail-fast: false
     env:
@@ -152,7 +108,7 @@ jobs:
           composer install -o
 
       - name: Coding Standards Check
-        if: matrix.php-version != '8.1'
+        if: matrix.php-version != '8.2'
         run: |
           composer cs-check
 
