@@ -1,0 +1,47 @@
+#!/usr/bin/env php
+<?php
+
+include 'vendor/autoload.php';
+
+use Symfony\Component\Finder\Finder;
+
+$files = Finder::create()
+    ->in(dirname(__DIR__))
+    ->exclude(['bin', 'docs', 'tests', 'examples'])
+    ->ignoreDotFiles(true)
+    ->ignoreVCSIgnored(true)
+    ->notName(['test.php', 'code.txt'])
+    ->name('*.php')
+    ->sortByName()
+    ->files();
+
+file_put_contents('code.txt', '');
+
+foreach ($files as $file) {
+    file_put_contents('code.txt', removeCommentsAndEmptyLines($file), FILE_APPEND);
+}
+
+function removeCommentsAndEmptyLines($filePath)
+{
+    $cleanCode = '';
+    $fileLines = file($filePath);
+
+    foreach ($fileLines as $line) {
+        $trimmedLine = trim($line);
+
+        // Skip comment lines
+        if (strpos($trimmedLine, '//') === 0 || strpos($trimmedLine, '/*') === 0 || strpos(
+                $trimmedLine,
+                '*'
+            ) === 0 || strpos($trimmedLine, '*/') === 0) {
+            continue;
+        }
+
+        // Skip empty lines
+        if ($trimmedLine !== '') {
+            $cleanCode .= $line;
+        }
+    }
+
+    return $cleanCode;
+}
