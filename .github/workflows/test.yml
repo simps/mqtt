@@ -12,16 +12,19 @@ jobs:
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        php-version: [ '8.0', '8.1', '8.2' ]
-        swoole-version: [ 'v4.8.13', 'v5.1.0', 'master' ]
+        os: [ ubuntu-latest ]
+        php-version: [ '8.0', '8.1', '8.2', '8.3' ]
+        swoole-version: [ 'v4.8.13', 'v5.1.1', 'master' ]
+        exclude:
+          - php-version: '8.3'
+            swoole-version: 'v4.8.13'
       max-parallel: 15
       fail-fast: false
     env:
       SWOOLE_VERSION: ${{ matrix.swoole-version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -51,7 +54,7 @@ jobs:
           composer install -o
 
       - name: Coding Standards Check
-        if: matrix.php-version != '8.2'
+        if: matrix.php-version == '8.1'
         run: |
           composer cs-check
 
@@ -64,16 +67,19 @@ jobs:
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
-        os: [macos-latest]
-        php-version: [ '8.0', '8.1', '8.2' ]
-        swoole-version: [ 'v4.8.13', 'v5.1.0', 'master' ]
+        os: [ macos-latest ]
+        php-version: [ '8.0', '8.1', '8.2', '8.3' ]
+        swoole-version: [ 'v4.8.13', 'v5.1.1', 'master' ]
+        exclude:
+          - php-version: '8.3'
+            swoole-version: 'v4.8.13'
       max-parallel: 15
       fail-fast: false
     env:
       SWOOLE_VERSION: ${{ matrix.swoole-version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -108,7 +114,7 @@ jobs:
           composer install -o
 
       - name: Coding Standards Check
-        if: matrix.php-version != '8.2'
+        if: matrix.php-version == '8.1'
         run: |
           composer cs-check
 
