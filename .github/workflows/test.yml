@@ -18,6 +18,8 @@ jobs:
         exclude:
           - php-version: '8.3'
             swoole-version: 'v4.8.13'
+          - php-version: '8.0'
+            swoole-version: 'master'
       max-parallel: 15
       fail-fast: false
     env:
@@ -73,6 +75,8 @@ jobs:
         exclude:
           - php-version: '8.3'
             swoole-version: 'v4.8.13'
+          - php-version: '8.0'
+            swoole-version: 'master'
       max-parallel: 15
       fail-fast: false
     env:
@@ -89,20 +93,16 @@ jobs:
           ini-values: extension=swoole
           coverage: none
 
-      - name: Install Swoole Dependencies
-        run: |
-          brew install openssl
-          brew link openssl
-
       - name: Build Swoole
         run: |
+          export CPPFLAGS="$CPPFLAGS -I$(brew --prefix pcre2)/include -L$(brew --prefix pcre2)/lib"
           wget https://github.com/swoole/swoole-src/archive/${SWOOLE_VERSION}.tar.gz -O swoole.tar.gz
           mkdir -p swoole
           tar -xf swoole.tar.gz -C swoole --strip-components=1
           rm swoole.tar.gz
           cd swoole
           phpize
-          ./configure --enable-openssl --with-openssl-dir=/usr/local/opt/openssl@1.1 --enable-mysqlnd --enable-http2
+          ./configure --enable-openssl --with-openssl-dir=$(brew --prefix openssl) --enable-mysqlnd --enable-http2
           make -j$(sysctl -n hw.logicalcpu)
           sudo make install
           php --ri swoole
