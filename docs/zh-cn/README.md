@@ -22,7 +22,7 @@ composer require simps/mqtt
 
 ## 关注
 
-![](https://fastly.jsdelivr.net/gh/sy-records/staticfile/images/202012/wechat_white.png)
+![](https://cdn.jsdelivr.net/gh/sy-records/staticfile/images/202012/wechat_white.png)
 
 ## 赞赏 :id=donate
 
