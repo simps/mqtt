@@ -26,7 +26,7 @@ abstract class AbstractMessage
             $methodName = 'set' . ucfirst($k);
             if (method_exists($this, $methodName)) {
                 $this->{$methodName}($v);
-            } else {
+            } elseif (isset($this->{$k})) {
                 $this->{$k} = $v;
             }
         }
