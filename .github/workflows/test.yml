@@ -6,6 +6,10 @@ on:
   schedule:
     - cron: '11 2 * * 1'
 
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   linux:
     name: PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} Test on Linux
@@ -14,7 +18,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         php-version: [ '8.0', '8.1', '8.2', '8.3' ]
-        swoole-version: [ 'v4.8.13', 'v5.1.4', 'master' ]
+        swoole-version: [ 'v4.8.13', 'v5.1.5', 'master' ]
         exclude:
           - php-version: '8.3'
             swoole-version: 'v4.8.13'
@@ -71,7 +75,7 @@ jobs:
       matrix:
         os: [ macos-latest ]
         php-version: [ '8.0', '8.1', '8.2', '8.3' ]
-        swoole-version: [ 'v4.8.13', 'v5.1.4', 'master' ]
+        swoole-version: [ 'v4.8.13', 'v5.1.5', 'master' ]
         exclude:
           - php-version: '8.3'
             swoole-version: 'v4.8.13'
