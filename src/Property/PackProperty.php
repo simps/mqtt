@@ -27,6 +27,7 @@ class PackProperty
                 $tmpBody .= chr($property);
                 switch ($property) {
                     case Property::SESSION_EXPIRY_INTERVAL:
+                    case Property::MAXIMUM_PACKET_SIZE:
                         $tmpBody .= PackTool::longInt($item);
                         break;
                     case Property::AUTHENTICATION_METHOD:
@@ -39,7 +40,6 @@ class PackProperty
                         break;
                     case Property::RECEIVE_MAXIMUM:
                     case Property::TOPIC_ALIAS_MAXIMUM:
-                    case Property::MAXIMUM_PACKET_SIZE:
                         $tmpBody .= PackTool::shortInt($item);
                         break;
                 }
