@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+concurrency:
+  group: phpstan-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tests:
     name: PHP${{ matrix.php-version }} Static Code Analysis on Linux
