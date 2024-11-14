@@ -28,6 +28,7 @@ class UnPackProperty
                 $remaining = substr($remaining, 1);
                 switch ($property) {
                     case Property::SESSION_EXPIRY_INTERVAL:
+                    case Property::MAXIMUM_PACKET_SIZE:
                         $properties[$key] = UnPackTool::longInt($remaining);
                         $length -= 5;
                         break;
@@ -44,7 +45,6 @@ class UnPackProperty
                         break;
                     case Property::RECEIVE_MAXIMUM:
                     case Property::TOPIC_ALIAS_MAXIMUM:
-                    case Property::MAXIMUM_PACKET_SIZE:
                         $properties[$key] = UnPackTool::shortInt($remaining);
                         $length -= 3;
                         break;
