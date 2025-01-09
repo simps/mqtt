@@ -62,6 +62,7 @@ class UnPackV5
             'user_name' => $userName,
             'password' => $password,
             'keep_alive' => $keepAlive,
+            'client_id' => $clientId,
         ];
 
         if ($propertiesTotalLength) {
@@ -69,8 +70,6 @@ class UnPackV5
         } else {
             unset($package['properties']);
         }
-
-        $package['client_id'] = $clientId;
 
         if ($willFlag) {
             if ($willPropertiesTotalLength) {

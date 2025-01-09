@@ -18,10 +18,17 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         php-version: [ '8.0', '8.1', '8.2', '8.3' ]
-        swoole-version: [ 'v4.8.13', 'v5.1.5', 'master' ]
+        swoole-version: [ 'v4.8.13', 'v5.1.6', 'v6.0.0', 'master' ]
+        include:
+          - php-version: '8.4'
+            swoole-version: 'v6.0.0'
+          - php-version: '8.4'
+            swoole-version: 'master'
         exclude:
           - php-version: '8.3'
             swoole-version: 'v4.8.13'
+          - php-version: '8.0'
+            swoole-version: 'v6.0.0'
           - php-version: '8.0'
             swoole-version: 'master'
       max-parallel: 15
@@ -48,7 +55,7 @@ jobs:
           rm swoole.tar.gz
           cd swoole
           phpize
-          ./configure --enable-openssl --enable-mysqlnd --enable-http2
+          ./configure --enable-openssl --enable-http2
           make -j$(nproc)
           sudo make install
           php --ri swoole
@@ -75,10 +82,17 @@ jobs:
       matrix:
         os: [ macos-latest ]
         php-version: [ '8.0', '8.1', '8.2', '8.3' ]
-        swoole-version: [ 'v4.8.13', 'v5.1.5', 'master' ]
+        swoole-version: [ 'v4.8.13', 'v5.1.6', 'v6.0.0', 'master' ]
+        include:
+          - php-version: '8.4'
+            swoole-version: 'v6.0.0'
+          - php-version: '8.4'
+            swoole-version: 'master'
         exclude:
           - php-version: '8.3'
             swoole-version: 'v4.8.13'
+          - php-version: '8.0'
+            swoole-version: 'v6.0.0'
           - php-version: '8.0'
             swoole-version: 'master'
       max-parallel: 15
@@ -106,7 +120,7 @@ jobs:
           rm swoole.tar.gz
           cd swoole
           phpize
-          ./configure --enable-openssl --with-openssl-dir=$(brew --prefix openssl) --enable-mysqlnd --enable-http2
+          ./configure --enable-openssl --with-openssl-dir=$(brew --prefix openssl) --enable-http2
           make -j$(sysctl -n hw.logicalcpu)
           sudo make install
           php --ri swoole
