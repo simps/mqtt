@@ -19,11 +19,6 @@ jobs:
         os: [ubuntu-latest, macos-latest]
         php-version: [ '8.0', '8.1', '8.2', '8.3' ]
         swoole-version: [ 'v4.8.13', 'v5.1.6', 'v6.0.0', 'master' ]
-        include:
-          - php-version: '8.4'
-            swoole-version: 'v6.0.0'
-          - php-version: '8.4'
-            swoole-version: 'master'
         exclude:
           - php-version: '8.3'
             swoole-version: 'v4.8.13'
