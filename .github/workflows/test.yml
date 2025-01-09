@@ -22,10 +22,8 @@ jobs:
         include:
           - php-version: '8.4'
             swoole-version: 'v6.0.0'
-            os: ${{ matrix.os }}
           - php-version: '8.4'
             swoole-version: 'master'
-            os: ${{ matrix.os }}
         exclude:
           - php-version: '8.3'
             swoole-version: 'v4.8.13'
