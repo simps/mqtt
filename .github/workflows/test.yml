@@ -2,7 +2,12 @@ name: PHPUnit for MQTT
 
 on:
   push:
+    branches:
+      - master
+      - ci
   pull_request:
+    branches:
+      - master
   schedule:
     - cron: '11 2 * * 1'
 
@@ -11,20 +16,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  linux:
-    name: PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} Test on Linux
-    runs-on: "${{ matrix.os }}"
+  test:
+    name: PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
-        php-version: [ '8.0', '8.1', '8.2', '8.3' ]
-        swoole-version: [ 'v4.8.13', 'v5.1.5', 'master' ]
+        os: [ubuntu-latest, macos-latest]
+        php-version: [ '8.0', '8.1', '8.2', '8.3', '8.4' ]
+        swoole-version: [ 'v4.8.13', 'v5.1.6', 'v6.0.0', 'master' ]
         exclude:
+          - php-version: '8.4'
+            swoole-version: 'v5.1.6'
+          - php-version: '8.4'
+            swoole-version: 'v4.8.13'
           - php-version: '8.3'
             swoole-version: 'v4.8.13'
           - php-version: '8.0'
+            swoole-version: 'v6.0.0'
+          - php-version: '8.0'
             swoole-version: 'master'
-      max-parallel: 15
+      max-parallel: 10
       fail-fast: false
     env:
       SWOOLE_VERSION: ${{ matrix.swoole-version }}
@@ -42,86 +53,39 @@ jobs:
 
       - name: Build Swoole
         run: |
-          wget https://github.com/swoole/swoole-src/archive/${SWOOLE_VERSION}.tar.gz -O swoole.tar.gz
-          mkdir -p swoole
-          tar -xf swoole.tar.gz -C swoole --strip-components=1
-          rm swoole.tar.gz
-          cd swoole
-          phpize
-          ./configure --enable-openssl --enable-mysqlnd --enable-http2
-          make -j$(nproc)
-          sudo make install
-          php --ri swoole
+          if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            wget https://github.com/swoole/swoole-src/archive/${SWOOLE_VERSION}.tar.gz -O swoole.tar.gz
+            mkdir -p swoole
+            tar -xf swoole.tar.gz -C swoole --strip-components=1
+            rm swoole.tar.gz
+            cd swoole
+            phpize
+            ./configure --enable-openssl --enable-http2
+            make -j$(nproc)
+            sudo make install
+            php --ri swoole
+          else
+            export CPPFLAGS="$CPPFLAGS -I$(brew --prefix pcre2)/include -L$(brew --prefix pcre2)/lib"
+            wget https://github.com/swoole/swoole-src/archive/${SWOOLE_VERSION}.tar.gz -O swoole.tar.gz
+            mkdir -p swoole
+            tar -xf swoole.tar.gz -C swoole --strip-components=1
+            rm swoole.tar.gz
+            cd swoole
+            phpize
+            ./configure --enable-openssl --with-openssl-dir=$(brew --prefix openssl) --enable-http2
+            make -j$(sysctl -n hw.logicalcpu)
+            sudo make install
+            php --ri swoole
+          fi
 
       - name: Setup Dependencies
         env:
           COMPOSER_ROOT_VERSION: 1.x-dev
-        run:
-          composer install -o
+        run: composer install -o
 
       - name: Coding Standards Check
         if: matrix.php-version == '8.1'
-        run: |
-          composer cs-check
+        run: composer cs-check
 
       - name: Run Test Cases
-        run: |
-          composer test
-
-  macos:
-    name: PHP${{ matrix.php-version }} Swoole-${{ matrix.swoole-version }} Test on macOS
-    runs-on: "${{ matrix.os }}"
-    strategy:
-      matrix:
-        os: [ macos-latest ]
-        php-version: [ '8.0', '8.1', '8.2', '8.3' ]
-        swoole-version: [ 'v4.8.13', 'v5.1.5', 'master' ]
-        exclude:
-          - php-version: '8.3'
-            swoole-version: 'v4.8.13'
-          - php-version: '8.0'
-            swoole-version: 'master'
-      max-parallel: 15
-      fail-fast: false
-    env:
-      SWOOLE_VERSION: ${{ matrix.swoole-version }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-version }}
-          tools: phpize
-          ini-values: extension=swoole
-          coverage: none
-
-      - name: Build Swoole
-        run: |
-          export CPPFLAGS="$CPPFLAGS -I$(brew --prefix pcre2)/include -L$(brew --prefix pcre2)/lib"
-          wget https://github.com/swoole/swoole-src/archive/${SWOOLE_VERSION}.tar.gz -O swoole.tar.gz
-          mkdir -p swoole
-          tar -xf swoole.tar.gz -C swoole --strip-components=1
-          rm swoole.tar.gz
-          cd swoole
-          phpize
-          ./configure --enable-openssl --with-openssl-dir=$(brew --prefix openssl) --enable-mysqlnd --enable-http2
-          make -j$(sysctl -n hw.logicalcpu)
-          sudo make install
-          php --ri swoole
-
-      - name: Setup Dependencies
-        env:
-          COMPOSER_ROOT_VERSION: 1.x-dev
-        run:
-          composer install -o
-
-      - name: Coding Standards Check
-        if: matrix.php-version == '8.1'
-        run: |
-          composer cs-check
-
-      - name: Run Test Cases
-        run: |
-          composer test
+        run: composer test
