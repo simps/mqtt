@@ -6,6 +6,8 @@
 
 支持 MQTT 协议 `3.1`、`3.1.1` 和 `5.0` 版本，支持`QoS 0`、`QoS 1`、`QoS 2`。
 
+支持 MQTT over WebSocket。
+
 > 首个支持 MQTT `5.0` 协议的 PHP library。
 
 [![License](https://poser.pugx.org/simps/mqtt/license)](LICENSE)

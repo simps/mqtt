@@ -4,6 +4,8 @@
 
 支持 MQTT 协议 `3.1`、`3.1.1` 和 `5.0` 版本，支持`QoS 0`、`QoS 1`、`QoS 2`。
 
+支持 MQTT over WebSocket。
+
 ## 依赖要求
 
 * PHP >= `7.1`

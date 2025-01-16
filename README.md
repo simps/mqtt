@@ -8,6 +8,8 @@ Support for MQTT protocol versions `3.1`, `3.1.1` and `5.0`.
 
 Support for `QoS 0`, `QoS 1`, `QoS 2`.
 
+Support for MQTT over WebSocket.
+
 > The first PHP library to support the MQTT `5.0` protocol.
 
 [![License](https://poser.pugx.org/simps/mqtt/license)](LICENSE)
