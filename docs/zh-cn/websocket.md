@@ -176,14 +176,6 @@ MQTT5 中新增的认证交换机制。
 Simps\MQTT\WebSocketClient->auth(int $code = ReasonCode::SUCCESS, array $properties = [])
 ```
 
-## recv()
-
-接收消息
-
-```php
-Simps\MQTT\WebSocketClient->recv(): bool|arary|string
-```
-
 ## send()
 
 发送消息
@@ -199,6 +191,14 @@ Simps\MQTT\WebSocketClient->send(array $data, $response = true)
 - 参数`bool $response`
 
 是否需要回执。如果为`true`，会调用一次`recv()`
+
+## recv()
+
+接收消息
+
+```php
+Simps\MQTT\WebSocketClient->recv(): bool|arary|string
+```
 
 ## ping()
 

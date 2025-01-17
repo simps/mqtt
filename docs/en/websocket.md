@@ -157,14 +157,6 @@ New AUTH type added in MQTT5. Authentication exchange.
 Simps\MQTT\WebSocketClient->auth(int $code = ReasonCode::SUCCESS, array $properties = [])
 ```
 
-## recv()
-
-Receive messages
-
-```php
-Simps\MQTT\WebSocketClient->recv(): bool|arary|string
-```
-
 ## send()
 
 Send messages
@@ -180,6 +172,14 @@ Simps\MQTT\WebSocketClient->send(array $data, $response = true)
 - `bool $response`
 
 Are acknowledgements required. If `true`, `recv()` is called once
+
+## recv()
+
+Receive messages
+
+```php
+Simps\MQTT\WebSocketClient->recv(): bool|arary|string
+```
 
 ## ping()
 
