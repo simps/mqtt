@@ -2,7 +2,7 @@
 
 ## __construct()
 
-Create a MQTT client instance
+Create an instance of the MQTT over WebSocket client
 
 ```php
 Simps\MQTT\WebSocketClient::__construct(string $host, int $port, ClientConfig $config, string $path = '/mqtt', bool $ssl = false)
