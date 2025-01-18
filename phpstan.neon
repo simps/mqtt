@@ -17,6 +17,8 @@ parameters:
 			paths:
 				- tests/*
 				- src/Client.php
+				- src/BaseClient.php
+				- src/WebSocketClient.php
 		-
 			message: '#Property \S+ has no type specified.#'
 			paths:

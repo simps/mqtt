@@ -13,29 +13,31 @@ declare(strict_types=1);
 namespace Simps\MQTT;
 
 use Simps\MQTT\Config\ClientConfig;
-use Swoole\Coroutine;
+use Swoole\Coroutine\Http\Client;
+use Swoole\Http\Status;
+use Swoole\WebSocket\Frame;
 
-class Client extends BaseClient
+class WebSocketClient extends BaseClient
 {
     public function __construct(
         string $host,
         int $port,
         ClientConfig $config,
-        int $clientType = self::COROUTINE_CLIENT_TYPE
+        string $path = '/mqtt',
+        bool $ssl = false
     ) {
         $this->setHost($host)
             ->setPort($port)
             ->setConfig($config)
-            ->setClientType($clientType);
+            ->setPath($path)
+            ->setSsl($ssl);
 
-        if ($this->isCoroutineClientType()) {
-            $client = new Coroutine\Client($config->getSockType());
-        } else {
-            $client = new \Swoole\Client($config->getSockType());
-        }
+        $client = new Client($host, $port, $ssl);
         $client->set($config->getSwooleConfig());
+        $client->setHeaders($config->getHeaders());
+        $upgrade = $client->upgrade($path);
         $this->setClient($client);
-        if (!$this->getClient()->connect($host, $port)) {
+        if (!$upgrade || $client->getStatusCode() !== Status::SWITCHING_PROTOCOLS) {
             $this->handleException();
         }
     }
@@ -51,7 +53,10 @@ class Client extends BaseClient
             }
             $this->sleep($delay);
             $this->getClient()->close();
-            $result = $this->getClient()->connect($this->getHost(), $this->getPort());
+            $upgrade = $this->getClient()->upgrade($this->getPath());
+            if ($upgrade && $this->getClient()->getStatusCode() === Status::SWITCHING_PROTOCOLS) {
+                $result = true;
+            }
             if ($maxAttempts > 0) {
                 $maxAttempts--;
             }
@@ -62,7 +67,7 @@ class Client extends BaseClient
     {
         $package = $this->getConfig()->isMQTT5() ? Protocol\V5::pack($data) : Protocol\V3::pack($data);
 
-        $this->getClient()->send($package);
+        $this->getClient()->push($package, WEBSOCKET_OPCODE_BINARY);
 
         if ($response) {
             return $this->recv();
@@ -74,7 +79,7 @@ class Client extends BaseClient
     public function recv()
     {
         $response = $this->getResponse();
-        if ($response === '' || !$this->getClient()->isConnected()) {
+        if ($response === false && $this->getClient()->errCode === 0) {
             $this->reConnect();
             $this->connect($this->getConnectData('clean_session') ?? true, $this->getConnectData('will') ?? []);
         } elseif ($response === false && $this->getClient()->errCode !== SOCKET_ETIMEDOUT) {
@@ -90,15 +95,14 @@ class Client extends BaseClient
 
     protected function getResponse()
     {
-        if ($this->isCoroutineClientType()) {
-            $response = $this->getClient()->recv();
-        } else {
-            $write = $error = [];
-            $read = [$this->getClient()];
-            $n = swoole_client_select($read, $write, $error);
-            $response = $n > 0 ? $this->getClient()->recv() : true;
+        $response = $this->getClient()->recv();
+        if ($response === false) {
+            return false;
+        }
+        if ($response instanceof Frame) {
+            return $response->data;
         }
 
-        return $response;
+        return true;
     }
 }

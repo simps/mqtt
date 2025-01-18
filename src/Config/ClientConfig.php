@@ -24,6 +24,11 @@ class ClientConfig extends AbstractConfig
         'open_mqtt_protocol' => true,
     ];
 
+    /** @var array */
+    protected $headers = [
+        'Sec-Websocket-Protocol' => 'mqtt',
+    ];
+
     /** @var string */
     protected $userName = '';
 
@@ -46,7 +51,7 @@ class ClientConfig extends AbstractConfig
     protected $delay = 3000;
 
     /** @var int */
-    protected $maxAttempts = -1;
+    protected $maxAttempts = 0;
 
     /** @var int */
     protected $sockType = SWOOLE_SOCK_TCP;
@@ -74,6 +79,18 @@ class ClientConfig extends AbstractConfig
     public function setSwooleConfig(array $config): self
     {
         $this->swooleConfig = array_merge($this->swooleConfig, $config);
+
+        return $this;
+    }
+
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    public function setHeaders(array $headers): self
+    {
+        $this->headers = array_merge($this->headers, $headers);
 
         return $this;
     }

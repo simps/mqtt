@@ -2,10 +2,10 @@
 
 ## __construct()
 
-Create a MQTT client instance
+Create an instance of the MQTT over WebSocket client
 
 ```php
-Simps\MQTT\Client::__construct(string $host, int $port, ClientConfig $config, int $clientType = Client::COROUTINE_CLIENT_TYPE)
+Simps\MQTT\WebSocketClient::__construct(string $host, int $port, ClientConfig $config, string $path = '/mqtt', bool $ssl = false)
 ```
 
 - `string $host`
@@ -19,6 +19,14 @@ Broker's port
 - `ClientConfig $config`
 
 ClientConfig object.
+
+- `string $path`
+
+WebSocket path, default is `/mqtt`
+
+- `bool $ssl`
+
+Whether to use SSL, default is `false`
 
 Example.
 
@@ -36,23 +44,15 @@ $config = [
     'swooleConfig' => []
 ];
 $configObj = new Simps\MQTT\Config\ClientConfig($config);
-$client = new Simps\MQTT\Client('127.0.0.1', 1883, $configObj);
+$client = new Simps\MQTT\WebSocketClient('broker.emqx.io', 8083, $configObj, '/mqtt');
 ```
-
-!> The Client will use the corresponding protocol resolution according to the `protocolLevel` set.
-
-- `int $clientType`
-
-Set the client type, use a Coroutine Client or a Sync Client, the default is Coroutine Client.
-
-Sync Client for Fpm|Apache environments, mainly for `publish` messages, set to `Client::SYNC_CLIENT_TYPE`.
 
 ## connect()
 
 Connect Broker
 
 ```php
-Simps\MQTT\Client->connect(bool $clean = true, array $will = [])
+Simps\MQTT\WebSocketClient->connect(bool $clean = true, array $will = [])
 ```
 
 - `bool $clean`
@@ -80,7 +80,7 @@ $will = [
 push a message to a topic
 
 ```php
-Simps\MQTT\Client->publish($topic, $message, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
+Simps\MQTT\WebSocketClient->publish($topic, $message, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
 ```
 
 ## subscribe()
@@ -88,7 +88,7 @@ Simps\MQTT\Client->publish($topic, $message, $qos = 0, $dup = 0, $retain = 0, ar
 Subscribe to one topic or multiple topics
 
 ```php
-Simps\MQTT\Client->subscribe(array $topics, array $properties = [])
+Simps\MQTT\WebSocketClient->subscribe(array $topics, array $properties = [])
 ```
 
 - `array $topics`
@@ -128,7 +128,7 @@ Optional in MQTT5
 Unsubscribe from a topic or multiple topics
 
 ```php
-Simps\MQTT\Client->unSubscribe(array $topics, array $properties = [])
+Simps\MQTT\WebSocketClient->unSubscribe(array $topics, array $properties = [])
 ```
 
 - `array $topics`
@@ -146,7 +146,7 @@ Optional in MQTT5
 Disconnect from Broker connect. The `DISCONNECT(14)` message is send to Broker
 
 ```php
-Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = [])
+Simps\MQTT\WebSocketClient->close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = [])
 ```
 
 ## auth()
@@ -154,7 +154,7 @@ Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $pr
 New AUTH type added in MQTT5. Authentication exchange.
 
 ```php
-Simps\MQTT\Client->auth(int $code = ReasonCode::SUCCESS, array $properties = [])
+Simps\MQTT\WebSocketClient->auth(int $code = ReasonCode::SUCCESS, array $properties = [])
 ```
 
 ## send()
@@ -162,7 +162,7 @@ Simps\MQTT\Client->auth(int $code = ReasonCode::SUCCESS, array $properties = [])
 Send messages
 
 ```php
-Simps\MQTT\Client->send(array $data, $response = true)
+Simps\MQTT\WebSocketClient->send(array $data, $response = true)
 ```
 
 - `array $data`
@@ -178,7 +178,7 @@ Are acknowledgements required. If `true`, `recv()` is called once
 Receive messages
 
 ```php
-Simps\MQTT\Client->recv(): bool|arary|string
+Simps\MQTT\WebSocketClient->recv(): bool|arary|string
 ```
 
 ## ping()
@@ -186,7 +186,7 @@ Simps\MQTT\Client->recv(): bool|arary|string
 Send a heartbeat
 
 ```php
-Simps\MQTT\Client->ping()
+Simps\MQTT\WebSocketClient->ping()
 ```
 
 ## buildMessageId()
@@ -194,7 +194,7 @@ Simps\MQTT\Client->ping()
 Generate MessageId
 
 ```php
-Simps\MQTT\Client->buildMessageId()
+Simps\MQTT\WebSocketClient->buildMessageId()
 ```
 
 ## genClientId()
@@ -202,13 +202,13 @@ Simps\MQTT\Client->buildMessageId()
 Generate ClientId
 
 ```php
-Simps\MQTT\Client::genClientID(string $prefix = 'Simps_')
+Simps\MQTT\WebSocketClient::genClientID(string $prefix = 'Simps_')
 ```
 
 ## getClient()
 
-Get an instance of `Swoole\Coroutine\Client` or `\Swoole\Client`
+Get an instance of `Swoole\Coroutine\Http\Client`
 
 ```php
-Simps\MQTT\Client->getClient()
+Simps\MQTT\WebSocketClient->getClient()
 ```

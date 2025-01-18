@@ -1,11 +1,11 @@
-# Client API
+# WebSocket Client API
 
 ## __construct()
 
-创建一个 MQTT 客户端实例
+创建一个 MQTT over WebSocket 客户端实例
 
 ```php
-Simps\MQTT\Client::__construct(string $host, int $port, ClientConfig $config, int $clientType = Client::COROUTINE_CLIENT_TYPE)
+Simps\MQTT\WebSocketClient::__construct(string $host, int $port, ClientConfig $config, string $path = '/mqtt', bool $ssl = false)
 ```
 
 - 参数`string $host`
@@ -18,7 +18,15 @@ Broker 的端口
 
 - 参数`ClientConfig $config`
 
-客户端配置对象。
+客户端配置对象
+
+- 参数`string $path`
+
+WebSocket 的路径，默认为`/mqtt`
+
+- 参数`bool $ssl`
+
+是否使用 SSL，默认为`false`
 
 示例：
 
@@ -36,23 +44,15 @@ $config = [
     'swooleConfig' => []
 ];
 $configObj = new Simps\MQTT\Config\ClientConfig($config);
-$client = new Simps\MQTT\Client('127.0.0.1', 1883, $configObj);
+$client = new Simps\MQTT\WebSocketClient('broker.emqx.io', 8083, $configObj, '/mqtt');
 ```
-
-!> Client 会根据设置的`protocolLevel`来使用对应的协议解析
-
-- 参数`int $clientType`
-
-设置客户端类型，使用协程 Client 还是同步阻塞 Client。默认为协程 Client。
-
-同步阻塞 Client 适用于 Fpm|Apache 环境，主要用于`publish`消息，设置为`Client::SYNC_CLIENT_TYPE`。
 
 ## connect()
 
 连接 Broker
 
 ```php
-Simps\MQTT\Client->connect(bool $clean = true, array $will = [])
+Simps\MQTT\WebSocketClient->connect(bool $clean = true, array $will = [])
 ```
 
 - 参数`bool $clean`
@@ -82,7 +82,7 @@ $will = [
 向某个主题发布一条消息
 
 ```php
-Simps\MQTT\Client->publish($topic, $message, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
+Simps\MQTT\WebSocketClient->publish($topic, $message, $qos = 0, $dup = 0, $retain = 0, array $properties = [])
 ```
 
 - 参数`$topic` 主题
@@ -97,7 +97,7 @@ Simps\MQTT\Client->publish($topic, $message, $qos = 0, $dup = 0, $retain = 0, ar
 订阅一个主题或者多个主题
 
 ```php
-Simps\MQTT\Client->subscribe(array $topics, array $properties = [])
+Simps\MQTT\WebSocketClient->subscribe(array $topics, array $properties = [])
 ```
 
 - 参数`array $topics`
@@ -139,7 +139,7 @@ $topics = [
 取消订阅一个主题或者多个主题
 
 ```php
-Simps\MQTT\Client->unSubscribe(array $topics, array $properties = [])
+Simps\MQTT\WebSocketClient->unSubscribe(array $topics, array $properties = [])
 ```
 
 - 参数`array $topics`
@@ -157,7 +157,7 @@ $topics = ['topic1', 'topic2'];
 正常断开与 Broker 的连接，`DISCONNECT(14)`报文会被发送到 Broker
 
 ```php
-Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = [])
+Simps\MQTT\WebSocketClient->close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = [])
 ```
 
 - 参数`int $code`
@@ -173,7 +173,7 @@ Simps\MQTT\Client->close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $pr
 MQTT5 中新增的认证交换机制。
 
 ```php
-Simps\MQTT\Client->auth(int $code = ReasonCode::SUCCESS, array $properties = [])
+Simps\MQTT\WebSocketClient->auth(int $code = ReasonCode::SUCCESS, array $properties = [])
 ```
 
 ## send()
@@ -181,7 +181,7 @@ Simps\MQTT\Client->auth(int $code = ReasonCode::SUCCESS, array $properties = [])
 发送消息
 
 ```php
-Simps\MQTT\Client->send(array $data, $response = true)
+Simps\MQTT\WebSocketClient->send(array $data, $response = true)
 ```
 
 - 参数`array $data`
@@ -197,7 +197,7 @@ Simps\MQTT\Client->send(array $data, $response = true)
 接收消息
 
 ```php
-Simps\MQTT\Client->recv(): bool|arary|string
+Simps\MQTT\WebSocketClient->recv(): bool|arary|string
 ```
 
 ## ping()
@@ -205,7 +205,7 @@ Simps\MQTT\Client->recv(): bool|arary|string
 发送心跳包
 
 ```php
-Simps\MQTT\Client->ping()
+Simps\MQTT\WebSocketClient->ping()
 ```
 
 ## buildMessageId()
@@ -213,7 +213,7 @@ Simps\MQTT\Client->ping()
 生成 MessageId
 
 ```php
-Simps\MQTT\Client->buildMessageId()
+Simps\MQTT\WebSocketClient->buildMessageId()
 ```
 
 ## genClientId()
@@ -221,13 +221,13 @@ Simps\MQTT\Client->buildMessageId()
 生成 ClientId
 
 ```php
-Simps\MQTT\Client::genClientID(string $prefix = 'Simps_')
+Simps\MQTT\WebSocketClient::genClientID(string $prefix = 'Simps_')
 ```
 
 ## getClient()
 
-获取 `Swoole\Coroutine\Client` 或 `\Swoole\Client` 的实例
+获取 `Swoole\Coroutine\Http\Client` 的实例
 
 ```php
-Simps\MQTT\Client->getClient()
+Simps\MQTT\WebSocketClient->getClient()
 ```
