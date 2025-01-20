@@ -13,8 +13,10 @@ declare(strict_types=1);
 namespace Simps\MQTT;
 
 use Simps\MQTT\Config\ClientConfig;
+use Simps\MQTT\Exception\ProtocolException;
 use Swoole\Coroutine\Http\Client;
 use Swoole\Http\Status;
+use Swoole\WebSocket\CloseFrame;
 use Swoole\WebSocket\Frame;
 
 class WebSocketClient extends BaseClient
@@ -96,10 +98,16 @@ class WebSocketClient extends BaseClient
     protected function getResponse()
     {
         $response = $this->getClient()->recv();
-        if ($response === false) {
+        if ($response === false || $response instanceof CloseFrame) {
             return false;
         }
         if ($response instanceof Frame) {
+            // If any other type of data frame is received the recipient MUST close the Network Connection.
+            if ($response->opcode !== WEBSOCKET_OPCODE_BINARY) {
+                $this->getClient()->close();
+                throw new ProtocolException('MQTT Control Packets MUST be sent in WebSocket binary data frames.');
+            }
+
             return $response->data;
         }
 
