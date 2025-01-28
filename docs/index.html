@@ -5,12 +5,13 @@
   <title>PHP MQTT | 协议解析和协程客户端</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="由 Simps 提供的适用于 PHP 的 MQTT 协议解析和协程客户端">
-  <meta name="keywords" content="mqtt,phpmqtt,mqtt3.1,mqtt5.0,mqtt客户端,mqtt协程客户端,mqtt协议,mqtt协议解析">
+  <meta name="keywords" content="mqtt,websocket,phpmqtt,mqtt3.1,mqtt5.0,mqtt客户端,mqtt协程客户端,mqtt协议,mqtt协议解析">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" href="//unpkg.com/docsify@4/themes/vue.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/sy-records/docsify-nightly@develop/dist/themes/core.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/sy-records/docsify-nightly@develop/dist/themes/addons/core-dark.min.css" media="(prefers-color-scheme: dark)" />
   <style>
-    .app-name-link img {
-      width: 50%;
+    :root {
+      --theme-color: #5C9DFF;
     }
   </style>
 </head>
@@ -18,13 +19,11 @@
   <div id="app"></div>
   <script>
     window.$docsify = {
-      name: 'MQTT',
+      name: 'PHP MQTT',
       repo: 'simps/mqtt',
       homepage: 'zh-cn/README.md',
       loadSidebar: true,
       subMaxLevel: 3,
-      logo: 'https://raw.githubusercontent.com/sy-records/staticfile/master/images/simps.png',
-      themeColor: '#5C9DFF',
       loadNavbar: true,
       auto2top: true,
       coverpage: true,
@@ -65,14 +64,13 @@
           }),
           hook.doneEach(function () {
             pangu.spacingElementByClassName('content')
-            if (document.location.hash !== '#/') document.title += ' | PHP MQTT'
           })
         }
       ],
     }
   </script>
-  <script src="//unpkg.com/docsify@4/lib/docsify.min.js"></script>
-  <script src="//unpkg.com/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/sy-records/docsify-nightly@develop/dist/docsify.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/sy-records/docsify-nightly@develop/dist/plugins/search.min.js"></script>
   <script src="//unpkg.com/prismjs/components/prism-php.min.js"></script>
   <script src="//unpkg.com/pangu@4.0.7/dist/browser/pangu.min.js"></script>
   <script src="//unpkg.com/docsify-copy-code@2/dist/docsify-copy-code.min.js"></script>
