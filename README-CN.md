@@ -19,6 +19,7 @@
 [![GitHub Actions](https://github.com/simps/mqtt/workflows/PHPUnit%20for%20MQTT/badge.svg)](https://github.com/simps/mqtt/actions)
 [![Static Code Analysis](https://github.com/simps/mqtt/actions/workflows/phpstan.yml/badge.svg)](https://github.com/simps/mqtt/actions/workflows/phpstan.yml)
 [![Gitee Star](https://gitee.com/phpmqtt/mqtt/badge/star.svg?theme=dark)](https://gitee.com/phpmqtt/mqtt/stargazers)
+[![GitCode Star](https://gitcode.com/simps/mqtt/star/badge.svg)](https://gitcode.com/simps/mqtt/stargazers)
 [![MQTT 交流群](https://img.shields.io/badge/QQ%E7%BE%A4-983679945-orange)](https://go.qq52o.me/qm/mqtt)
 
 ## 安装
