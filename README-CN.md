@@ -8,6 +8,7 @@
 
 支持 MQTT over WebSocket。
 
+> [!IMPORTANT]
 > 首个支持 MQTT `5.0` 协议的 PHP library。
 
 [![License](https://poser.pugx.org/simps/mqtt/license)](LICENSE)
