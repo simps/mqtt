@@ -22,18 +22,24 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        php-version: [ '8.0', '8.1', '8.2', '8.3', '8.4' ]
-        swoole-version: [ 'v4.8.13', 'v5.1.8', 'v6.1.1', 'master' ]
+        php-version: [ '8.1', '8.2', '8.3', '8.4', '8.5' ]
+        swoole-version: [ 'v4.8.13', 'v5.1.8', 'v6.1.4', 'master' ]
         exclude:
+          - php-version: '8.5'
+            swoole-version: 'v6.1.4'
+          - php-version: '8.5'
+            swoole-version: 'v5.1.8'
+          - php-version: '8.5'
+            swoole-version: 'v4.8.13'
           - php-version: '8.4'
             swoole-version: 'v5.1.8'
           - php-version: '8.4'
             swoole-version: 'v4.8.13'
           - php-version: '8.3'
             swoole-version: 'v4.8.13'
-          - php-version: '8.0'
-            swoole-version: 'v6.1.1'
-          - php-version: '8.0'
+          - php-version: '8.1'
+            swoole-version: 'v6.1.4'
+          - php-version: '8.1'
             swoole-version: 'master'
       max-parallel: 10
       fail-fast: false
@@ -41,7 +47,7 @@ jobs:
       SWOOLE_VERSION: ${{ matrix.swoole-version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
