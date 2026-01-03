@@ -23,10 +23,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         php-version: [ '8.1', '8.2', '8.3', '8.4', '8.5' ]
-        swoole-version: [ 'v4.8.13', 'v5.1.8', 'v6.1.5', 'master' ]
+        swoole-version: [ 'v4.8.13', 'v5.1.8', 'v6.1.6', 'master' ]
         exclude:
           - php-version: '8.5'
-            swoole-version: 'v6.1.5'
+            swoole-version: 'v6.1.6'
           - php-version: '8.5'
             swoole-version: 'v5.1.8'
           - php-version: '8.5'
