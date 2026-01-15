@@ -205,8 +205,10 @@ Simps\MQTT\Client->recv(): bool|arary|string
 发送心跳包
 
 ```php
-Simps\MQTT\Client->ping()
+Simps\MQTT\Client->ping(bool $response = true)
 ```
+
+- 参数`$response` 是否需要回执。如果为`true`，会调用一次`recv()`
 
 ## buildMessageId()
 

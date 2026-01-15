@@ -186,8 +186,12 @@ Simps\MQTT\WebSocketClient->recv(): bool|arary|string
 Send a heartbeat
 
 ```php
-Simps\MQTT\WebSocketClient->ping()
+Simps\MQTT\WebSocketClient->ping(bool $response = true)
 ```
+
+- `bool $response`
+
+Whether a response is required. If `true`, `recv()` is called once
 
 ## buildMessageId()
 
