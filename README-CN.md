@@ -17,7 +17,7 @@
 [![PHP Version](https://img.shields.io/badge/php-%3E=7.1-blue.svg)](https://www.php.net)
 [![Swoole Version](https://img.shields.io/badge/swoole-%3E=4.4.20-blue.svg)](https://github.com/swoole/swoole-src)
 
-[![GitHub Actions](https://github.com/simps/mqtt/workflows/PHPUnit%20for%20MQTT/badge.svg)](https://github.com/simps/mqtt/actions)
+[![PHPUnit for MQTT](https://github.com/simps/mqtt/actions/workflows/test.yml/badge.svg)](https://github.com/simps/mqtt/actions/workflows/test.yml)
 [![Static Code Analysis](https://github.com/simps/mqtt/actions/workflows/phpstan.yml/badge.svg)](https://github.com/simps/mqtt/actions/workflows/phpstan.yml)
 [![Gitee Star](https://gitee.com/phpmqtt/mqtt/badge/star.svg?theme=dark)](https://gitee.com/phpmqtt/mqtt/stargazers)
 [![GitCode Star](https://gitcode.com/simps/mqtt/star/badge.svg)](https://gitcode.com/simps/mqtt/stargazers)
