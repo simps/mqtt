@@ -34,7 +34,7 @@ Coroutine\run(function () {
         ->setSwooleConfig($swooleConfig)
         ->setSockType(SWOOLE_SOCK_TCP | SWOOLE_SSL);
 
-    $client = new Client('test.mosquitto.org', 8883, $config);
+    $client = new Client(SIMPS_MQTT_MOSQUITTO, 8883, $config);
     $client->connect();
     $topics['testtopic/#'] = 0;
     $client->subscribe($topics);

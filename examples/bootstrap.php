@@ -38,6 +38,7 @@ const SWOOLE_MQTT_CONFIG = [
 
 const SIMPS_MQTT_LOCAL_HOST = '127.0.0.1';
 const SIMPS_MQTT_REMOTE_HOST = 'broker.emqx.io';
+const SIMPS_MQTT_MOSQUITTO = 'test.mosquitto.org';
 const SIMPS_MQTT_PORT = 1883;
 const SIMPS_MQTT_OVER_WEBSOCKET_PORT = 8083;
 
