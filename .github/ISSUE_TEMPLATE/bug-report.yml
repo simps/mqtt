@@ -1,0 +1,46 @@
+name: "🐛 Bug report"
+description: Create a report to help us improve
+labels:
+  - bug
+assignees:
+  - sy-records
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the bug and expected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Execute the command and paste the result below.
+
+        Command: `php -v && php --ri swoole`
+      render: bash
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducible-code
+    attributes:
+      label: Reproducible codes
+      description: Provide the minimum code needed to reproduce the issue.
+      placeholder: "# Paste your code here."
+      render: php
+    validations:
+      required: true
+
+  - type: textarea
+    id: packet-capture
+    attributes:
+      label: Optional packet capture logs
+      description: |
+        You can also provide tcpdump packet capture logs.
+        Example command: `tcpdump -i en0 port 1883 -w mqtt.pcap`
+        Please change the network card and port to match your environment, then attach `mqtt.pcap`.
+

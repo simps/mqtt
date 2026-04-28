@@ -1,0 +1,21 @@
+name: "🧐 Support Question"
+description: Ask for help
+labels:
+  - question
+assignees:
+  - sy-records
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Describe the problem or question you need help with.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Add relevant code snippets, logs, or environment details.
+
