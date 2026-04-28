@@ -21,8 +21,14 @@ use Simps\MQTT\Tools\UnPackTool;
 use Throwable;
 use TypeError;
 
+/**
+ * @phpstan-import-type PacketData from \Simps\MQTT\PhpStanTypes
+ */
 class V3 implements ProtocolInterface
 {
+    /**
+     * @param PacketData $array
+     */
     public static function pack(array $array): string
     {
         try {
@@ -76,6 +82,9 @@ class V3 implements ProtocolInterface
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function unpack(string $data): array
     {
         try {

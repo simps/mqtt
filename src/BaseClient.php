@@ -20,6 +20,14 @@ use Simps\MQTT\Tools\Common;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Http\Client as WebSocketClient;
 
+/**
+ * @phpstan-import-type ConnectData from \Simps\MQTT\PhpStanTypes
+ * @phpstan-import-type MqttProperties from \Simps\MQTT\PhpStanTypes
+ * @phpstan-import-type PacketData from \Simps\MQTT\PhpStanTypes
+ * @phpstan-import-type SubscribeTopics from \Simps\MQTT\PhpStanTypes
+ * @phpstan-import-type UnsubscribeTopics from \Simps\MQTT\PhpStanTypes
+ * @phpstan-import-type WillData from \Simps\MQTT\PhpStanTypes
+ */
 abstract class BaseClient
 {
     public const COROUTINE_CLIENT_TYPE = 1;
@@ -34,7 +42,7 @@ abstract class BaseClient
     /** @var int */
     private $messageId = 0;
 
-    /** @var array */
+    /** @var ConnectData */
     private $connectData = [];
 
     /** @var string */
@@ -155,6 +163,10 @@ abstract class BaseClient
         return $this->ssl;
     }
 
+    /**
+     * @param ConnectData $connectData
+     * @return $this
+     */
     public function setConnectData(array $connectData): self
     {
         $this->connectData = $connectData;
@@ -163,7 +175,7 @@ abstract class BaseClient
     }
 
     /**
-     * @return null|array|string
+     * @return ($key is null ? ConnectData : mixed|null)
      */
     public function getConnectData(?string $key = null)
     {
@@ -238,6 +250,9 @@ abstract class BaseClient
         throw new ConnectException($errMsg, $this->client->errCode);
     }
 
+    /**
+     * @param array{}|WillData $will
+     */
     public function connect(bool $clean = true, array $will = [])
     {
         $data = [
@@ -263,6 +278,10 @@ abstract class BaseClient
         return $this->send($data);
     }
 
+    /**
+     * @param SubscribeTopics $topics
+     * @param MqttProperties $properties
+     */
     public function subscribe(array $topics, array $properties = [])
     {
         return $this->send([
@@ -273,6 +292,10 @@ abstract class BaseClient
         ]);
     }
 
+    /**
+     * @param UnsubscribeTopics $topics
+     * @param MqttProperties $properties
+     */
     public function unSubscribe(array $topics, array $properties = [])
     {
         return $this->send([
@@ -283,6 +306,9 @@ abstract class BaseClient
         ]);
     }
 
+    /**
+     * @param MqttProperties $properties
+     */
     public function publish(
         string $topic,
         string $message,
@@ -329,6 +355,9 @@ abstract class BaseClient
         return $this->send(['type' => Protocol\Types::PINGREQ], $response);
     }
 
+    /**
+     * @param MqttProperties $properties
+     */
     public function close(int $code = ReasonCode::NORMAL_DISCONNECTION, array $properties = []): bool
     {
         $this->send(['type' => Protocol\Types::DISCONNECT, 'code' => $code, 'properties' => $properties], false);
@@ -336,6 +365,9 @@ abstract class BaseClient
         return $this->client->close();
     }
 
+    /**
+     * @param MqttProperties $properties
+     */
     public function auth(int $code = ReasonCode::SUCCESS, array $properties = [])
     {
         return $this->send(['type' => Protocol\Types::AUTH, 'code' => $code, 'properties' => $properties]);
@@ -343,6 +375,9 @@ abstract class BaseClient
 
     abstract protected function reConnect(): void;
 
+    /**
+     * @param PacketData $data
+     */
     abstract public function send(array $data, bool $response = true);
 
     abstract public function recv();

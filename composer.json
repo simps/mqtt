@@ -29,7 +29,7 @@
     "phpunit/phpunit": "^8.5",
     "swoole/ide-helper": ">=4.4.20",
     "simps/mqtt-cli": "*",
-    "phpstan/phpstan": "^1.0"
+    "phpstan/phpstan": "^2.0"
   },
   "suggest": {
     "ext-swoole": "The ext-swoole >= v4.4.20 or v4.5.3 needs to be loaded when using the MQTT Client."

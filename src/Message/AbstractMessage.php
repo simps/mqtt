@@ -14,12 +14,20 @@ namespace Simps\MQTT\Message;
 
 use Simps\MQTT\Protocol\ProtocolInterface;
 
+/**
+ * @phpstan-import-type MessageData from \Simps\MQTT\PhpStanTypes
+ * @phpstan-import-type MqttProperties from \Simps\MQTT\PhpStanTypes
+ */
 abstract class AbstractMessage
 {
     protected $protocolLevel = ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1;
 
+    /** @var MqttProperties */
     protected $properties = [];
 
+    /**
+     * @param MessageData $data
+     */
     public function __construct(array $data = [])
     {
         foreach ($data as $k => $v) {
@@ -48,11 +56,17 @@ abstract class AbstractMessage
         return $this;
     }
 
+    /**
+     * @return MqttProperties
+     */
     public function getProperties(): array
     {
         return $this->properties;
     }
 
+    /**
+     * @param MqttProperties $properties
+     */
     public function setProperties(array $properties): self
     {
         $this->properties = $properties;
@@ -67,6 +81,9 @@ abstract class AbstractMessage
 
     abstract public function getContents(bool $getArray = false);
 
+    /**
+     * @return MessageData
+     */
     public function toArray(): array
     {
         return $this->getContents(true);

@@ -12,6 +12,9 @@ declare(strict_types=1);
  */
 namespace Simps\MQTT\Protocol;
 
+/**
+ * @phpstan-import-type IntStringMap from \Simps\MQTT\PhpStanTypes
+ */
 class Types
 {
     public const CONNECT = 1; // Client request to connect to Server
@@ -44,7 +47,7 @@ class Types
 
     public const AUTH = 15; // Authentication exchange
 
-    /** @var array */
+    /** @var IntStringMap */
     protected static $types = [
         self::CONNECT => 'connect',
         self::CONNACK => 'connack',
@@ -62,6 +65,9 @@ class Types
         self::AUTH => 'auth',
     ];
 
+    /**
+     * @return IntStringMap
+     */
     public static function getTypes(): array
     {
         return static::$types;

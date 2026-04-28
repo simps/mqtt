@@ -14,17 +14,22 @@ namespace Simps\MQTT\Config;
 
 use Simps\MQTT\Protocol\ProtocolInterface;
 
+/**
+ * @phpstan-import-type ArrayMap from \Simps\MQTT\PhpStanTypes
+ * @phpstan-import-type StringMap from \Simps\MQTT\PhpStanTypes
+ * @phpstan-import-type MqttProperties from \Simps\MQTT\PhpStanTypes
+ */
 class ClientConfig extends AbstractConfig
 {
     /** @var string */
     protected $clientId = '';
 
-    /** @var array */
+    /** @var ArrayMap */
     protected $swooleConfig = [
         'open_mqtt_protocol' => true,
     ];
 
-    /** @var array */
+    /** @var StringMap */
     protected $headers = [
         'Sec-Websocket-Protocol' => 'mqtt',
     ];
@@ -44,7 +49,7 @@ class ClientConfig extends AbstractConfig
     /** @var int */
     protected $protocolLevel = ProtocolInterface::MQTT_PROTOCOL_LEVEL_3_1_1;
 
-    /** @var array */
+    /** @var MqttProperties */
     protected $properties = [];
 
     /** @var int */
@@ -71,11 +76,17 @@ class ClientConfig extends AbstractConfig
         return $this;
     }
 
+    /**
+     * @return ArrayMap
+     */
     public function getSwooleConfig(): array
     {
         return $this->swooleConfig;
     }
 
+    /**
+     * @param ArrayMap $config
+     */
     public function setSwooleConfig(array $config): self
     {
         $this->swooleConfig = array_merge($this->swooleConfig, $config);
@@ -83,11 +94,17 @@ class ClientConfig extends AbstractConfig
         return $this;
     }
 
+    /**
+     * @return StringMap
+     */
     public function getHeaders(): array
     {
         return $this->headers;
     }
 
+    /**
+     * @param StringMap $headers
+     */
     public function setHeaders(array $headers): self
     {
         $this->headers = array_merge($this->headers, $headers);
@@ -159,11 +176,17 @@ class ClientConfig extends AbstractConfig
         return $this;
     }
 
+    /**
+     * @return MqttProperties
+     */
     public function getProperties(): array
     {
         return $this->properties;
     }
 
+    /**
+     * @param MqttProperties $properties
+     */
     public function setProperties(array $properties): self
     {
         $this->properties = $properties;

@@ -15,8 +15,14 @@ namespace Simps\MQTT\Packet;
 use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Tools\UnPackTool;
 
+/**
+ * @phpstan-import-type PacketData from \Simps\MQTT\PhpStanTypes
+ */
 class UnPack
 {
+    /**
+     * @return PacketData
+     */
     public static function connect(string $remaining): array
     {
         $protocolName = UnPackTool::string($remaining);
@@ -66,11 +72,17 @@ class UnPack
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function connAck(string $remaining): array
     {
         return ['type' => Types::CONNACK, 'session_present' => ord($remaining[0]) & 0x01, 'code' => ord($remaining[1])];
     }
 
+    /**
+     * @return PacketData
+     */
     public static function publish(int $dup, int $qos, int $retain, string $remaining): array
     {
         $topic = UnPackTool::string($remaining);
@@ -92,6 +104,9 @@ class UnPack
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function subscribe(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
@@ -105,6 +120,9 @@ class UnPack
         return ['type' => Types::SUBSCRIBE, 'message_id' => $messageId, 'topics' => $topics];
     }
 
+    /**
+     * @return PacketData
+     */
     public static function subAck(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
@@ -113,6 +131,9 @@ class UnPack
         return ['type' => Types::SUBACK, 'message_id' => $messageId, 'codes' => array_values($codes)];
     }
 
+    /**
+     * @return PacketData
+     */
     public static function unSubscribe(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);

@@ -12,8 +12,14 @@ declare(strict_types=1);
  */
 namespace Simps\MQTT\Config;
 
+/**
+ * @phpstan-import-type ArrayMap from \Simps\MQTT\PhpStanTypes
+ */
 abstract class AbstractConfig
 {
+    /**
+     * @param ArrayMap $data
+     */
     public function __construct(array $data = [])
     {
         foreach ($data as $k => $v) {

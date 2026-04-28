@@ -16,8 +16,14 @@ use Simps\MQTT\Exception\InvalidArgumentException;
 use Simps\MQTT\Hex\Property;
 use Simps\MQTT\Tools\UnPackTool;
 
+/**
+ * @phpstan-import-type MqttProperties from \Simps\MQTT\PhpStanTypes
+ */
 class UnPackProperty
 {
+    /**
+     * @return MqttProperties
+     */
     public static function connect(int $length, string &$remaining): array
     {
         $properties = [];
@@ -66,6 +72,9 @@ class UnPackProperty
         return $properties;
     }
 
+    /**
+     * @return MqttProperties
+     */
     public static function willProperties(int $length, string &$remaining): array
     {
         $properties = [];
@@ -109,6 +118,9 @@ class UnPackProperty
         return $properties;
     }
 
+    /**
+     * @return MqttProperties
+     */
     public static function connAck(int $length, string &$remaining): array
     {
         $properties = [];
@@ -165,6 +177,9 @@ class UnPackProperty
         return $properties;
     }
 
+    /**
+     * @return MqttProperties
+     */
     public static function publish(int $length, string &$remaining): array
     {
         $properties = [];
@@ -216,6 +231,9 @@ class UnPackProperty
         return $properties;
     }
 
+    /**
+     * @return MqttProperties
+     */
     public static function pubAndSub(int $length, string &$remaining): array
     {
         $properties = [];
@@ -248,6 +266,9 @@ class UnPackProperty
         return $properties;
     }
 
+    /**
+     * @return MqttProperties
+     */
     public static function subscribe(int $length, string &$remaining): array
     {
         $properties = [];
@@ -280,6 +301,9 @@ class UnPackProperty
         return $properties;
     }
 
+    /**
+     * @return MqttProperties
+     */
     public static function unSubscribe(int $length, string &$remaining): array
     {
         $properties = [];
@@ -306,6 +330,9 @@ class UnPackProperty
         return $properties;
     }
 
+    /**
+     * @return MqttProperties
+     */
     public static function disConnect(int $length, string &$remaining): array
     {
         $properties = [];
@@ -343,6 +370,9 @@ class UnPackProperty
         return $properties;
     }
 
+    /**
+     * @return MqttProperties
+     */
     public static function auth(int $length, string &$remaining): array
     {
         $properties = [];

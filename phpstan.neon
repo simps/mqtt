@@ -1,7 +1,9 @@
+includes:
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+
 parameters:
 	level: 6
 	inferPrivatePropertyTypeFromConstructor: true
-	checkMissingIterableValueType: false
 	bootstrapFiles:
 		- examples/bootstrap.php
 	paths:

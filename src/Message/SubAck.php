@@ -16,10 +16,14 @@ use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Protocol\V3;
 use Simps\MQTT\Protocol\V5;
 
+/**
+ * @phpstan-import-type IntList from \Simps\MQTT\PhpStanTypes
+ */
 class SubAck extends AbstractMessage
 {
     protected $messageId = 0;
 
+    /** @var IntList */
     protected $codes = [];
 
     public function getMessageId(): int
@@ -34,11 +38,17 @@ class SubAck extends AbstractMessage
         return $this;
     }
 
+    /**
+     * @return IntList
+     */
     public function getCodes(): array
     {
         return $this->codes;
     }
 
+    /**
+     * @param IntList $codes
+     */
     public function setCodes(array $codes): self
     {
         $this->codes = $codes;

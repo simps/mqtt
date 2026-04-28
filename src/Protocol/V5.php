@@ -18,8 +18,14 @@ use Simps\MQTT\Packet\UnPackV5;
 use Simps\MQTT\Tools\PackTool;
 use Simps\MQTT\Tools\UnPackTool;
 
+/**
+ * @phpstan-import-type PacketData from \Simps\MQTT\PhpStanTypes
+ */
 class V5 implements ProtocolInterface
 {
+    /**
+     * @param PacketData $array
+     */
     public static function pack(array $array): string
     {
         $type = $array['type'];
@@ -68,6 +74,9 @@ class V5 implements ProtocolInterface
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function unpack(string $data): array
     {
         $type = UnPackTool::getType($data);

@@ -12,6 +12,9 @@ declare(strict_types=1);
  */
 namespace Simps\MQTT\Protocol;
 
+/**
+ * @phpstan-import-type PacketData from \Simps\MQTT\PhpStanTypes
+ */
 interface ProtocolInterface
 {
     public const MQTT_PROTOCOL_LEVEL_3_1 = 3;
@@ -44,7 +47,13 @@ interface ProtocolInterface
 
     public const MQTT_SESSION_PRESENT_1 = 1;
 
+    /**
+     * @param PacketData $array
+     */
     public static function pack(array $array): string;
 
+    /**
+     * @return PacketData
+     */
     public static function unpack(string $data): array;
 }

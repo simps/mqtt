@@ -79,7 +79,7 @@ class Client extends BaseClient
             $this->connect($this->getConnectData('clean_session') ?? true, $this->getConnectData('will') ?? []);
         } elseif ($response === false && $this->getClient()->errCode !== SOCKET_ETIMEDOUT) {
             $this->handleException();
-        } elseif (is_string($response) && strlen($response) !== 0) {
+        } elseif (is_string($response)) {
             $this->handleVerbose($response);
 
             return $this->getConfig()->isMQTT5() ? Protocol\V5::unpack($response) : Protocol\V3::unpack($response);

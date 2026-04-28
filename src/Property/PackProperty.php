@@ -15,8 +15,14 @@ namespace Simps\MQTT\Property;
 use Simps\MQTT\Hex\Property;
 use Simps\MQTT\Tools\PackTool;
 
+/**
+ * @phpstan-import-type MqttProperties from \Simps\MQTT\PhpStanTypes
+ */
 class PackProperty
 {
+    /**
+     * @param MqttProperties $data
+     */
     public static function connect(array $data): string
     {
         $tmpBody = '';
@@ -53,6 +59,9 @@ class PackProperty
         return PackTool::genProperties($tmpBody);
     }
 
+    /**
+     * @param MqttProperties $data
+     */
     public static function willProperties(array $data): string
     {
         $tmpBody = '';
@@ -85,6 +94,9 @@ class PackProperty
         return PackTool::genProperties($tmpBody);
     }
 
+    /**
+     * @param MqttProperties $data
+     */
     public static function connAck(array $data): string
     {
         $tmpBody = '';
@@ -129,6 +141,9 @@ class PackProperty
         return PackTool::genProperties($tmpBody);
     }
 
+    /**
+     * @param MqttProperties $data
+     */
     public static function publish(array $data): string
     {
         $tmpBody = '';
@@ -166,6 +181,9 @@ class PackProperty
         return PackTool::genProperties($tmpBody);
     }
 
+    /**
+     * @param MqttProperties $data
+     */
     public static function pubAndSub(array $data): string
     {
         $tmpBody = '';
@@ -189,6 +207,9 @@ class PackProperty
         return PackTool::genProperties($tmpBody);
     }
 
+    /**
+     * @param MqttProperties $data
+     */
     public static function subscribe(array $data): string
     {
         $tmpBody = '';
@@ -212,6 +233,9 @@ class PackProperty
         return PackTool::genProperties($tmpBody);
     }
 
+    /**
+     * @param MqttProperties $data
+     */
     public static function unSubscribe(array $data): string
     {
         $tmpBody = '';
@@ -225,6 +249,9 @@ class PackProperty
         return PackTool::genProperties($tmpBody);
     }
 
+    /**
+     * @param MqttProperties $data
+     */
     public static function disConnect(array $data): string
     {
         $tmpBody = '';
@@ -252,6 +279,9 @@ class PackProperty
         return PackTool::genProperties($tmpBody);
     }
 
+    /**
+     * @param MqttProperties $data
+     */
     public static function auth(array $data): string
     {
         $tmpBody = '';

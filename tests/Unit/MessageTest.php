@@ -40,7 +40,6 @@ class MessageTest extends TestCase
             'The results of getContents and toString should be the same'
         );
         $this->assertIsArray($message->getContents(true));
-        $this->assertIsArray($message->toArray());
         $this->assertEquals(
             $message->toArray(),
             $message->getContents(true),
@@ -58,7 +57,6 @@ class MessageTest extends TestCase
         );
         $this->assertIsArray($message->getContents(true));
         $this->assertEquals(Types::PINGRESP, $message->getContents(true)['type']);
-        $this->assertIsArray($message->toArray());
         $this->assertEquals(
             $message->toArray(),
             $message->getContents(true),
@@ -74,7 +72,6 @@ class MessageTest extends TestCase
             ->setRetain(ProtocolInterface::MQTT_RETAIN_0)
             ->setMessage('this is content');
         $this->assertIsArray($message->getContents(true));
-        $this->assertIsArray($message->toArray());
         $this->assertEquals(
             $message->toArray(),
             $message->getContents(true),

@@ -17,8 +17,14 @@ use Simps\MQTT\Property\PackProperty;
 use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Tools\PackTool;
 
+/**
+ * @phpstan-import-type PacketData from \Simps\MQTT\PhpStanTypes
+ */
 class PackV5
 {
+    /**
+     * @param PacketData $array
+     */
     public static function connect(array $array): string
     {
         $body = PackTool::string($array['protocol_name']) . chr($array['protocol_level']);
@@ -68,6 +74,9 @@ class PackV5
         return $head . $body;
     }
 
+    /**
+     * @param PacketData $array
+     */
     public static function connAck(array $array): string
     {
         $body = !empty($array['session_present']) ? chr(1) : chr(0);
@@ -82,6 +91,9 @@ class PackV5
         return $head . $body;
     }
 
+    /**
+     * @param PacketData $array
+     */
     public static function publish(array $array): string
     {
         $body = PackTool::string($array['topic']);
@@ -101,6 +113,9 @@ class PackV5
         return $head . $body;
     }
 
+    /**
+     * @param PacketData $array
+     */
     public static function subscribe(array $array): string
     {
         $body = PackTool::shortInt($array['message_id']);
@@ -132,6 +147,9 @@ class PackV5
         return $head . $body;
     }
 
+    /**
+     * @param PacketData $array
+     */
     public static function subAck(array $array): string
     {
         $body = PackTool::shortInt($array['message_id']);
@@ -148,6 +166,9 @@ class PackV5
         return $head . $body;
     }
 
+    /**
+     * @param PacketData $array
+     */
     public static function unSubscribe(array $array): string
     {
         $body = PackTool::shortInt($array['message_id']);
@@ -163,6 +184,9 @@ class PackV5
         return $head . $body;
     }
 
+    /**
+     * @param PacketData $array
+     */
     public static function unSubAck(array $array): string
     {
         $body = PackTool::shortInt($array['message_id']);
@@ -179,6 +203,9 @@ class PackV5
         return $head . $body;
     }
 
+    /**
+     * @param PacketData $array
+     */
     public static function disconnect(array $array): string
     {
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::NORMAL_DISCONNECTION;
@@ -192,6 +219,9 @@ class PackV5
         return $head . $body;
     }
 
+    /**
+     * @param PacketData $array
+     */
     public static function genReasonPhrase(array $array): string
     {
         $body = PackTool::shortInt($array['message_id']);
@@ -210,6 +240,9 @@ class PackV5
         return $head . $body;
     }
 
+    /**
+     * @param PacketData $array
+     */
     public static function auth(array $array): string
     {
         $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;

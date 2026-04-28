@@ -17,8 +17,14 @@ use Simps\MQTT\Property\UnPackProperty;
 use Simps\MQTT\Protocol\Types;
 use Simps\MQTT\Tools\UnPackTool;
 
+/**
+ * @phpstan-import-type PacketData from \Simps\MQTT\PhpStanTypes
+ */
 class UnPackV5
 {
+    /**
+     * @return PacketData
+     */
     public static function connect(string $remaining): array
     {
         $protocolName = UnPackTool::string($remaining);
@@ -88,6 +94,9 @@ class UnPackV5
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function connAck(string $remaining): array
     {
         $sessionPresent = ord($remaining[0]) & 0x01;
@@ -108,6 +117,9 @@ class UnPackV5
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function publish(int $dup, int $qos, int $retain, string $remaining): array
     {
         $topic = UnPackTool::string($remaining);
@@ -134,6 +146,9 @@ class UnPackV5
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function subscribe(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
@@ -165,6 +180,9 @@ class UnPackV5
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function subAck(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
@@ -185,6 +203,9 @@ class UnPackV5
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function unSubscribe(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
@@ -209,6 +230,9 @@ class UnPackV5
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function unSubAck(string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
@@ -229,6 +253,9 @@ class UnPackV5
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function disconnect(string $remaining): array
     {
         if (isset($remaining[0])) {
@@ -253,6 +280,9 @@ class UnPackV5
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function getReasonCode(int $type, string $remaining): array
     {
         $messageId = UnPackTool::shortInt($remaining);
@@ -281,6 +311,9 @@ class UnPackV5
         return $package;
     }
 
+    /**
+     * @return PacketData
+     */
     public static function auth(string $remaining): array
     {
         if (isset($remaining[0])) {
