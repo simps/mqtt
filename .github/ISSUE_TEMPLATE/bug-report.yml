@@ -41,6 +41,5 @@ body:
       label: Optional packet capture logs
       description: |
         You can also provide tcpdump packet capture logs.
-        Example command: `tcpdump -i en0 port 1883 -w mqtt.pcap`
+        Example command: `tcpdump -i eth0 port 1883 -w mqtt.pcap`
         Please change the network card and port to match your environment, then attach `mqtt.pcap`.
-

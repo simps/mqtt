@@ -39,7 +39,7 @@ class ClientTest extends TestCase
     public function testBase64()
     {
         $topic = 'simps-mqtt/test/base64';
-        $base64 = base64_encode(file_get_contents(TESTS_DIR . '/files/wechat.jpg'));
+        $base64 = base64_encode(file_get_contents(TESTS_DIR . '/files/wechat.png'));
         $client = new MQTTClient(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestConnectConfig());
         $client->connect(false);
         $client->subscribe([$topic => 0]);
