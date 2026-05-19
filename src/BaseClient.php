@@ -179,15 +179,11 @@ abstract class BaseClient
      */
     public function getConnectData(?string $key = null)
     {
-        if ($key) {
-            if (isset($this->connectData[$key])) {
-                return $this->connectData[$key];
-            }
-
-            return null;
+        if ($key === null) {
+            return $this->connectData;
         }
 
-        return $this->connectData;
+        return $this->connectData[$key] ?? null;
     }
 
     protected function isCoroutineClientType(): bool
