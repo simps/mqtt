@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 namespace SimpsTest\MQTT\V3;
 
-use PHPUnit\Framework\TestCase;
+use Deminy\Counit\TestCase;
 use Simps\MQTT\Exception\ProtocolException;
 use Simps\MQTT\Hex\ReasonCode;
 use Simps\MQTT\Protocol\Types;
@@ -30,6 +30,7 @@ class WebSocketTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
+        parent::setUpBeforeClass();
         self::$topic = 'testtopic/simps-' . rand(100, 999);
         self::$client = new WebSocketClient(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_OVER_WEBSOCKET_PORT, getTestConnectConfig());
     }
@@ -38,6 +39,7 @@ class WebSocketTest extends TestCase
     {
         self::$topic = '';
         self::$client = null;
+        parent::tearDownAfterClass();
     }
 
     public function testConnect()

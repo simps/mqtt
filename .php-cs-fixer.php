@@ -96,7 +96,9 @@ return (new PhpCsFixer\Config())
         'phpdoc_separation' => false,
         'phpdoc_summary' => false,
         'single_quote' => true,
-        'increment_style' => [],
+        'increment_style' => [
+            'style' => 'post',
+        ],
         'standardize_increment' => false,
         'standardize_not_equals' => true,
         'multiline_comment_opening_closing' => true,

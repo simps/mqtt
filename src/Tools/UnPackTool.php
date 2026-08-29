@@ -86,7 +86,7 @@ class UnPackTool extends Common
             $digit = ord($data[$headBytes]);
             $value += ($digit & 127) * $multiplier;
             $multiplier *= 128;
-            ++$headBytes;
+            $headBytes++;
         } while (($digit & 128) != 0);
 
         return $value;
