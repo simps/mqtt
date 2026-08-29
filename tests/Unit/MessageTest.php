@@ -12,7 +12,7 @@ declare(strict_types=1);
  */
 namespace SimpsTest\MQTT\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Deminy\Counit\TestCase;
 use Simps\MQTT\Message;
 use Simps\MQTT\Protocol\ProtocolInterface;
 use Simps\MQTT\Protocol\Types;
