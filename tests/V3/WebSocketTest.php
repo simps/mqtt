@@ -24,6 +24,8 @@ use Simps\MQTT\WebSocketClient;
  */
 class WebSocketTest extends TestCase
 {
+    private const MESSAGE = 'hello,simps';
+
     private static $topic = '';
 
     private static $client;
@@ -66,7 +68,7 @@ class WebSocketTest extends TestCase
      */
     public function testPublish()
     {
-        $buffer = self::$client->publish(self::$topic, 'hello,simps', 1);
+        $buffer = self::$client->publish(self::$topic, self::MESSAGE, 1);
         $this->assertIsArray($buffer);
         $this->assertSame(Types::PUBACK, $buffer['type']);
     }
@@ -80,7 +82,7 @@ class WebSocketTest extends TestCase
         $this->assertIsArray($buffer);
         $this->assertSame(Types::PUBLISH, $buffer['type']);
         $this->assertSame(self::$topic, $buffer['topic']);
-        $this->assertSame('hello,simps', $buffer['message']);
+        $this->assertSame(self::MESSAGE, $buffer['message']);
     }
 
     /**
@@ -118,6 +120,6 @@ class WebSocketTest extends TestCase
         $client->connect();
         $this->expectException(ProtocolException::class);
         $this->expectExceptionMessage('Topic cannot be empty');
-        $client->publish('', 'hello,simps');
+        $client->publish('', self::MESSAGE);
     }
 }
