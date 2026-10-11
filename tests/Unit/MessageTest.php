@@ -23,6 +23,10 @@ use Simps\MQTT\Protocol\Types;
  */
 class MessageTest extends TestCase
 {
+    private const MESSAGE_CONTENT = 'this is content';
+
+    private const CONTENTS_ARRAY_ASSERTION_MESSAGE = 'The results of getContents and toArray should be the same';
+
     public function testPublishMessage()
     {
         $message = new Message\Publish();
@@ -31,7 +35,7 @@ class MessageTest extends TestCase
             ->setQos(ProtocolInterface::MQTT_QOS_1)
             ->setDup(ProtocolInterface::MQTT_DUP_0)
             ->setRetain(ProtocolInterface::MQTT_RETAIN_0)
-            ->setMessage('this is content')
+            ->setMessage(self::MESSAGE_CONTENT)
             ->setMessageId(1)
             ->setProperties(['message_expiry_interval' => 100]);
         $this->assertEquals(
@@ -43,7 +47,7 @@ class MessageTest extends TestCase
         $this->assertEquals(
             $message->toArray(),
             $message->getContents(true),
-            'The results of getContents and toArray should be the same'
+            self::CONTENTS_ARRAY_ASSERTION_MESSAGE
         );
     }
 
@@ -60,7 +64,7 @@ class MessageTest extends TestCase
         $this->assertEquals(
             $message->toArray(),
             $message->getContents(true),
-            'The results of getContents and toArray should be the same'
+            self::CONTENTS_ARRAY_ASSERTION_MESSAGE
         );
     }
 
@@ -70,12 +74,12 @@ class MessageTest extends TestCase
         $message->setTopic('topic')
             ->setQos(ProtocolInterface::MQTT_QOS_1)
             ->setRetain(ProtocolInterface::MQTT_RETAIN_0)
-            ->setMessage('this is content');
+            ->setMessage(self::MESSAGE_CONTENT);
         $this->assertIsArray($message->getContents(true));
         $this->assertEquals(
             $message->toArray(),
             $message->getContents(true),
-            'The results of getContents and toArray should be the same'
+            self::CONTENTS_ARRAY_ASSERTION_MESSAGE
         );
     }
 
@@ -86,7 +90,7 @@ class MessageTest extends TestCase
             ->setQos(ProtocolInterface::MQTT_QOS_1)
             ->setDup(ProtocolInterface::MQTT_DUP_0)
             ->setRetain(ProtocolInterface::MQTT_RETAIN_0)
-            ->setMessage('this is content')
+            ->setMessage(self::MESSAGE_CONTENT)
             ->setMessageId(1);
 
         $this->assertFalse($message->isMQTT5());

@@ -25,6 +25,12 @@ use Swoole\Coroutine;
  */
 class PacketTest extends TestCase
 {
+    private const MESSAGE = 'hello,simps';
+
+    private const TOPIC_GET_SUFFIX = '/get';
+
+    private const SUCCESS_REASON_PHRASE = 'Success';
+
     private static $topic = '';
 
     private static $client;
@@ -56,7 +62,7 @@ class PacketTest extends TestCase
     public function testSubscribe()
     {
         $topics = [
-            self::$topic . '/get' => [
+            self::$topic . self::TOPIC_GET_SUFFIX => [
                 'qos' => 1,
                 'no_local' => true,
                 'retain_as_published' => true,
@@ -86,10 +92,10 @@ class PacketTest extends TestCase
             $client = new Client(SIMPS_MQTT_REMOTE_HOST, SIMPS_MQTT_PORT, getTestMQTT5ConnectConfig());
             $res = $client->connect();
             $this->assertIsArray($res);
-            $buffer = $client->publish(self::$topic . '/get', 'hello,simps', 1);
+            $buffer = $client->publish(self::$topic . self::TOPIC_GET_SUFFIX, self::MESSAGE, 1);
             $this->assertIsArray($buffer);
             $this->assertSame(Types::PUBACK, $buffer['type']);
-            $this->assertSame('Success', ReasonCode::getReasonPhrase($buffer['code']));
+            $this->assertSame(self::SUCCESS_REASON_PHRASE, ReasonCode::getReasonPhrase($buffer['code']));
         });
     }
 
@@ -101,8 +107,8 @@ class PacketTest extends TestCase
         $buffer = self::$client->recv();
         $this->assertIsArray($buffer);
         $this->assertSame(Types::PUBLISH, $buffer['type']);
-        $this->assertSame(self::$topic . '/get', $buffer['topic']);
-        $this->assertSame('hello,simps', $buffer['message']);
+        $this->assertSame(self::$topic . self::TOPIC_GET_SUFFIX, $buffer['topic']);
+        $this->assertSame(self::MESSAGE, $buffer['message']);
     }
 
     /**
@@ -120,11 +126,11 @@ class PacketTest extends TestCase
      */
     public function testUnsubscribe()
     {
-        $status = self::$client->unSubscribe([self::$topic . '/get', self::$topic . '/update']);
+        $status = self::$client->unSubscribe([self::$topic . self::TOPIC_GET_SUFFIX, self::$topic . '/update']);
         $this->assertIsArray($status);
         $this->assertSame(Types::UNSUBACK, $status['type']);
-        $this->assertSame('Success', ReasonCode::getReasonPhrase($status['codes'][0]));
-        $this->assertSame('Success', ReasonCode::getReasonPhrase($status['codes'][1]));
+        $this->assertSame(self::SUCCESS_REASON_PHRASE, ReasonCode::getReasonPhrase($status['codes'][0]));
+        $this->assertSame(self::SUCCESS_REASON_PHRASE, ReasonCode::getReasonPhrase($status['codes'][1]));
     }
 
     /**
@@ -142,6 +148,6 @@ class PacketTest extends TestCase
         $client->connect();
         $this->expectException(ProtocolException::class);
         $this->expectExceptionMessage('Topic cannot be empty or need to set topic_alias');
-        $client->publish('', 'hello,simps');
+        $client->publish('', self::MESSAGE);
     }
 }
